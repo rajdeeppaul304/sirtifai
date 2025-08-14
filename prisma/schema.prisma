@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Personal Details
+  fullName             String
+  dateOfBirth          DateTime
+  countryOfCitizenship String
+  referralCode         String?
+
+  // Contact Information
+  primaryPhone          String
+  secondaryPhone        String?
+  whatsappNotifications Boolean @default(false)
+  email                 String  @unique
+  residentialAddress    String
+  city                  String
+  state                 String
+  zipCode               String
+  country               String
+
+  // Education
+  highestQualification String
+  specialization       String?
+
+  // Professional
+  currentProfession   String?
+  currentOrganization String?
+  linkedinProfile     String?
+
+  // Identity Document
+  idType        String
+  idNumber      String
+  idDocumentUrl String?
+  photoUrl      String?
+
+  // Program Selection
+  selectedProgram String
+  programDuration Int
+  programPrice    Float
+  selectedAddon   String?
+  addonPrice      Float?
+  totalAmount     Float
+
+  // Payment Details
+  paymentId         String?
+  paymentStatus     String  @default("pending")
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+
+  // Confirmation
+  agreedToTerms        Boolean @default(false)
+  certifiedInformation Boolean @default(false)
+
+  invoices Invoice[]
+
+  @@map("students")
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invoiceNumber String  @unique
+  studentId     String
+  student       Student @relation(fields: [studentId], references: [id])
+
+  programName  String
+  programPrice Float
+  addonName    String?
+  addonPrice   Float?
+  subtotal     Float
+  tax          Float   @default(0)
+  total        Float
+
+  paymentStatus String
+  paymentMethod String
+  paymentDate   DateTime?
+
+  @@map("invoices")
+}
