@@ -403,22 +403,35 @@ const ApplicationForm = () => {
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="font-medium">{selectedPackage.program?.name}</span>
-                    <span className="text-[#FC4C03] font-semibold">
-                      ₹{selectedPackage.program?.price.toLocaleString()} + 18% GST
+                    <span className="font-medium">{selectedPackage.programData?.name}</span>
+                    <span className="text-gray-600">
+                      ₹{selectedPackage.programData?.price.toLocaleString()} × {selectedPackage.selectedDuration} months
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-sm text-gray-600">
-                    <span>Duration: {selectedPackage.duration} months</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Program Total:</span>
+                    <span className="font-semibold">₹{selectedPackage.pricing?.programTotal.toLocaleString()}</span>
                   </div>
-                  {selectedPackage.addOn && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Add-on: {selectedPackage.addOn.name}</span>
-                      <span className="text-[#FC4C03] font-semibold">
-                        ₹{selectedPackage.addOn.price.toLocaleString()}
-                      </span>
-                    </div>
+                  {selectedPackage.addOnData && (
+                    <>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Add-on: {selectedPackage.addOnData.name}</span>
+                        <span className="font-semibold">₹{selectedPackage.pricing?.addonTotal.toLocaleString()}</span>
+                      </div>
+                    </>
                   )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Subtotal:</span>
+                    <span className="font-semibold">₹{selectedPackage.pricing?.subtotal.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">GST (18%):</span>
+                    <span className="font-semibold">₹{selectedPackage.pricing?.gst.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center font-bold text-[#FC4C03]">
+                    <span>Total Amount:</span>
+                    <span>₹{selectedPackage.pricing?.total.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -555,30 +568,41 @@ const ApplicationForm = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">
-                      {selectedPackage.program?.name} ({selectedPackage.duration} months):
+                      {selectedPackage.programData?.name} ({selectedPackage.selectedDuration} months):
                     </span>
-                    <span className="font-semibold">₹{selectedPackage.program?.price.toLocaleString()}</span>
+                    <span className="font-semibold">₹{selectedPackage.pricing?.programTotal.toLocaleString()}</span>
                   </div>
 
-                  {selectedPackage.addOn && (
+                  {selectedPackage.addOnData && (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-700">Add on ({selectedPackage.addOn.name}):</span>
-                      <span className="font-semibold">₹{selectedPackage.addOn.price.toLocaleString()}</span>
+                      <span className="text-gray-700">Add on ({selectedPackage.addOnData.name}):</span>
+                      <span className="font-semibold">₹{selectedPackage.pricing?.addonTotal.toLocaleString()}</span>
                     </div>
                   )}
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700">Subtotal:</span>
+                    <span className="font-semibold">₹{selectedPackage.pricing?.subtotal.toLocaleString()}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700">GST (18%):</span>
+                    <span className="font-semibold">₹{selectedPackage.pricing?.gst.toLocaleString()}</span>
+                  </div>
 
                   <hr className="my-4" />
 
                   <div className="flex justify-between items-center text-lg font-bold">
                     <span>Total Amount</span>
-                    <span className="text-[#FC4C03]">₹{selectedPackage.total?.toLocaleString()}</span>
+                    <span className="text-[#FC4C03]">₹{selectedPackage.pricing?.total.toLocaleString()}</span>
                   </div>
                 </div>
 
                 <RazorpayCheckout
-                  amount={selectedPackage.total}
+                  selectedProgram={selectedPackage.selectedProgram}
+                  selectedMonths={selectedPackage.selectedDuration}
+                  selectedAddon={selectedPackage.selectedAddOn}
                   studentData={formData}
-                  packageData={selectedPackage}
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}
                 />

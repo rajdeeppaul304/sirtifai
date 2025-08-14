@@ -27,43 +27,45 @@ export async function POST(request: NextRequest) {
 
       const student = await prisma.student.create({
         data: {
-          // Personal Details - only name is real, rest are dummy
-          fullName: studentData?.fullName || "John Doe",
-          dateOfBirth: new Date("1995-01-01"),
-          countryOfCitizenship: "India",
-          referralCode: "DUMMY123",
+          // Personal Details
+          fullName: studentData.fullName,
+          dateOfBirth: new Date(
+            `${studentData.dateOfBirth.year}-${studentData.dateOfBirth.month}-${studentData.dateOfBirth.day}`,
+          ),
+          countryOfCitizenship: studentData.countryOfCitizenship,
+          referralCode: studentData.referralCode,
 
-          // Contact Information - dummy data
-          primaryPhone: "+91 9876543210",
-          secondaryPhone: "+91 9876543211",
-          whatsappNotifications: true,
-          email: "dummy2@example.com",
-          residentialAddress: "123 Dummy Street, Dummy City",
-          city: "Mumbai",
-          state: "Maharashtra",
-          zipCode: "400001",
-          country: "India",
+          // Contact Information
+          primaryPhone: studentData.primaryPhone,
+          secondaryPhone: studentData.secondaryPhone,
+          whatsappNotifications: studentData.whatsappNotifications,
+          email: studentData.email,
+          residentialAddress: studentData.residentialAddress,
+          city: studentData.city,
+          state: studentData.state,
+          zipCode: studentData.zipCode,
+          country: studentData.country,
 
-          // Education - dummy data
-          highestQualification: "Graduate",
-          specialization: "Computer Science",
+          // Education
+          highestQualification: studentData.highestQualification,
+          specialization: studentData.specialization,
 
-          // Professional - dummy data
-          currentProfession: "Software Developer",
-          currentOrganization: "Tech Company",
-          linkedinProfile: "https://linkedin.com/in/dummy",
+          // Professional
+          currentProfession: studentData.currentProfession,
+          currentOrganization: studentData.currentOrganization,
+          linkedinProfile: studentData.linkedinProfile,
 
-          // Identity Document - dummy data
-          idType: "Passport",
-          idNumber: "A1234567",
+          // Identity Document
+          idType: studentData.idType,
+          idNumber: studentData.idNumber,
 
-          // Program Selection - use actual package data
-          selectedProgram: packageData?.program?.name || "Skill Phase",
-          programDuration: packageData?.duration || 3,
-          programPrice: packageData?.program?.price || 5999,
-          selectedAddon: packageData?.addOn?.name || null,
-          addonPrice: packageData?.addOn?.price || 0,
-          totalAmount: packageData?.total || 5999,
+          // Program Selection
+          selectedProgram: packageData.program.name,
+          programDuration: packageData.duration,
+          programPrice: packageData.program.price,
+          selectedAddon: packageData.addOn?.name,
+          addonPrice: packageData.addOn?.price || 0,
+          totalAmount: packageData.total,
 
           // Payment Details
           paymentId: razorpay_payment_id,
@@ -72,9 +74,9 @@ export async function POST(request: NextRequest) {
           razorpayPaymentId: razorpay_payment_id,
           razorpaySignature: razorpay_signature,
 
-          // Confirmation - dummy data
-          agreedToTerms: true,
-          certifiedInformation: true,
+          // Confirmation
+          agreedToTerms: studentData.agreedToTerms,
+          certifiedInformation: studentData.certifiedInformation,
         },
       })
 
@@ -82,13 +84,13 @@ export async function POST(request: NextRequest) {
         data: {
           invoiceNumber: `SRTIFAI/US/2023${Date.now().toString().slice(-6)}`,
           studentId: student.id,
-          programName: packageData?.program?.name || "Skill Phase",
-          programPrice: packageData?.program?.price || 5999,
-          addonName: packageData?.addOn?.name || null,
-          addonPrice: packageData?.addOn?.price || 0,
-          subtotal: packageData?.total || 5999,
+          programName: packageData.program.name,
+          programPrice: packageData.program.price,
+          addonName: packageData.addOn?.name,
+          addonPrice: packageData.addOn?.price || 0,
+          subtotal: packageData.total,
           tax: 0,
-          total: packageData?.total || 5999,
+          total: packageData.total,
           paymentStatus: "completed",
           paymentMethod: "Razorpay",
           paymentDate: new Date(),

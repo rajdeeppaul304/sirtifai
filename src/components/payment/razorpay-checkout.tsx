@@ -1,14 +1,14 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
 interface RazorpayCheckoutProps {
-  amount: number
+  selectedProgram: string
+  selectedMonths: number
+  selectedAddon?: string
   studentData: any
-  packageData: any
   onSuccess?: (paymentData: any) => void
   onError?: (error: any) => void
 }
@@ -20,9 +20,10 @@ declare global {
 }
 
 const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
-  amount,
+  selectedProgram,
+  selectedMonths,
+  selectedAddon,
   studentData,
-  packageData,
   onSuccess,
   onError,
 }) => {
@@ -51,14 +52,15 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         return
       }
 
-      // Create order
       const orderResponse = await fetch("/api/create-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          amount,
+          selectedProgram,
+          selectedMonths,
+          selectedAddon,
           currency: "INR",
           receipt: `receipt_${Date.now()}`,
         }),
@@ -78,7 +80,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         amount: order.amount,
         currency: order.currency,
         name: "Sirtifai",
-        description: `Payment for ${packageData.program?.name || "Program"}`,
+        description: `Payment for ${selectedProgram}`,
         order_id: order.id,
         prefill: {
           name: studentData.fullName || studentData.studentName,
@@ -101,7 +103,12 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
                 studentData,
-                packageData,
+                packageData: {
+                  program: selectedProgram,
+                  months: selectedMonths,
+                  addon: selectedAddon,
+                  pricing: order.pricing, // Backend calculated pricing
+                },
               }),
             })
 
@@ -114,7 +121,12 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
                 JSON.stringify({
                   ...verifyResult,
                   studentData,
-                  packageData,
+                  packageData: {
+                    program: selectedProgram,
+                    months: selectedMonths,
+                    addon: selectedAddon,
+                    pricing: order.pricing,
+                  },
                   paymentDate: new Date().toISOString(),
                 }),
               )
@@ -164,7 +176,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         loading ? "bg-gray-400 text-gray-600 cursor-not-allowed" : "bg-[#FC4C03] text-white hover:bg-[#e63d00]"
       }`}
     >
-      {loading ? "Processing..." : `Pay Now - ₹${amount.toLocaleString()}`}
+      {loading ? "Processing..." : "Pay Now"}
     </button>
   )
 }
