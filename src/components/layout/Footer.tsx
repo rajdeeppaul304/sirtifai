@@ -1,9 +1,23 @@
-"use client"
-import { Facebook, Twitter, Youtube, Mail, Phone, MessageCircle, HelpCircle } from 'lucide-react';
-import { useEffect } from 'react';
+"use client";
+
+import { Facebook, Twitter, Youtube, Mail, Phone, HelpCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export const Footer = () => {
-useEffect(() => {
+  const router = useRouter();
+
+  const handleLegalNavigation = (hash: string) => {
+    router.push(`/legal-policies${hash}`);
+  };
+
+  const handleQuickLinkNavigation = (path: string) => {
+    if (path !== '#') {
+      router.push(path);
+    }
+  };
+
+  useEffect(() => {
     // Knock Knock widget loader
     const kkId = 'knock-knock-widget';
     if (!document.getElementById(kkId)) {
@@ -16,45 +30,38 @@ useEffect(() => {
     }
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
+    const scriptId = 'sj-widget';
 
-  
-
-  const scriptId = 'sj-widget';
-
-  if (!document.getElementById(scriptId)) {
-    const rC: string[] = [];
-    const elements = document.querySelectorAll('[class*="stjr-"]');
-    elements.forEach(el => {
-      el.classList.forEach(cl => {
-        if (/^stjr-/.test(cl)) {
-          rC.push(cl);
-        }
+    if (!document.getElementById(scriptId)) {
+      const rC: string[] = [];
+      const elements = document.querySelectorAll('[class*="stjr-"]');
+      elements.forEach(el => {
+        el.classList.forEach(cl => {
+          if (/^stjr-/.test(cl)) {
+            rC.push(cl);
+          }
+        });
       });
-    });
 
-    const uRC = [...new Set(rC)];
+      const uRC = [...new Set(rC)];
 
-    const js = document.createElement('script');
-    js.id = scriptId;
-    js.src =
-      'https://www.sitejabber.com/js/v2/689457ff46956/widgets.js' +
-      (uRC.length ? '?widget-classes=' + uRC.join('|') : '?widget-classes=stjr-base');
+      const js = document.createElement('script') as HTMLScriptElement;
+      js.id = scriptId;
+      js.src =
+        'https://www.sitejabber.com/js/v2/689457ff46956/widgets.js' +
+        (uRC.length ? '?widget-classes=' + uRC.join('|') : '?widget-classes=stjr-base');
 
-    js.onload = js.onreadystatechange = function () {
-      if (!this.readyState || this.readyState === 'complete') {
+      js.onload = function () {
         // Script loaded
+      };
+
+      const t = document.getElementsByTagName('script')[0];
+      if (t && t.parentNode) {
+        t.parentNode.insertBefore(js, t);
       }
-    };
-
-    const t = document.getElementsByTagName('script')[0];
-    if (t && t.parentNode) {
-      t.parentNode.insertBefore(js, t);
     }
-  }
-}, []);
-
-
+  }, []);
 
   return (
     <footer className="w-full bg-[#FEF7F1] pt-16 pb-8">
@@ -128,19 +135,19 @@ useEffect(() => {
           <div>
             <h4 className="text-lg font-bold text-gray-800 mb-6">Legal</h4>
             <div className="space-y-3">
-              {/* <a href="#" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              <a href="#" onClick={(e) => { e.preventDefault(); handleLegalNavigation('#terms'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Terms & Conditions
-              </a> */}
-              <a href="cancellation-policy" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              </a> 
+              <a href="#" onClick={(e) => { e.preventDefault(); handleLegalNavigation('#cancellation'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Cancellation Policy
               </a>
-              <a href="cookies-policy" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              <a href="#" onClick={(e) => { e.preventDefault(); handleLegalNavigation('#cookies'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Cookies Policy
               </a>
-              <a href="privacy-policy" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              <a href="#" onClick={(e) => { e.preventDefault(); handleLegalNavigation('#privacy'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Privacy Policy
               </a>
-              <a href="refund-policy" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              <a href="#" onClick={(e) => { e.preventDefault(); handleLegalNavigation('#refund'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Refunds
               </a>
             </div>
@@ -173,11 +180,11 @@ useEffect(() => {
           <div>
             <h4 className="text-lg font-bold text-gray-800 mb-6">Quick Links</h4>
             <div className="space-y-3">
-              <a href="#" className="block text-gray-600 hover:text-gray-800 transition-colors">Home</a>
-              <a href="#" className="block text-gray-600 hover:text-gray-800 transition-colors">About Us</a>
-              <a href="#" className="block text-gray-600 hover:text-gray-800 transition-colors">Programs</a>
-              <a href="#" className="block text-gray-600 hover:text-gray-800 transition-colors">Contact</a>
-              <a href="#" className="block text-gray-600 hover:text-gray-800 transition-colors">Careers</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Home</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/about'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">About Us</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/programs'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Programs</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/contact'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Contact</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/careers'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Careers</a>
             </div>
           </div>
         </div>
