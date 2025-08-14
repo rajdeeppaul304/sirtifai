@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronDown } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -140,24 +140,51 @@ const ProgramSelection = () => {
   const [selectedProgram, setSelectedProgram] = useState<string>("skill")
   const [selectedDuration, setSelectedDuration] = useState<number>(3)
   const [selectedAddOn, setSelectedAddOn] = useState<string>("")
-  const [showDurationDropdown, setShowDurationDropdown] = useState(false)
+  const [showSkillDropdown, setShowSkillDropdown] = useState(false)
+  const [showPracticeDropdown, setShowPracticeDropdown] = useState<string>("")
+  const [showProgressDropdown, setShowProgressDropdown] = useState<string>("")
+  const [calculatedPricing, setCalculatedPricing] = useState<any>(null)
+  const [showAddOnSuggestion, setShowAddOnSuggestion] = useState(false)
 
   const selectedProgramData = programOptions.find((p) => p.id === selectedProgram)
   const selectedAddOnData = addOns.find((a) => a.id === selectedAddOn)
 
-  const getDurationOptions = () => {
-    if (!selectedProgramData) return []
+  useEffect(() => {
+    if (selectedProgramData) {
+      const validDurations = getDurationOptions()
+      if (!validDurations.includes(selectedDuration)) {
+        // Reset to first valid duration (3 for skill/practice, 1 for progress)
+        setSelectedDuration(selectedProgramData.category === "progress" ? 1 : 3)
+      }
+    }
+  }, [selectedProgram])
 
-    if (selectedProgramData.category === "progress") {
+  useEffect(() => {
+    if (selectedProgramData) {
+      const programTotal = selectedProgramData.price * selectedDuration
+      const addonTotal = selectedAddOnData?.price || 0
+      const subtotal = programTotal + addonTotal
+      const gst = Math.round(subtotal * 0.18)
+      const total = subtotal + gst
+
+      setCalculatedPricing({
+        programTotal,
+        addonTotal,
+        subtotal,
+        gst,
+        total,
+      })
+    }
+  }, [selectedProgram, selectedDuration, selectedAddOn, selectedProgramData, selectedAddOnData])
+
+  const getDurationOptions = (programId?: string) => {
+    const program = programId ? programOptions.find((p) => p.id === programId) : selectedProgramData
+    if (!program) return []
+
+    if (program.category === "progress") {
       return Array.from({ length: 12 }, (_, i) => i + 1)
     }
     return [3, 6]
-  }
-
-  const calculateTotal = () => {
-    const programPrice = selectedProgramData?.price || 0
-    const addOnPrice = selectedAddOnData?.price || 0
-    return programPrice + addOnPrice
   }
 
   const handleAddOnSelect = (addOnId: string) => {
@@ -165,15 +192,31 @@ const ProgramSelection = () => {
   }
 
   const handleBuyNow = () => {
+    if (!selectedAddOn) {
+      setShowAddOnSuggestion(true)
+      return
+    }
+
+    proceedToPurchase()
+  }
+
+  const proceedToPurchase = () => {
     const packageData = {
-      program: selectedProgramData,
-      duration: selectedDuration,
-      addOn: selectedAddOnData,
-      total: calculateTotal(),
+      selectedProgram,
+      selectedDuration,
+      selectedAddOn,
+      programData: selectedProgramData,
+      addOnData: selectedAddOnData,
+      pricing: calculatedPricing,
     }
 
     localStorage.setItem("selectedPackage", JSON.stringify(packageData))
     router.push("/application")
+  }
+
+  const continueWithoutAddOn = () => {
+    setShowAddOnSuggestion(false)
+    proceedToPurchase()
   }
 
   return (
@@ -190,7 +233,7 @@ const ProgramSelection = () => {
           {/* Program Selection */}
           <div className="space-y-6">
             {/* Skill Phase */}
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-lg border border-gray-200  ">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Skill Phase</h3>
               </div>
@@ -206,25 +249,25 @@ const ProgramSelection = () => {
                   />
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900">Rs.5999 + 18% GST</span>
+                      <span className="font-medium text-gray-900">Rs.5999 per month</span>
                       <div className="relative">
                         <button
-                          onClick={() => setShowDurationDropdown(!showDurationDropdown)}
+                          onClick={() => setShowSkillDropdown(!showSkillDropdown)}
                           className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
                         >
                           <span>{selectedDuration} Months</span>
                           <ChevronDown className="w-4 h-4" />
                         </button>
-                        {showDurationDropdown && selectedProgram === "skill" && (
-                          <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10">
-                            {getDurationOptions().map((duration) => (
+                        {showSkillDropdown && (
+                          <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px]">
+                            {getDurationOptions("skill").map((duration) => (
                               <button
                                 key={duration}
                                 onClick={() => {
                                   setSelectedDuration(duration)
-                                  setShowDurationDropdown(false)
+                                  setShowSkillDropdown(false)
                                 }}
-                                className="block w-full px-4 py-2 text-left hover:bg-gray-50"
+                                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
                               >
                                 {duration} Months
                               </button>
@@ -239,7 +282,7 @@ const ProgramSelection = () => {
             </div>
 
             {/* Practice Phase */}
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-lg border border-gray-200  ">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Practice Phase (Your Selected Plan)</h3>
               </div>
@@ -263,26 +306,30 @@ const ProgramSelection = () => {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="font-medium text-gray-900 capitalize">{program.tier}: </span>
-                            <span className="text-[#FC4C03] font-semibold">₹{program.price.toLocaleString()}</span>
+                            <span className="text-[#FC4C03] font-semibold">
+                              ₹{program.price.toLocaleString()} per month
+                            </span>
                           </div>
                           <div className="relative">
                             <button
-                              onClick={() => setShowDurationDropdown(!showDurationDropdown)}
+                              onClick={() =>
+                                setShowPracticeDropdown(showPracticeDropdown === program.id ? "" : program.id)
+                              }
                               className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
                             >
                               <span>{selectedDuration} Months</span>
                               <ChevronDown className="w-4 h-4" />
                             </button>
-                            {showDurationDropdown && selectedProgram === program.id && (
-                              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10">
-                                {getDurationOptions().map((duration) => (
+                            {showPracticeDropdown === program.id && (
+                              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px]">
+                                {getDurationOptions(program.id).map((duration) => (
                                   <button
                                     key={duration}
                                     onClick={() => {
                                       setSelectedDuration(duration)
-                                      setShowDurationDropdown(false)
+                                      setShowPracticeDropdown("")
                                     }}
-                                    className="block w-full px-4 py-2 text-left hover:bg-gray-50"
+                                    className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
                                   >
                                     {duration} Months
                                   </button>
@@ -298,7 +345,7 @@ const ProgramSelection = () => {
             </div>
 
             {/* Progress Phase */}
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-lg border border-gray-200  ">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Progress Phase</h3>
               </div>
@@ -322,20 +369,36 @@ const ProgramSelection = () => {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="font-medium text-gray-900 capitalize">{program.tier}: </span>
-                            <span className="text-[#FC4C03] font-semibold">₹{program.price.toLocaleString()}</span>
+                            <span className="text-[#FC4C03] font-semibold">
+                              ₹{program.price.toLocaleString()} per month
+                            </span>
                           </div>
                           <div className="relative">
-                            <select
-                              value={selectedDuration}
-                              onChange={(e) => setSelectedDuration(Number(e.target.value))}
-                              className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+                            <button
+                              onClick={() =>
+                                setShowProgressDropdown(showProgressDropdown === program.id ? "" : program.id)
+                              }
+                              className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
                             >
-                              {getDurationOptions().map((duration) => (
-                                <option key={duration} value={duration}>
-                                  {duration} Months
-                                </option>
-                              ))}
-                            </select>
+                              <span>{selectedDuration} Months</span>
+                              <ChevronDown className="w-4 h-4" />
+                            </button>
+                            {showProgressDropdown === program.id && (
+                              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px] max-h-48 overflow-y-auto">
+                                {getDurationOptions(program.id).map((duration) => (
+                                  <button
+                                    key={duration}
+                                    onClick={() => {
+                                      setSelectedDuration(duration)
+                                      setShowProgressDropdown("")
+                                    }}
+                                    className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+                                  >
+                                    {duration} Months
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -345,7 +408,7 @@ const ProgramSelection = () => {
             </div>
 
             {/* Add-ons */}
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-lg border border-gray-200  ">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Add-on Services</h3>
                 <p className="text-sm text-gray-600 mt-1">Select one add-on service to enhance your experience</p>
@@ -420,26 +483,40 @@ const ProgramSelection = () => {
             <div className="bg-white rounded-lg border-2 border-[#FC4C03] p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Package Summary</h3>
 
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">{selectedProgramData?.name}:</span>
-                  <span className="font-semibold">₹{selectedProgramData?.price.toLocaleString()}</span>
-                </div>
-
-                {selectedAddOnData && (
+              {calculatedPricing && (
+                <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-700">Add on ({selectedAddOnData.name}):</span>
-                    <span className="font-semibold">₹{selectedAddOnData.price.toLocaleString()}</span>
+                    <span className="text-gray-700">
+                      {selectedProgramData?.name} ({selectedDuration} months):
+                    </span>
+                    <span className="font-semibold">₹{calculatedPricing.programTotal.toLocaleString()}</span>
                   </div>
-                )}
 
-                <hr className="my-4" />
+                  {selectedAddOnData && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-700">Add on ({selectedAddOnData.name}):</span>
+                      <span className="font-semibold">₹{calculatedPricing.addonTotal.toLocaleString()}</span>
+                    </div>
+                  )}
 
-                <div className="flex justify-between items-center text-lg font-bold">
-                  <span>Total</span>
-                  <span className="text-[#FC4C03]">₹{calculateTotal().toLocaleString()}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700">Subtotal:</span>
+                    <span className="font-semibold">₹{calculatedPricing.subtotal.toLocaleString()}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700">GST (18%):</span>
+                    <span className="font-semibold">₹{calculatedPricing.gst.toLocaleString()}</span>
+                  </div>
+
+                  <hr className="my-4" />
+
+                  <div className="flex justify-between items-center text-lg font-bold">
+                    <span>Total</span>
+                    <span className="text-[#FC4C03]">₹{calculatedPricing.total.toLocaleString()}</span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="text-xs text-gray-500 mb-4">
                 ADD Declaration: I hereby declare that the information provided above is true and correct to the best of
@@ -456,6 +533,34 @@ const ProgramSelection = () => {
             </div>
           </div>
         </div>
+
+        {/* Add-on suggestion modal */}
+        {showAddOnSuggestion && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Enhance Your Experience!</h3>
+              <p className="text-gray-600 mb-6">
+                We noticed you haven't selected any add-on services. Our add-ons can significantly enhance your learning
+                experience with professional support, legal assistance, and career services. Would you like to review
+                them?
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowAddOnSuggestion(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                >
+                  Let me choose
+                </button>
+                <button
+                  onClick={continueWithoutAddOn}
+                  className="flex-1 px-4 py-2 bg-[#FC4C03] text-white rounded-md hover:bg-[#e63d00]"
+                >
+                  Continue without add-on
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
