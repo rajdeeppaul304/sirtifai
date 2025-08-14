@@ -1,36 +1,46 @@
 "use client"
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { NAVIGATION_ITEMS } from "../../constants/data";
-import { Link } from "react-router-dom";
 
 export const Header = () => {
-  const [openDropdown, setOpenDropdown] = useState(null); // Track which dropdown is open
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null); // Track which dropdown is open
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(null); // Separate state for mobile dropdowns
-  const dropdownTimeoutRef = useRef(null);
-  const currentPath = window.location.pathname;
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState<string | null>(null); // Separate state for mobile dropdowns
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [currentPath, setCurrentPath] = useState<string>('/');
+
+  // Set current path on client side only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentPath(window.location.pathname);
+    }
+  }, []);
 
   const handleNavigation = (href: string) => {
     if (href.startsWith('/')) {
       // Use the global navigateTo function if available, otherwise fallback
-      if ((window as any).navigateTo) {
-        (window as any).navigateTo(href);
-      } else {
-        window.location.pathname = href;
+      if (typeof window !== 'undefined') {
+        if ((window as any).navigateTo) {
+          (window as any).navigateTo(href);
+        } else {
+          window.location.href = href;
+        }
       }
     } else if (href.startsWith('#')) {
       // Handle anchor links
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      if (typeof window !== 'undefined') {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     }
     // Close mobile menu after navigation
     setMobileMenuOpen(false);
   };
 
-  const handleDesktopDropdownEnter = (itemLabel) => {
+  const handleDesktopDropdownEnter = (itemLabel: string) => {
     // Clear any existing timeout
     if (dropdownTimeoutRef.current) {
       clearTimeout(dropdownTimeoutRef.current);
@@ -61,7 +71,7 @@ export const Header = () => {
     }, 150); // Shorter delay when leaving the actual dropdown
   };
 
-  const toggleMobileDropdown = (itemLabel) => {
+  const toggleMobileDropdown = (itemLabel: string) => {
     setMobileDropdownOpen(mobileDropdownOpen === itemLabel ? null : itemLabel);
   };
 

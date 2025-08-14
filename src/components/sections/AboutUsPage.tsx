@@ -99,7 +99,7 @@ export const AboutUsPage = () => {
           {/* Right illustration */}
           <div className="relative">
             <img
-              src={heroIllustration}
+              src={heroIllustration.src}
               alt="Hero illustration"
               className="w-full max-w-lg mx-auto"
             />
@@ -114,12 +114,12 @@ export const AboutUsPage = () => {
           <div className="relative">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <img
-                src={dontQuit}
+                src={dontQuit.src}
                 alt="Don't Quit"
                 className="rounded-2xl shadow-xl object-cover h-72 w-full md:h-[320px]"
               />
               <img
-                src={bulbsImage}
+                src={bulbsImage.src}
                 alt="Bulbs"
                 className="rounded-2xl shadow-xl object-cover h-72 w-full md:h-[320px]"
               />
@@ -136,7 +136,7 @@ export const AboutUsPage = () => {
                   (a, i) => (
                     <img
                       key={i}
-                      src={a}
+                      src={a.src}
                       alt="avatar"
                       className="w-6 h-6 rounded-full ring-2 ring-white object-cover"
                     />
@@ -264,7 +264,7 @@ export const AboutUsPage = () => {
       <div className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-8 min-h-[220px] w-[360px] h-[250px] mt-5">
         <div className="flex items-start gap-4 mb-4">
           <img
-            src={aboutStart}
+            src={aboutStart.src}
             alt="feature icon"
             className="w-16 h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
           />
@@ -305,7 +305,7 @@ export const AboutUsPage = () => {
         >
           <div className="flex items-start gap-4 mb-4">
             <img
-              src={aboutStart}
+              src={aboutStart.src}
               alt="feature icon"
               className="w-16 h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
             />
