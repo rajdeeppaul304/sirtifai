@@ -1,9 +1,11 @@
 "use client"
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { NAVIGATION_ITEMS } from "../../constants/data";
 
 export const Header = () => {
+  const router = useRouter();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null); // Track which dropdown is open
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState<string | null>(null); // Separate state for mobile dropdowns
@@ -19,14 +21,8 @@ export const Header = () => {
 
   const handleNavigation = (href: string) => {
     if (href.startsWith('/')) {
-      // Use the global navigateTo function if available, otherwise fallback
-      if (typeof window !== 'undefined') {
-        if ((window as any).navigateTo) {
-          (window as any).navigateTo(href);
-        } else {
-          window.location.href = href;
-        }
-      }
+      // Use Next.js router for client-side navigation
+      router.push(href);
     } else if (href.startsWith('#')) {
       // Handle anchor links
       if (typeof window !== 'undefined') {
@@ -117,13 +113,13 @@ export const Header = () => {
                         onMouseLeave={handleDropdownMenuLeave}
                       >
                         {item.dropdownItems.map((dropdownItem) => (
-                          <a
+                          <button
                             key={dropdownItem.label}
-                            href={dropdownItem.href}
-                            className="block px-4 py-2 hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                            onClick={() => handleNavigation(dropdownItem.href)}
+                            className="block w-full text-left px-4 py-2 hover:bg-orange-50 hover:text-orange-500 transition-colors"
                           >
                             {dropdownItem.label}
-                          </a>
+                          </button>
                         ))}
                       </div>
                     )}
@@ -221,14 +217,16 @@ export const Header = () => {
                     {isMobileDropdownOpen && item.dropdownItems && (
                       <div className="bg-gray-50">
                         {item.dropdownItems.map((dropdownItem) => (
-                          <a
+                          <button
                             key={dropdownItem.label}
-                            href={dropdownItem.href}
+                            onClick={() => {
+                              handleNavigation(dropdownItem.href);
+                              setMobileMenuOpen(false);
+                            }}
                             className="block pl-12 pr-6 py-3 text-sm hover:bg-orange-50 hover:text-orange-500 transition-colors"
-                            onClick={() => setMobileMenuOpen(false)}
                           >
                             {dropdownItem.label}
-                          </a>
+                          </button>
                         ))}
                       </div>
                     )}

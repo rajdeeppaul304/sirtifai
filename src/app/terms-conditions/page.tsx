@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function TermsAndConditionsPage() {
+  const router = useRouter();
+
   useEffect(() => {
-    // Use window.location.href for more reliable redirect with hash
-    if (typeof window !== 'undefined') {
-      window.location.href = '/legal-policies#terms';
-    }
-  }, []);
+    // Use Next.js router for client-side navigation with hash
+    router.replace('/legal-policies#terms');
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-[#FEF7F1] flex items-center justify-center">
