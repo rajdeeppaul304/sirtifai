@@ -62,17 +62,13 @@ export const ProgramTracksSection = () => {
                 }`}>
                 {/* Features */}
                 <div className="space-y-4 mb-8">
-                  {track.features.map((feature, index) => (
+                  {track.features?.map((feature, index) => (
                     <div key={index} className="flex items-start gap-3">
                       <BsCheckCircleFill 
                         size={20} 
-                        className={`flex-shrink-0 mt-0.5 text-orange-500`} 
+                        className="text-green-500 mt-0.5 flex-shrink-0" 
                       />
-                      <span className={`text-sm ${
-                        isHighlighted ? '' : 'text-gray-700'
-                      }`}>
-                        {feature}
-                      </span>
+                      <span className="text-gray-600">{feature}</span>
                     </div>
                   ))}
                 </div>

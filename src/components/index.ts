@@ -47,9 +47,3 @@ export { Button } from './ui/Button';
 export { Card } from './ui/Card';
 export { SuccessStoryCard } from './ui/SuccessStoryCard';
 export { RotatingGlobe } from './ui/RotatingGlobe';
-
-// Pages
-export { LearnersPage } from '../pages/LearnersPage';
-export { CertificationsPage } from '../pages/CertificationsPage';
-export { SirtifyInternationalPage } from '../pages/SirtifyInternationalPage';
-export { ContactUsPage } from '../pages/ContactUsPage';

@@ -139,7 +139,7 @@ export default function FeaturedLearnerStories() {
           <Button className="bg-[#ff7847] hover:bg-[#e56a3f] text-white px-8 py-3 rounded-full">
             View All Stories
           </Button>
-          <Button variant="outline" size="icon" className="rounded-full border-gray-300 bg-transparent">
+          <Button variant="outline" size="sm" className="rounded-full border-gray-300 bg-transparent">
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>

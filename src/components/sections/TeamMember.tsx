@@ -85,8 +85,8 @@ export default function TeamMemberCarousel() {
       <div className="flex items-center gap-8">
         {/* Left Navigation Button */}
         <Button
-          variant="ghost"
-          size="icon"
+          variant="outline"
+          size="sm"
           className="swiper-button-prev flex-shrink-0 w-12 h-12 rounded-full bg-white hover:bg-orange-50 shadow-lg border border-orange-200 hover:border-orange-300 transition-all duration-200"
         >
           <ChevronLeft className="w-6 h-6 text-orange-500" />
@@ -147,8 +147,8 @@ export default function TeamMemberCarousel() {
 
         {/* Right Navigation Button */}
         <Button
-          variant="ghost"
-          size="icon"
+          variant="outline"
+          size="sm"
           className="swiper-button-next flex-shrink-0 w-12 h-12 rounded-full bg-white hover:bg-orange-50 shadow-lg border border-orange-200 hover:border-orange-300 transition-all duration-200"
         >
           <ChevronRight className="w-6 h-6 text-orange-500" />

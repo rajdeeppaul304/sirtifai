@@ -35,16 +35,14 @@ useEffect(() => {
 
     const uRC = [...new Set(rC)];
 
-    const js = document.createElement('script');
+    const js = document.createElement('script') as HTMLScriptElement;
     js.id = scriptId;
     js.src =
       'https://www.sitejabber.com/js/v2/689457ff46956/widgets.js' +
       (uRC.length ? '?widget-classes=' + uRC.join('|') : '?widget-classes=stjr-base');
 
-    js.onload = js.onreadystatechange = function () {
-      if (!this.readyState || this.readyState === 'complete') {
-        // Script loaded
-      }
+    js.onload = function () {
+      // Script loaded
     };
 
     const t = document.getElementsByTagName('script')[0];
@@ -128,19 +126,19 @@ useEffect(() => {
           <div>
             <h4 className="text-lg font-bold text-gray-800 mb-6">Legal</h4>
             <div className="space-y-3">
-              {/* <a href="#" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              <a href="/legal-policies#terms" className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Terms & Conditions
-              </a> */}
-              <a href="cancellation-policy" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              </a> 
+              <a href="/legal-policies#cancellation" className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Cancellation Policy
               </a>
-              <a href="cookies-policy" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              <a href="/legal-policies#cookies" className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Cookies Policy
               </a>
-              <a href="privacy-policy" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              <a href="/legal-policies#privacy" className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Privacy Policy
               </a>
-              <a href="refund-policy" className="block text-gray-600 hover:text-gray-800 transition-colors">
+              <a href="/legal-policies#refund" className="block text-gray-600 hover:text-gray-800 transition-colors">
                 Refunds
               </a>
             </div>

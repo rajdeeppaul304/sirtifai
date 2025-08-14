@@ -21,7 +21,7 @@ export const RotatingGlobe = () => {
     const tiltX = -0.3; // Tilt down slightly
     const tiltY = 0.4;  // Tilt to show the right side
 
-    const project3D = (x, y, z) => {
+    const project3D = (x: number, y: number, z: number) => {
       // Apply rotation around Y axis
       const cosRot = Math.cos(rotation);
       const sinRot = Math.sin(rotation);
@@ -123,7 +123,7 @@ export const RotatingGlobe = () => {
       }
 
       // Draw polar convergence lines (the radiating lines from the poles)
-      const drawPolarLines = (poleY) => {
+      const drawPolarLines = (poleY: number) => {
         for (let lon = 0; lon < 360; lon += 15) {
           const lonRad = (lon * Math.PI) / 180;
           
