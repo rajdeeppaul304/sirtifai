@@ -19,15 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <style>{`
-html {
-  font-family: ${GeistSans.style.fontFamily};
-
-}
-        `}</style>
-      </head>
-      <body>{children}</body>
+      <body className={GeistSans.className}>{children}</body>
     </html>
   )
 }
