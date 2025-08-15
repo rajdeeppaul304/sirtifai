@@ -1,141 +1,87 @@
-import type React from "react"
+// Data matching design reference
+const benefits = [
+  {
+    title: "Real Projects with Monthly Pay",
+    description: "Work on actual client projects with guaranteed monthly payments.",
+  },
+  {
+    title: "Mentor Feedback on Every Task",
+    description: "Get professional guidance to improve your skills with each project.",
+  },
+  {
+    title: "Legal Contracts (Elite only)",
+    description: "Professional legal protection for your freelance work.",
+  },
+  {
+    title: "Career & Client Growth",
+    description: "Build long-term relationships with clients and expand your network.",
+  },
+  {
+    title: "Verified Portfolio Access",
+    description: "Showcase your verified work experience to future clients.",
+  },
+  {
+    title: "AI Resume & Profile Setup",
+    description: "Get professional help setting up your freelance profile.",
+  },
+];
 
 const WhatYouGetSection: React.FC = () => {
   return (
-    <section className="py-16 px-4 bg-white">
-      <style>{`
-        .what-you-get-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          text-align: center;
-        }
-        .benefit-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 1rem;
-          padding: 1.5rem;
-          background: white;
-          border-radius: 12px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-          border: 1px solid #f1f5f9;
-          transition: all 0.3s ease;
-        }
-        .benefit-item:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-        .benefit-icon {
-          width: 50px;
-          height: 50px;
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 20px;
-          flex-shrink: 0;
-        }
-        .certificate-badge {
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          color: white;
-          padding: 1rem 2rem;
-          border-radius: 50px;
-          font-weight: 600;
-          display: inline-block;
-          margin-top: 2rem;
-        }
-      `}</style>
-
-      <div className="what-you-get-container">
-        <h2 className="text-4xl font-bold text-gray-900 mb-12">What You Get</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="benefit-item">
-            <div className="benefit-icon">🎥</div>
-            <div className="text-left">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">50+ Hours of Video Content</h3>
-              <p className="text-gray-600">
-                Comprehensive video tutorials covering all aspects of freelancing from basics to advanced strategies.
-              </p>
+    <section className="py-16 bg-white">
+      <div className="max-w-6xl mx-auto px-4 text-center">
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-14">What You Get</h2>
+        <div className="grid gap-x-12 gap-y-12 md:grid-cols-3 text-left mb-10">
+          {benefits.map((b) => (
+            <div key={b.title} className="flex flex-col space-y-2">
+              <div className="flex items-start gap-3">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500 flex-shrink-0 mt-1" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M4 8.2l2.4 2.4L12 5"
+                      stroke="#fff"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <div>
+                  <h3 className="font-semibold text-sm md:text-base text-gray-900 leading-snug mb-1">
+                    {b.title}
+                  </h3>
+                  <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
+                    {b.description}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div className="benefit-item">
-            <div className="benefit-icon">📚</div>
-            <div className="text-left">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Downloadable Resources</h3>
-              <p className="text-gray-600">
-                Templates, checklists, and guides that you can download and use throughout your freelancing journey.
-              </p>
-            </div>
-          </div>
-
-          <div className="benefit-item">
-            <div className="benefit-icon">💼</div>
-            <div className="text-left">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Portfolio Building Guidance</h3>
-              <p className="text-gray-600">
-                Step-by-step guidance on creating a compelling portfolio that attracts high-paying clients.
-              </p>
-            </div>
-          </div>
-
-          <div className="benefit-item">
-            <div className="benefit-icon">🎯</div>
-            <div className="text-left">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Client Acquisition Strategies</h3>
-              <p className="text-gray-600">
-                Proven methods to find and secure your first clients, plus strategies for long-term growth.
-              </p>
-            </div>
-          </div>
-
-          <div className="benefit-item">
-            <div className="benefit-icon">💰</div>
-            <div className="text-left">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Pricing & Negotiation Training</h3>
-              <p className="text-gray-600">
-                Learn how to price your services competitively and negotiate with confidence.
-              </p>
-            </div>
-          </div>
-
-          <div className="benefit-item">
-            <div className="benefit-icon">🤝</div>
-            <div className="text-left">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Community Access</h3>
-              <p className="text-gray-600">
-                Join our exclusive community of freelancers for networking, support, and collaboration opportunities.
-              </p>
-            </div>
-          </div>
-
-          <div className="benefit-item">
-            <div className="benefit-icon">📞</div>
-            <div className="text-left">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Live Q&A Sessions</h3>
-              <p className="text-gray-600">
-                Regular live sessions where you can get your questions answered by industry experts.
-              </p>
-            </div>
-          </div>
-
-          <div className="benefit-item">
-            <div className="benefit-icon">⚡</div>
-            <div className="text-left">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Lifetime Updates</h3>
-              <p className="text-gray-600">
-                Get access to all future course updates and new content additions at no extra cost.
-              </p>
-            </div>
+          ))}
+        </div>
+        <div className="flex justify-center">
+          <div className="inline-flex items-center gap-2 rounded-md bg-slate-200/70 px-5 py-3 text-[13px] md:text-sm font-medium text-gray-800">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-slate-600"
+              aria-hidden="true"
+            >
+              <path d="M12 2l3 7h7l-5.5 4.5L18 22l-6-4-6 4 1.5-8.5L2 9h7z" />
+            </svg>
+            <span className="font-bold">
+              <span>Bonus:</span> Certificate of Freelance Readiness (Sirtifai Verified)
+            </span>
           </div>
         </div>
-
-        <div className="certificate-badge">🏆 Bonus: Certificate of Freelance Business Startup Certified</div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default WhatYouGetSection
+export default WhatYouGetSection;

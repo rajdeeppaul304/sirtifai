@@ -1,143 +1,102 @@
-import type React from "react"
+import type React from "react";
+
+interface AddOnRow {
+  service: string;
+  price: string;
+  included: string;
+  highlight?: boolean;
+  badge?: string;
+}
+
+const addOns: AddOnRow[] = [
+  {
+    service: "Payroll + EPF",
+    price: "₹33,500 / $400",
+    included: "Deel™, Payslip, EPF, Bank Docs",
+  },
+  {
+    service: "CA Services",
+    price: "₹1,999 – ₹7,999",
+    included: "ITR, GST Filing, Tax Reports",
+  },
+  {
+    service: "Legal Support",
+    price: "₹999 – ₹9,999",
+    included: "NDA, Service Contract, IP Safety",
+  },
+  {
+    service: "Freelancer Shield Combo",
+    price: "₹39,999",
+    included: "All of the above in one bundle",
+    highlight: true,
+    badge: "Best Value",
+  },
+];
 
 const AddOnsSection: React.FC = () => {
   return (
-    <section className="py-16 px-4 bg-white">
-      <style>{`
-        .addons-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          text-align: center;
-        }
-        .addons-table {
-          background: white;
-          border-radius: 16px;
-          overflow: hidden;
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-          border: 1px solid #f1f5f9;
-        }
-        .table-header {
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          color: white;
-          padding: 1.5rem;
-        }
-        .table-row {
-          display: grid;
-          grid-template-columns: 2fr 1fr 1fr 1fr;
-          align-items: center;
-          padding: 1rem 1.5rem;
-          border-bottom: 1px solid #f1f5f9;
-        }
-        .table-row:last-child {
-          border-bottom: none;
-        }
-        .table-row:nth-child(even) {
-          background: #f9fafb;
-        }
-        .addon-name {
-          text-align: left;
-          font-weight: 600;
-          color: #1f2937;
-        }
-        .addon-price {
-          font-weight: 700;
-          color: #ff6b35;
-        }
-        .addon-button {
-          background: #ff6b35;
-          color: white;
-          padding: 0.5rem 1rem;
-          border-radius: 6px;
-          border: none;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-        .addon-button:hover {
-          background: #e55a2b;
-        }
-        .addon-button.secondary {
-          background: #374151;
-        }
-        .addon-button.secondary:hover {
-          background: #1f2937;
-        }
-        @media (max-width: 768px) {
-          .table-row {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-            text-align: center;
-          }
-          .addon-name {
-            text-align: center;
-          }
-        }
-      `}</style>
+    <section className="py-24 bg-white">
+      <div className="max-w-6xl mx-auto px-4">
+        <h2 className="text-center text-4xl md:text-5xl font-bold tracking-tight mb-14 leading-tight">
+          Supercharge Your Career With
+          <br className="hidden md:block" /> Optional Add-Ons
+        </h2>
 
-      <div className="addons-container">
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">Supercharge Your Career With Optional Add-Ons</h2>
-        <p className="text-lg text-gray-600 mb-12">
-          Take your freelancing to the next level with these specialized add-on courses.
-        </p>
-
-        <div className="addons-table">
-          <div className="table-header">
-            <div className="table-row">
-              <div className="font-bold text-lg">Add-On Course</div>
-              <div className="font-bold">Duration</div>
-              <div className="font-bold">Price</div>
-              <div className="font-bold">Action</div>
-            </div>
-          </div>
-
-          <div className="table-row">
-            <div className="addon-name">Advanced SEO Mastery</div>
-            <div>8 weeks</div>
-            <div className="addon-price">₹12,999</div>
-            <div>
-              <button className="addon-button">Add to Cart</button>
-            </div>
-          </div>
-
-          <div className="table-row">
-            <div className="addon-name">Social Media Marketing Pro</div>
-            <div>6 weeks</div>
-            <div className="addon-price">₹9,999</div>
-            <div>
-              <button className="addon-button">Add to Cart</button>
-            </div>
-          </div>
-
-          <div className="table-row">
-            <div className="addon-name">Content Writing Excellence</div>
-            <div>10 weeks</div>
-            <div className="addon-price">₹15,999</div>
-            <div>
-              <button className="addon-button">Add to Cart</button>
-            </div>
-          </div>
-
-          <div className="table-row">
-            <div className="addon-name">E-commerce Store Setup</div>
-            <div>4 weeks</div>
-            <div className="addon-price">₹8,999</div>
-            <div>
-              <button className="addon-button secondary">Add to Cart</button>
-            </div>
-          </div>
-
-          <div className="table-row">
-            <div className="addon-name">Personal Brand Building</div>
-            <div>12 weeks</div>
-            <div className="addon-price">₹18,999</div>
-            <div>
-              <button className="addon-button secondary">Add to Cart</button>
-            </div>
-          </div>
+        <div className="overflow-x-auto rounded-md border border-gray-200 bg-white">
+          <table className="w-full text-sm md:text-[15px]">
+            <thead>
+              <tr className="bg-[#0F2533] text-white text-left">
+                <th className="font-medium py-4 px-4 md:px-6 text-[11px] md:text-xs tracking-wide">Service</th>
+                <th className="font-medium py-4 px-4 md:px-6 text-[11px] md:text-xs tracking-wide whitespace-nowrap">Monthly Price</th>
+                <th className="font-medium py-4 px-4 md:px-6 text-[11px] md:text-xs tracking-wide">What's Included</th>
+                <th className="font-medium py-4 px-4 md:px-6 text-[11px] md:text-xs tracking-wide text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {addOns.map((row) => (
+                <tr
+                  key={row.service}
+                  className={
+                    `border-t border-gray-200 ${row.highlight ? 'bg-[#FBF2EE]' : 'bg-white'} `
+                  }
+                >
+                  <td className="py-4 px-4 md:px-6 text-gray-800 text-[13px] md:text-sm whitespace-nowrap font-medium">
+                    {row.highlight && (
+                      <span className="inline-flex items-center justify-center mr-2 text-orange-500" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="5" y="3" width="14" height="18" rx="2" ry="2" />
+                          <path d="M9 7v-1a3 3 0 0 1 6 0v1" />
+                        </svg>
+                      </span>
+                    )}
+                    {row.service}
+                  </td>
+                  <td className="py-4 px-4 md:px-6 text-gray-900 text-[13px] md:text-sm whitespace-nowrap">
+                    <span className="font-medium">{row.price}</span>
+                  </td>
+                  <td className="py-4 px-4 md:px-6 text-[12px] md:text-sm text-gray-600">
+                    {row.included}
+                  </td>
+                  <td className="py-4 px-4 md:px-6 text-center">
+                    {row.highlight ? (
+                      <span className="inline-flex items-center rounded-sm bg-[#0F2533] text-white px-3 py-1.5 text-[10px] md:text-[11px] font-medium shadow-sm">{row.badge}</span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 text-[10px] md:text-[11px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
+                      >
+                        Add
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default AddOnsSection
+export default AddOnsSection;

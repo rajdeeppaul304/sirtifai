@@ -1,3 +1,4 @@
+"use client"
 import { STEPS } from "../../constants/data";
 
 export const AboutSection = () => {

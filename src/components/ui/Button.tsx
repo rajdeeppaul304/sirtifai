@@ -3,8 +3,8 @@ import type { LucideIcon } from "lucide-react";
 
 interface ButtonProps {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "outline";
-  size?: "sm" | "md" | "lg";
+  variant?: "primary" | "secondary" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg" | "icon";
   icon?: LucideIcon;
   iconPosition?: "left" | "right";
   className?: string;
@@ -34,18 +34,22 @@ export const Button = ({
       "bg-[#374151] text-white hover:bg-gray-700 focus:ring-gray-500 shadow-lg hover:shadow-xl hover:scale-105",
     outline:
       "border border-orange-500 text-orange-500 hover:bg-orange-50 focus:ring-orange-500",
+    ghost:
+      "bg-transparent text-orange-500 hover:bg-orange-50 hover:text-orange-600 focus:ring-orange-500",
   };
 
   const sizeClasses = {
     sm: "px-4 py-2 text-sm",
     md: "px-6 py-3 text-base",
     lg: "px-8 py-4 text-lg",
+    icon: "p-2",
   };
 
   const iconClasses = {
     sm: "w-4 h-4",
     md: "w-5 h-5",
     lg: "w-6 h-6",
+    icon: "w-5 h-5",
   };
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
