@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 import { BarChart3 } from 'lucide-react';
 
 export const CertificationsHeroSection = () => {
