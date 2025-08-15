@@ -95,22 +95,26 @@ export const USERS: User[] = [
 export const STEPS: Step[] = [
   {
     id: 1,
-    title: "Skill Training",
+    title: "Mission :",
     description:
-      "Plan, collaborate, and publishing your content that drives meaningful engagement and growth for your brand",
+      "Skill → Practice → Progress – Practical skills, paid project experience, lifetime  job access.",
     icon: Handshake,
   },
   {
     id: 2,
-    title: "Paid Practice",
-    description: "Analyze your performance and create goegeous report",
-    icon: Settings,
+    title: "Vision :",
+    description:
+      "Job-First Education for Bharat – Careers with skills, work history, and networks  for all.",
   },
   {
     id: 3,
-    title: "Lifetime Progress",
-    description: "Quiuckly navigate you anda engage with your adience",
-    icon: BarChart3,
+    title: "Future Goals :",
+    description: `1 Million Paid Learners by 2026.
+    Global career access with visa sponsorship support.
+    School-to-career readiness pipeline.
+    Real company briefs integrated into training.
+    AI-driven career tracking.`,
+        icon: BarChart3,
   },
 ];
 
