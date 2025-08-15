@@ -14,7 +14,10 @@ export async function POST(request: NextRequest) {
     })
 
     const body_string = `${razorpay_order_id}|${razorpay_payment_id}`
-    const expectedSignature = crypto.createHmac("sha256", "0oZnTjgtBeJP9vbY9xMc0O8T").update(body_string).digest("hex")
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "0oZnTjgtBeJP9vbY9xMc0O8T")
+      .update(body_string)
+      .digest("hex")
 
     console.log("Body string for signature:", body_string)
     console.log("Expected signature (full):", expectedSignature)
@@ -45,6 +48,8 @@ export async function POST(request: NextRequest) {
           console.error("Error processing student photo:", error)
         }
       }
+
+      const sharedInvoiceLink = crypto.randomUUID()
 
       const student = await prisma.student.create({
         data: {
@@ -84,13 +89,15 @@ export async function POST(request: NextRequest) {
           idDocument: idDocumentBinary, // Store binary data
           photo: photoBinary, // Store binary data
 
-          // Program Selection - use actual package data
+          // Program Selection - use correct pricing data
           selectedProgram: packageData?.program || "Skill Phase",
           programDuration: packageData?.months || 3,
-          programPrice: packageData?.pricing?.programTotal || 5999,
+          programPrice: packageData?.pricing?.totalProgramPrice || 5999,
           selectedAddon: packageData?.addon || null,
-          addonPrice: packageData?.pricing?.addonTotal || 0,
-          totalAmount: packageData?.pricing?.total || 5999,
+          addonPrice: packageData?.pricing?.addOnPrice || 0,
+          totalAmount: packageData?.pricing?.totalAmount || 5999,
+
+          invoiceLink: sharedInvoiceLink,
 
           // Payment Details
           paymentId: razorpay_payment_id,
@@ -109,13 +116,15 @@ export async function POST(request: NextRequest) {
         data: {
           invoiceNumber: `SRTIFAI/US/2023${Date.now().toString().slice(-6)}`,
           studentId: student.id,
+          invoiceLink: sharedInvoiceLink,
           programName: packageData?.program || "Skill Phase",
-          programPrice: packageData?.pricing?.programTotal || 5999,
+          programPrice: packageData?.pricing?.programPrice || 5999,
+          programDuration: packageData?.months || 3,
           addonName: packageData?.addon || null,
-          addonPrice: packageData?.pricing?.addonTotal || 0,
+          addonPrice: packageData?.pricing?.addOnPrice || 0,
           subtotal: packageData?.pricing?.subtotal || 5999,
-          tax: packageData?.pricing?.gst || 0,
-          total: packageData?.pricing?.total || 5999,
+          gstAmount: packageData?.pricing?.gstAmount || 0,
+          total: packageData?.pricing?.totalAmount || 5999,
           paymentStatus: "completed",
           paymentMethod: "Razorpay",
           paymentDate: new Date(),
@@ -138,9 +147,10 @@ export async function POST(request: NextRequest) {
               programName: packageData?.program || "Skill Phase",
               duration: packageData?.months || 3,
               addonName: packageData?.addon || null,
-              total: packageData?.pricing?.total || 5999,
+              total: packageData?.pricing?.totalAmount || 5999,
               paymentStatus: "Completed",
               paymentDate: new Date(),
+              invoiceLink: sharedInvoiceLink,
             },
           }),
         })
@@ -156,6 +166,7 @@ export async function POST(request: NextRequest) {
         orderId: razorpay_order_id,
         invoiceId: invoice.invoiceNumber,
         studentId: student.id,
+        invoiceLink: sharedInvoiceLink,
       })
     } else {
       console.log("Signature verification failed")

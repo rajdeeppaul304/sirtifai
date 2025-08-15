@@ -124,7 +124,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
 
       // Configure Razorpay options
       const options = {
-        key: "rzp_live_zHfDuyyqkZrhhP",
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_R5adtKeIAinkvB",
         amount: order.amount,
         currency: order.currency,
         name: "Sirtifai",
@@ -163,24 +163,12 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
             const verifyResult = await verifyResponse.json()
 
             if (verifyResult.success) {
-              // Store payment data for invoice
-              localStorage.setItem(
-                "paymentData",
-                JSON.stringify({
-                  ...verifyResult,
-                  studentData: processedStudentData,
-                  packageData: {
-                    program: selectedProgram,
-                    months: selectedMonths,
-                    addon: selectedAddon,
-                    pricing: order.pricing,
-                  },
-                  paymentDate: new Date().toISOString(),
-                }),
-              )
-
-              // Redirect to invoice page
-              router.push("/invoice")
+              if (verifyResult.invoiceLink) {
+                router.push(`/invoice/${verifyResult.invoiceLink}`)
+              } else {
+                // Fallback to old invoice page if no invoiceLink
+                router.push("/invoice")
+              }
 
               if (onSuccess) {
                 onSuccess(verifyResult)

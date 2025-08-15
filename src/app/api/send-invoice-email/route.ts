@@ -1,25 +1,25 @@
-import { type NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { type NextRequest, NextResponse } from "next/server"
+import nodemailer from "nodemailer"
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { studentEmail, studentName, invoiceData, attachmentData } = body;
+    const body = await request.json()
+    const { studentEmail, studentName, invoiceData, attachmentData } = body
 
     // Create transporter using environment variables
     const transporter = nodemailer.createTransport({
       service: "gmail", // or your email service
       auth: {
         // user: process.env.EMAIL_USER,
-        // pass: process.env.EMAIL_PASSWORD, // Gmail app password if using Gmail
-        user: 'rajdeeppaul304@gmail.com',
-        pass: 'gmdb yrtg rybx recz', // Gmail app password if using Gmail
+        // pass: process.env.EMAIL_PASSWORD, // Use app password for Gmail
+                user: "rajdeeppaul304@gmail.com",
+        pass: "gmdb yrtg rybx recz", // consider moving this to an environment variable
 
       },
-    });
+    })
 
     // Email content
-    const mailOptions: nodemailer.SendMailOptions = {
+    const mailOptions = {
       from: process.env.EMAIL_USER,
       to: studentEmail,
       subject: `Invoice ${invoiceData.invoiceNumber} - SIRTIFAI Programme`,
@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
           
           <div style="padding: 20px; background-color: #f9f9f9;">
             <p>Dear ${studentName},</p>
+            
             <p>Thank you for your payment! Your enrollment has been confirmed.</p>
             
             <div style="background-color: white; padding: 15px; border-radius: 5px; margin: 20px 0;">
@@ -40,13 +41,15 @@ export async function POST(request: NextRequest) {
               <p><strong>Program:</strong> ${invoiceData.programName}</p>
               <p><strong>Duration:</strong> ${invoiceData.duration} months</p>
               ${invoiceData.addonName ? `<p><strong>Add-on:</strong> ${invoiceData.addonName}</p>` : ""}
-              <p><strong>Total Amount:</strong> ₹${Number(invoiceData.total).toLocaleString()}</p>
+              <p><strong>Total Amount:</strong> ₹${invoiceData.total.toLocaleString()}</p>
               <p><strong>Payment Status:</strong> ${invoiceData.paymentStatus}</p>
               <p><strong>Payment Date:</strong> ${new Date(invoiceData.paymentDate).toLocaleDateString()}</p>
             </div>
             
             <p>You will receive further instructions about your program shortly.</p>
+            
             <p>If you have any questions, please contact us at support@sirtifai.com</p>
+            
             <p>Best regards,<br>The SIRTIFAI Team</p>
           </div>
           
@@ -55,33 +58,24 @@ export async function POST(request: NextRequest) {
           </div>
         </div>
       `,
-      attachments: attachmentData
-        ? [
-            {
-              filename: attachmentData.filename,
-              content: attachmentData.content, // base64 or Buffer
-              encoding: attachmentData.encoding || "base64",
-            },
-          ]
-        : [],
-    };
+    }
 
     // Send email
-    await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions)
 
     return NextResponse.json({
       success: true,
       message: "Invoice email sent successfully",
-    });
+    })
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error sending email:", error)
     return NextResponse.json(
       {
         success: false,
         error: "Failed to send email",
         details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
-    );
+      { status: 500 },
+    )
   }
 }

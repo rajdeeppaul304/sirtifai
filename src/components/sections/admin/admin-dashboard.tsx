@@ -1,7 +1,19 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Download, Eye, Users, CreditCard, TrendingUp, Calendar, FileText, ImageIcon } from "lucide-react"
+import {
+  Search,
+  Download,
+  Eye,
+  Users,
+  CreditCard,
+  TrendingUp,
+  Calendar,
+  FileText,
+  ImageIcon,
+  ExternalLink,
+} from "lucide-react"
+import { getProgramDetails, getAddonDetails } from "../../../../lib/program-mapping"
 
 interface StudentRecord {
   id: string
@@ -33,6 +45,7 @@ interface StudentRecord {
   paymentStatus: string
   razorpayOrderId?: string
   razorpayPaymentId?: string
+  invoiceLink?: string // Added invoice link field
   createdAt: string
   updatedAt: string
   referralCode?: string
@@ -124,6 +137,12 @@ const AdminDashboard = () => {
     setShowDocumentModal(true)
   }
 
+  const handleViewInvoice = (student: StudentRecord) => {
+    if (student.invoiceLink) {
+      window.open(`/invoice/${student.invoiceLink}`, "_blank")
+    }
+  }
+
   const handleDownloadDocument = (student: StudentRecord) => {
     if (student.idDocumentBase64) {
       const byteCharacters = atob(student.idDocumentBase64)
@@ -168,31 +187,38 @@ const AdminDashboard = () => {
         "WhatsApp",
         "LinkedIn",
         "Referral Code",
+        "Invoice Link", // Added invoice link to export
       ],
-      ...filteredStudents.map((student) => [
-        student.fullName,
-        student.email,
-        student.primaryPhone,
-        student.selectedProgram,
-        `${student.programDuration} months`,
-        student.totalAmount,
-        student.selectedAddon || "None",
-        new Date(student.createdAt).toLocaleDateString(),
-        student.paymentStatus,
-        student.city,
-        student.state,
-        student.highestQualification,
-        student.currentOrganization || "N/A",
-        student.idType,
-        student.idNumber,
-        new Date(student.dateOfBirth).toLocaleDateString(),
-        student.countryOfCitizenship,
-        student.residentialAddress,
-        student.zipCode,
-        student.whatsappNotifications ? "Yes" : "No",
-        student.linkedinProfile || "N/A",
-        student.referralCode || "N/A",
-      ]),
+      ...filteredStudents.map((student) => {
+        const programDetails = getProgramDetails(student.selectedProgram)
+        const addonDetails = student.selectedAddon ? getAddonDetails(student.selectedAddon) : null
+
+        return [
+          student.fullName,
+          student.email,
+          student.primaryPhone,
+          programDetails?.name || student.selectedProgram,
+          `${student.programDuration} months`,
+          student.totalAmount,
+          addonDetails?.name || student.selectedAddon || "None",
+          new Date(student.createdAt).toLocaleDateString(),
+          student.paymentStatus,
+          student.city,
+          student.state,
+          student.highestQualification,
+          student.currentOrganization || "N/A",
+          student.idType,
+          student.idNumber,
+          new Date(student.dateOfBirth).toLocaleDateString(),
+          student.countryOfCitizenship,
+          student.residentialAddress,
+          student.zipCode,
+          student.whatsappNotifications ? "Yes" : "No",
+          student.linkedinProfile || "N/A",
+          student.referralCode || "N/A",
+          student.invoiceLink ? `${window.location.origin}/invoice/${student.invoiceLink}` : "N/A", // Added full invoice URL
+        ]
+      }),
     ]
       .map((row) => row.join(","))
       .join("\n")
@@ -399,60 +425,79 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{student.fullName}</div>
-                        <div className="text-sm text-gray-500">{student.email}</div>
-                        <div className="text-sm text-gray-500">{student.primaryPhone}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{student.selectedProgram}</div>
-                      <div className="text-sm text-gray-500">{student.programDuration} months</div>
-                      {student.selectedAddon && <div className="text-sm text-blue-600">+ {student.selectedAddon}</div>}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      ₹{student.totalAmount.toLocaleString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {new Date(student.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(student.paymentStatus)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex space-x-2">
-                        {student.photoBase64 && (
-                          <button
-                            onClick={() => handleViewPhoto(student)}
-                            className="text-blue-600 hover:text-blue-800"
-                            title="View Photo"
-                          >
-                            <ImageIcon className="w-4 h-4" />
-                          </button>
+                {filteredStudents.map((student) => {
+                  const programDetails = getProgramDetails(student.selectedProgram)
+                  const addonDetails = student.selectedAddon ? getAddonDetails(student.selectedAddon) : null
+
+                  return (
+                    <tr key={student.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{student.fullName}</div>
+                          <div className="text-sm text-gray-500">{student.email}</div>
+                          <div className="text-sm text-gray-500">{student.primaryPhone}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{programDetails?.name || student.selectedProgram}</div>
+                        <div className="text-sm text-gray-500">{student.programDuration} months</div>
+                        {student.selectedAddon && (
+                          <div className="text-sm text-blue-600">+ {addonDetails?.name || student.selectedAddon}</div>
                         )}
-                        {student.idDocumentBase64 && (
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ₹{student.totalAmount.toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {new Date(student.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(student.paymentStatus)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex space-x-2">
+                          {student.photoBase64 && (
+                            <button
+                              onClick={() => handleViewPhoto(student)}
+                              className="text-blue-600 hover:text-blue-800"
+                              title="View Photo"
+                            >
+                              <ImageIcon className="w-4 h-4" />
+                            </button>
+                          )}
+                          {student.idDocumentBase64 && (
+                            <button
+                              onClick={() => handleViewDocument(student)}
+                              className="text-green-600 hover:text-green-800"
+                              title="View ID Document"
+                            >
+                              <FileText className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
                           <button
-                            onClick={() => handleViewDocument(student)}
-                            className="text-green-600 hover:text-green-800"
-                            title="View ID Document"
+                            onClick={() => handleViewDetails(student)}
+                            className="flex items-center space-x-1 text-[#FC4C03] hover:text-[#e63d00]"
                           >
-                            <FileText className="w-4 h-4" />
+                            <Eye className="w-4 h-4" />
+                            <span>View</span>
                           </button>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleViewDetails(student)}
-                        className="flex items-center space-x-1 text-[#FC4C03] hover:text-[#e63d00]"
-                      >
-                        <Eye className="w-4 h-4" />
-                        <span>View</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                          {student.invoiceLink && student.paymentStatus === "completed" && (
+                            <button
+                              onClick={() => handleViewInvoice(student)}
+                              className="flex items-center space-x-1 text-green-600 hover:text-green-800"
+                              title="View Invoice"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                              <span>Invoice</span>
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -643,7 +688,9 @@ const AdminDashboard = () => {
                     <div className="space-y-3">
                       <div>
                         <label className="text-sm font-medium text-gray-600">Selected Program</label>
-                        <p className="text-gray-900">{selectedStudent.selectedProgram}</p>
+                        <p className="text-gray-900">
+                          {getProgramDetails(selectedStudent.selectedProgram)?.name || selectedStudent.selectedProgram}
+                        </p>
                       </div>
                       <div>
                         <label className="text-sm font-medium text-gray-600">Duration</label>
@@ -657,7 +704,9 @@ const AdminDashboard = () => {
                         <>
                           <div>
                             <label className="text-sm font-medium text-gray-600">Add-on</label>
-                            <p className="text-gray-900">{selectedStudent.selectedAddon}</p>
+                            <p className="text-gray-900">
+                              {getAddonDetails(selectedStudent.selectedAddon)?.name || selectedStudent.selectedAddon}
+                            </p>
                           </div>
                           <div>
                             <label className="text-sm font-medium text-gray-600">Add-on Price</label>
@@ -690,6 +739,23 @@ const AdminDashboard = () => {
                         <div>
                           <label className="text-sm font-medium text-gray-600">Razorpay Payment ID</label>
                           <p className="text-gray-900 font-mono text-sm">{selectedStudent.razorpayPaymentId}</p>
+                        </div>
+                      )}
+                      {selectedStudent.invoiceLink && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Invoice Link</label>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <p className="text-gray-900 font-mono text-sm break-all">
+                              {`${window.location.origin}/invoice/${selectedStudent.invoiceLink}`}
+                            </p>
+                            <button
+                              onClick={() => handleViewInvoice(selectedStudent)}
+                              className="flex items-center space-x-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              <span>Open</span>
+                            </button>
+                          </div>
                         </div>
                       )}
                       <div>

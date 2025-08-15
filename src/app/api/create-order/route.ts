@@ -1,10 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
 import Razorpay from "razorpay"
 
-// Initialize Razorpay with your credentials
 const razorpay = new Razorpay({
-  key_id: "rzp_live_zHfDuyyqkZrhhP",
-  key_secret: "0oZnTjgtBeJP9vbY9xMc0O8T",
+  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+  // key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_zHfDuyyqkZrhhP",
+  // key_secret: process.env.RAZORPAY_KEY_SECRET || "0oZnTjgtBeJP9vbY9xMc0O8T",
+
 })
 
 const PROGRAM_PRICES: Record<string, number> = {
@@ -56,9 +58,7 @@ export async function POST(request: NextRequest) {
     })
 
     const options = {
-      amount: 100, // Razorpay expects amount in paise
-
-      // amount: Math.round(totalAmount * 100), 
+      amount: Math.round(totalAmount * 100), // Razorpay expects amount in paise
       currency: "INR",
       receipt,
     }
