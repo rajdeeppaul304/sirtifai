@@ -1,100 +1,224 @@
-import { Check, X } from "lucide-react"
+import { Check, X } from "lucide-react";
+
+interface DesktopRow {
+  feature: string;
+  sirtifai: { note?: string; priceRange?: string } | null;
+  internshala?: { note?: string; limited?: boolean } | null;
+  apna?: { note?: string; limited?: boolean } | null;
+  upgrad?: { note?: string; limited?: boolean } | null;
+  type?: "pricing";
+  upgradText?: string;
+  internshalaText?: string;
+  apnaText?: string;
+  upgradHasX?: boolean;
+}
 
 export const ComparisonTable = () => {
-  const features = [
+  // Desktop detailed rows
+  const desktopRows: DesktopRow[] = [
     {
-      feature: "Real Tech Projects",
-      sirtifai: true,
-      others: false,
-      description: "Verified + Payroll",
+      feature: "Real Paid Projects",
+      sirtifai: { note: "Verified + Payroll" },
+      internshala: null,
+      apna: null,
+      upgrad: { note: "Limited" },
     },
     {
       feature: "Job Guarantee / Lifetime Support",
-      sirtifai: true,
-      others: false,
-      description: "",
+      sirtifai: {},
+      internshala: { note: "" },
+      apna: { note: "" },
+      upgrad: { note: "Limited" },
     },
     {
       feature: "Multi-Industry Tracks (24)",
-      sirtifai: true,
-      others: false,
-      description: "Monthly Salary",
+      sirtifai: {},
+      internshala: null,
+      apna: null,
+      upgrad: { note: "(mostly tech)" },
     },
     {
       feature: "AI-Powered LMS",
-      sirtifai: true,
-      others: false,
-      description: "",
+      sirtifai: {},
+      internshala: null,
+      apna: null,
+      upgrad: null,
     },
     {
       feature: "NSQF Certification",
-      sirtifai: true,
-      others: false,
-      description: "",
+      sirtifai: {},
+      internshala: null,
+      apna: null,
+      upgrad: null,
     },
     {
       feature: "Affordable Entry Plans",
-      sirtifai: true,
-      others: false,
-      description: "₹1,500/month",
+      sirtifai: { priceRange: "₹1.9K-35K/month" },
+      internshala: { note: "Free/Low" },
+      apna: { note: "Free" },
+      upgrad: { note: "₹60K+" },
     },
-  ]
+  ];
+
+  // Mobile simplified rows (Sirtifai vs Others)
+  const mobileRows = [
+    "Real Paid Projects",
+    "Job Guarantee",
+    "24 Industry Tracks",
+    "AI-Powered LMS",
+    "NSQF Certification",
+  ];
 
   return (
-    <section className="bg-gray-50 py-12 md:py-16">
+    <section className="bg-[#F5F7F9] py-14 md:py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How Sirtifai Is Different</h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            See why thousands choose Sirtifai over traditional courses
+        <div className="text-center mb-10 md:mb-14">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-black mb-3">
+            How Sirtifai Is Different
+          </h2>
+          <p className="text-gray-600 text-sm md:text-base">
+            See why we stand out from the competition
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          {/* Table Header */}
-          <div className="bg-orange-500 text-white">
-            <div className="grid grid-cols-4 gap-4 p-6">
-              <div className="font-semibold text-lg">Features</div>
-              <div className="text-center font-semibold text-lg">Sirtifai</div>
-              <div className="text-center font-semibold text-lg">Online Institutes</div>
-              <div className="text-center font-semibold text-lg">Others</div>
-            </div>
+        {/* Desktop / Large Table */}
+        <div className="hidden md:block">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            <table className="w-full border-collapse text-sm md:text-base">
+              <thead>
+                <tr>
+                  <th className="bg-orange-500 text-white text-left px-6 py-4 font-semibold rounded-tl-xl w-[23%]">
+                    Feature
+                  </th>
+                  <th className="bg-[#cf5a2a] text-white px-6 py-4 font-semibold w-[22%]">
+                    Sirtifai (SPP/SER)
+                  </th>
+                  <th className="bg-orange-500 text-white px-6 py-4 font-semibold w-[15%]">
+                    Internshala
+                  </th>
+                  <th className="bg-orange-500 text-white px-6 py-4 font-semibold w-[15%]">
+                    Apna
+                  </th>
+                  <th className="bg-orange-500 text-white px-6 py-4 font-semibold rounded-tr-xl w-[25%]">
+                    upGrad
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {desktopRows.map((row) => (
+                  <tr
+                    key={row.feature}
+                    className="border-t border-gray-200 last:border-b-0"
+                  >
+                    {/* Feature */}
+                    <td className="px-6 py-5 align-middle font-medium text-gray-700">
+                      <div>{row.feature}</div>
+                    </td>
+                    {/* Sirtifai column */}
+                    <td className="px-6 py-5 align-middle bg-green-50">
+                      <div className="flex items-center gap-2 justify-start">
+                        <span className="inline-flex w-6 h-6 rounded-md bg-green-600 items-center justify-center shrink-0">
+                          <Check className="w-4 h-4 text-white" />
+                        </span>
+                        <div className="text-sm leading-none space-y-1">
+                          {row.sirtifai?.note && (
+                            <span className="text-gray-700 font-medium block">
+                              {row.sirtifai.note}
+                            </span>
+                          )}
+                          {row.sirtifai?.priceRange && (
+                            <span className="text-green-600 font-semibold block">
+                              {row.sirtifai.priceRange}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    {/* Internshala */}
+                    <td className="px-6 py-5 align-middle text-center">
+                      <div className="flex items-center justify-center min-h-6">
+                        {row.internshala?.note ? (
+                          <span className="text-gray-600 text-sm leading-none">
+                            {row.internshala.note}
+                          </span>
+                        ) : (
+                          <span className="inline-flex w-6 h-6 rounded-md bg-red-100 items-center justify-center">
+                            <X className="w-4 h-4 text-red-600" />
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    {/* Apna */}
+                    <td className="px-6 py-5 align-middle text-center">
+                      <div className="flex items-center justify-center min-h-6">
+                        {row.apna?.note ? (
+                          <span className="text-gray-600 text-sm leading-none">
+                            {row.apna.note}
+                          </span>
+                        ) : (
+                          <span className="inline-flex w-6 h-6 rounded-md bg-red-100 items-center justify-center">
+                            <X className="w-4 h-4 text-red-600" />
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    {/* upGrad */}
+                    <td className="px-6 py-5 align-middle text-center">
+                      <div className="flex items-center justify-center min-h-6">
+                        {row.upgrad?.note ? (
+                          <span className="text-gray-600 text-sm leading-none">
+                            {row.upgrad.note}
+                          </span>
+                        ) : (
+                          <span className="inline-flex w-6 h-6 rounded-md bg-red-100 items-center justify-center">
+                            <X className="w-4 h-4 text-red-600" />
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {/* subtle shadow bottom rounding fix */}
+            <div className="h-2 bg-gradient-to-b from-transparent to-transparent rounded-b-xl" />
           </div>
+        </div>
 
-          {/* Table Body */}
-          <div className="divide-y divide-gray-200">
-            {features.map((item, index) => (
-              <div key={index} className="grid grid-cols-4 gap-4 p-6 hover:bg-gray-50">
-                <div className="font-medium text-gray-900">
-                  {item.feature}
-                  {item.description && <div className="text-sm text-gray-500 mt-1">{item.description}</div>}
-                </div>
-                <div className="flex justify-center">
-                  {item.sirtifai ? (
-                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                      <Check className="w-4 h-4 text-green-600" />
-                    </div>
-                  ) : (
-                    <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
-                      <X className="w-4 h-4 text-red-600" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex justify-center">
-                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
-                    <X className="w-4 h-4 text-red-600" />
-                  </div>
-                </div>
-                <div className="flex justify-center">
-                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
-                    <X className="w-4 h-4 text-red-600" />
-                  </div>
-                </div>
-              </div>
-            ))}
+        {/* Mobile simplified table */}
+        <div className="md:hidden">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-orange-50">
+                  <th className="text-left px-4 py-4 font-medium text-gray-700">Feature</th>
+                  <th className="px-4 py-4 font-semibold text-blue-600">Sirtifai</th>
+                  <th className="px-4 py-4 font-medium text-gray-700">Others</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mobileRows.map((f) => (
+                  <tr key={f} className="border-t border-gray-200">
+                    <td className="px-4 py-4 text-gray-800 font-medium">
+                      {f}
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className="inline-flex w-6 h-6 rounded-md bg-green-600 items-center justify-center">
+                        <Check className="w-4 h-4 text-white" />
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className="inline-flex w-6 h-6 rounded-md bg-red-100 items-center justify-center">
+                        <X className="w-4 h-4 text-red-600" />
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
