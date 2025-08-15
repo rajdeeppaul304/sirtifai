@@ -1,78 +1,73 @@
-import type React from "react"
+import type React from "react";
+
+interface Testimonial {
+  name: string;
+  subtitle: string;
+  quote: string;
+  plan: string;
+  rating: number; // 0-5
+}
+
+const testimonials: Testimonial[] = [
+  {
+    name: "Neha",
+    subtitle: "Freelancer (Hyderabad)",
+    quote: "I earned ₹28K in my 2nd month from Sirtifai Elite.",
+    plan: "Elite Plan Member",
+    rating: 5,
+  },
+  {
+    name: "Ravi",
+    subtitle: "Tier-2 City Candidate",
+    quote: "From ₹0 to ₹30K/month with legal payroll & EPF.",
+    plan: "Pro Plan Member",
+    rating: 4, // design shows slightly fewer stars
+  },
+];
+
+const Star: React.FC<{ filled?: boolean }> = ({ filled = true }) => (
+  <svg
+    className={`w-4 h-4 ${filled ? "text-yellow-400" : "text-gray-300"}`}
+    viewBox="0 0 20 20"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.122 3.455a1 1 0 00.95.69h3.632c.969 0 1.371 1.24.588 1.81l-2.938 2.136a1 1 0 00-.364 1.118l1.122 3.455c.3.921-.755 1.688-1.54 1.118L10.95 14.347a1 1 0 00-1.175 0L6.479 16.709c-.784.57-1.838-.197-1.539-1.118l1.122-3.455a1 1 0 00-.364-1.118L2.76 8.882c-.783-.57-.38-1.81.588-1.81h3.632a1 1 0 00.95-.69l1.12-3.455z" />
+  </svg>
+);
 
 const TestimonialsSection: React.FC = () => {
   return (
-    <section className="py-16 px-4 bg-gray-50">
-      <style>{`
-        .testimonials-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          text-align: center;
-        }
-        .testimonial-card {
-          background: white;
-          border-radius: 12px;
-          padding: 2rem;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-          border: 1px solid #f1f5f9;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .testimonial-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-        }
-        .testimonial-avatar {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          margin: 0 auto 1rem;
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 24px;
-          font-weight: bold;
-        }
-        .income-highlight {
-          color: #ff6b35;
-          font-weight: 700;
-          font-size: 1.25rem;
-        }
-      `}</style>
-
-      <div className="testimonials-container">
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">Real People. Real Income.</h2>
-        <p className="text-lg text-gray-600 mb-12">
-          See how our students are transforming their lives through freelancing.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="testimonial-card">
-            <div className="testimonial-avatar">R</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Rahul</h3>
-            <p className="text-gray-600 mb-4">
-              "I was just ₹5k in my first month but within 6 months, I'm now earning
-              <span className="income-highlight"> ₹45k+ per month</span> consistently. This program changed my life
-              completely."
-            </p>
-            <div className="text-sm text-gray-500">Software Developer → Freelancer</div>
-          </div>
-
-          <div className="testimonial-card">
-            <div className="testimonial-avatar">P</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Priya</h3>
-            <p className="text-gray-600 mb-4">
-              "As a housewife, I never thought I could earn. Now I make
-              <span className="income-highlight"> ₹30k+ monthly</span> working just 4 hours a day. Perfect work-life
-              balance!"
-            </p>
-            <div className="text-sm text-gray-500">Homemaker → Digital Marketer</div>
-          </div>
+    <section className="py-20 bg-[#FCF8F5]">
+      <div className="max-w-6xl mx-auto px-4">
+        <h2 className="text-center text-4xl md:text-5xl font-bold tracking-tight mb-14">
+          Real People. Real Income.
+        </h2>
+        <div className="grid gap-8 md:grid-cols-2">
+          {testimonials.map((t) => (
+            <div
+              key={t.name}
+              className="bg-white rounded-md border border-gray-200 shadow-lg hover:shadow-lg transition-shadow px-8 py-8 flex flex-col justify-between"
+            >
+              <div className="mb-6">
+                <h3 className="font-semibold text-base md:text-lg text-gray-900 leading-snug">{t.name}</h3>
+                <p className="text-[13px] md:text-sm text-gray-500 mt-1">{t.subtitle}</p>
+                <p className="text-sm md:text-[15px] text-gray-800 mt-6 leading-relaxed">“{t.quote}”</p>
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <div className="flex">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} filled={i < t.rating} />
+                  ))}
+                </div>
+                <span className="text-[11px] md:text-xs font-medium text-gray-600">{t.plan}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default TestimonialsSection
+export default TestimonialsSection;
