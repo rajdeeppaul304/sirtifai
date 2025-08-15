@@ -1,24 +1,27 @@
-"use client"
+'use client';
+
 import { CERTIFICATIONS } from '../../constants/data';
 
 export const CertificationsSection = () => {
   return (
-    <section className="w-full bg-[#FEF7F1] py-20">
+    <section className="w-full bg-[#FEF7F1] py-10 sm:py-20">
       <div className="max-w-7xl mx-auto px-6">
         {/* Top Section - Certifications */}
         <div className="mb-20">
           {/* Header - Left Aligned */}
           <div className="text-left mb-12">
-            <p className="text-orange-500 text-sm font-semibold uppercase tracking-wider mb-3">
+            <p className="text-orange-500 text-sm font-semibold  uppercase tracking-wider mb-3">
               RECOGNISED CERTIFICATION BLOCK
             </p>
-            <h2 className="text-4xl font-bold text-gray-900">
+            <h2 className="sm:text-4xl text-3xl font-semibold sm:font-bold text-gray-900">
               Certifications That Employers Trust
             </h2>
           </div>
 
           {/* Certification Logos - Centered */}
-          <div className="flex flex-wrap justify-center items-center gap-40">
+ 
+          <div className="flex flex-wrap justify-between items-center gap-5 sm:gap-16">
+ 
             {CERTIFICATIONS.map((cert) => (
               <div key={cert.id} className="flex flex-col items-center">
                 <div className="w-40 h-24 flex items-center justify-center mb-4">
@@ -26,7 +29,7 @@ export const CertificationsSection = () => {
                   <img 
                     src={cert.logo} 
                     alt={cert.name}
-                    className="h-20 w-auto object-contain"
+                    className="sm:h-20 h-17 w-auto object-contain"
                     onError={(e) => {
                       // Fallback to text if image fails to load
                       const target = e.target as HTMLImageElement;
