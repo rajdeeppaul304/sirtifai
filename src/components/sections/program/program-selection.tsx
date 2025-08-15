@@ -25,14 +25,14 @@ const programOptions: ProgramOption[] = [
   {
     id: "skill",
     name: "Skill Phase",
-    price: 5999,
+    price: 72, // This will be converted to USD for display
     category: "skill",
     features: ["Core skill development", "Learning Materials", "Foundational Knowledge", "Core Tracking progress"],
   },
   {
     id: "practice-basic",
     name: "Practice Phase - Basic",
-    price: 5999,
+    price: 72,
     category: "practice",
     tier: "basic",
     features: ["Basic project assignments", "Peer collaboration", "Weekly mentorship", "Portfolio development"],
@@ -40,7 +40,7 @@ const programOptions: ProgramOption[] = [
   {
     id: "practice-pro",
     name: "Practice Phase - Pro",
-    price: 9999,
+    price: 120,
     category: "practice",
     tier: "pro",
     features: [
@@ -54,7 +54,7 @@ const programOptions: ProgramOption[] = [
   {
     id: "practice-elite",
     name: "Practice Phase - Elite",
-    price: 19999,
+    price: 220,
     category: "practice",
     tier: "elite",
     features: [
@@ -69,7 +69,7 @@ const programOptions: ProgramOption[] = [
   {
     id: "progress-basic",
     name: "Progress Phase - Basic",
-    price: 19999,
+    price: 220,
     category: "progress",
     tier: "basic",
     features: ["Job placement assistance", "Resume optimization", "Interview preparation", "Basic career support"],
@@ -77,7 +77,7 @@ const programOptions: ProgramOption[] = [
   {
     id: "progress-pro",
     name: "Progress Phase - Pro",
-    price: 29999,
+    price: 300,
     category: "progress",
     tier: "pro",
     features: [
@@ -91,7 +91,7 @@ const programOptions: ProgramOption[] = [
   {
     id: "progress-elite",
     name: "Progress Phase - Elite",
-    price: 59999,
+    price: 700,
     category: "progress",
     tier: "elite",
     features: [
@@ -109,21 +109,21 @@ const addOns: AddOn[] = [
   {
     id: "payroll",
     name: "Payroll Services (via Deel™)",
-    price: 500,
+    price: 6, // This is now USD amount
     description: "Get paid like a professional with verified income, payslips, and statutory benefits.",
     features: ["Global Freelance Payroll", "International structure for US/UK/Canada clients", "Tax-ready payout"],
   },
   {
     id: "ca",
     name: "CA Services",
-    price: 3999,
+    price: 48, // Converted to USD
     description: "Chartered Accountant Support - Manage your income, taxes, and filings with expert CA assistance.",
     features: ["GST filing", "Advance tax planning", "Bank reconciliation", "Income mapping", "Professional invoicing"],
   },
   {
     id: "legal",
     name: "Legal Services",
-    price: 5977,
+    price: 60, // Converted to USD
     description: "Contract & IP Support - Stay legally protected while working with clients—India or abroad.",
     features: [
       "5 legal drafts",
@@ -152,6 +152,11 @@ const ProgramSelection = () => {
   const [calculatedPricing, setCalculatedPricing] = useState<any>(null)
   const [showAddOnSuggestion, setShowAddOnSuggestion] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Removed USD conversion logic since prices are now in USD
+  const convertToUSD = (usdPrice: number) => {
+    return usdPrice // Prices are already in USD
+  }
 
   const selectedProgramData = programOptions.find((p) => p.id === selectedProgram)
   const selectedAddOnData = addOns.find((a) => a.id === selectedAddOn)
@@ -200,9 +205,9 @@ const ProgramSelection = () => {
   }
 
   const handleDurationChange = (programId: string, duration: number) => {
-    setProgramDurations(prev => ({
+    setProgramDurations((prev) => ({
       ...prev,
-      [programId]: duration
+      [programId]: duration,
     }))
     setOpenDropdown("")
   }
@@ -273,7 +278,10 @@ const ProgramSelection = () => {
                   />
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900">Rs.5999 per month</span>
+                      <span className="font-medium text-gray-900">
+                        {/* ${convertToUSD(5999)} per month  */}
+                        $72 per month
+                      </span>
                       <div className="relative">
                         <button
                           onClick={() => handleDropdownToggle("skill")}
@@ -328,7 +336,7 @@ const ProgramSelection = () => {
                           <div>
                             <span className="font-medium text-gray-900 capitalize">{program.tier}: </span>
                             <span className="text-[#FC4C03] font-semibold">
-                              ₹{program.price.toLocaleString()} per month
+                              ${convertToUSD(program.price).toLocaleString()} per month {/* Display in USD */}
                             </span>
                           </div>
                           <div className="relative">
@@ -386,7 +394,7 @@ const ProgramSelection = () => {
                           <div>
                             <span className="font-medium text-gray-900 capitalize">{program.tier}: </span>
                             <span className="text-[#FC4C03] font-semibold">
-                              ₹{program.price.toLocaleString()} per month
+                              ${convertToUSD(program.price).toLocaleString()} per month {/* Display in USD */}
                             </span>
                           </div>
                           <div className="relative">
@@ -438,7 +446,7 @@ const ProgramSelection = () => {
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-semibold text-gray-900">{addOn.name}</h4>
-                          <span className="text-[#FC4C03] font-bold">₹{addOn.price.toLocaleString()}</span>
+                          <span className="text-[#FC4C03] font-bold">${addOn.price.toLocaleString()}</span>
                         </div>
                         <p className="text-sm text-gray-600 mb-3">{addOn.description}</p>
                         <div className="space-y-1">
@@ -500,31 +508,41 @@ const ProgramSelection = () => {
                     <span className="text-gray-700">
                       {selectedProgramData?.name} ({currentDuration} months):
                     </span>
-                    <span className="font-semibold">₹{calculatedPricing.programTotal.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      ${convertToUSD(calculatedPricing.programTotal).toLocaleString()} {/* Display in USD */}
+                    </span>
                   </div>
 
                   {selectedAddOnData && (
                     <div className="flex justify-between items-center">
                       <span className="text-gray-700">Add on ({selectedAddOnData.name}):</span>
-                      <span className="font-semibold">₹{calculatedPricing.addonTotal.toLocaleString()}</span>
+                      <span className="font-semibold">
+                        ${convertToUSD(calculatedPricing.addonTotal).toLocaleString()} {/* Display in USD */}
+                      </span>
                     </div>
                   )}
 
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Subtotal:</span>
-                    <span className="font-semibold">₹{calculatedPricing.subtotal.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      ${convertToUSD(calculatedPricing.subtotal).toLocaleString()} {/* Display in USD */}
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-700">GST (18%):</span>
-                    <span className="font-semibold">₹{calculatedPricing.gst.toLocaleString()}</span>
+                    <span className="text-gray-700">Tax (18%):</span>
+                    <span className="font-semibold">
+                      ${convertToUSD(calculatedPricing.gst).toLocaleString()} {/* Display in USD */}
+                    </span>
                   </div>
 
                   <hr className="my-4" />
 
                   <div className="flex justify-between items-center text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-[#FC4C03]">₹{calculatedPricing.total.toLocaleString()}</span>
+                    <span className="text-[#FC4C03]">
+                      ${convertToUSD(calculatedPricing.total).toLocaleString()} {/* Display in USD */}
+                    </span>
                   </div>
                 </div>
               )}

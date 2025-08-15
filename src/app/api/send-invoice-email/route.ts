@@ -4,23 +4,20 @@ import nodemailer from "nodemailer"
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { studentEmail, studentName, invoiceData, attachmentData } = body
+    const { studentEmail, studentName, invoiceLink, invoiceData } = body
 
-    // Create transporter using environment variables
     const transporter = nodemailer.createTransport({
-      service: "gmail", // or your email service
+      service: "gmail",
       auth: {
-        // user: process.env.EMAIL_USER,
-        // pass: process.env.EMAIL_PASSWORD, // Use app password for Gmail
-                user: "rajdeeppaul304@gmail.com",
-        pass: "gmdb yrtg rybx recz", // consider moving this to an environment variable
-
+        user: process.env.EMAIL_USER || "rajdeeppaul304@gmail.com",
+        pass: process.env.EMAIL_PASSWORD || "gmdb yrtg rybx recz",
       },
     })
 
-    // Email content
+    const invoiceUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/invoice/${invoiceLink}`
+
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_USER || "rajdeeppaul304@gmail.com",
       to: studentEmail,
       subject: `Invoice ${invoiceData.invoiceNumber} - SIRTIFAI Programme`,
       html: `
@@ -46,6 +43,12 @@ export async function POST(request: NextRequest) {
               <p><strong>Payment Date:</strong> ${new Date(invoiceData.paymentDate).toLocaleDateString()}</p>
             </div>
             
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${invoiceUrl}" style="background-color: #FC4C03; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Your Invoice</a>
+            </div>
+            
+            <p>You can access your invoice anytime using the link above.</p>
+            
             <p>You will receive further instructions about your program shortly.</p>
             
             <p>If you have any questions, please contact us at support@sirtifai.com</p>
@@ -60,7 +63,6 @@ export async function POST(request: NextRequest) {
       `,
     }
 
-    // Send email
     await transporter.sendMail(mailOptions)
 
     return NextResponse.json({

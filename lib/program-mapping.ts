@@ -23,7 +23,7 @@ export const PROGRAM_MAPPING: Record<string, ProgramDetails> = {
     name: "Skill Phase",
     description: "Core Skill Development",
     features: ["Learning Materials", "Foundational Knowledge", "Core Tracking Progress"],
-    price: 5999,
+    price: 72,
     category: "skill",
   },
   "practice-basic": {
@@ -31,7 +31,7 @@ export const PROGRAM_MAPPING: Record<string, ProgramDetails> = {
     name: "Practice Phase - Basic",
     description: "Basic Practice Training",
     features: ["Hands-on Projects", "Basic Skill Development", "Progress Tracking", "Community Support"],
-    price: 5999,
+    price: 72,
     category: "practice",
   },
   "practice-pro": {
@@ -45,7 +45,7 @@ export const PROGRAM_MAPPING: Record<string, ProgramDetails> = {
       "Industry Connections",
       "Portfolio Building",
     ],
-    price: 9999,
+    price: 120,
     category: "practice",
   },
   "practice-elite": {
@@ -60,7 +60,7 @@ export const PROGRAM_MAPPING: Record<string, ProgramDetails> = {
       "Job Placement Support",
       "Advanced Certifications",
     ],
-    price: 19999,
+    price: 220,
     category: "practice",
   },
   "progress-basic": {
@@ -68,7 +68,7 @@ export const PROGRAM_MAPPING: Record<string, ProgramDetails> = {
     name: "Progress Phase - Basic",
     description: "Basic Progress Tracking",
     features: ["Progress Monitoring", "Basic Analytics", "Monthly Reports", "Goal Setting"],
-    price: 19999,
+    price: 220,
     category: "progress",
   },
   "progress-pro": {
@@ -82,7 +82,7 @@ export const PROGRAM_MAPPING: Record<string, ProgramDetails> = {
       "Performance Insights",
       "Career Guidance",
     ],
-    price: 29999,
+    price: 300,
     category: "progress",
   },
   "progress-elite": {
@@ -98,7 +98,7 @@ export const PROGRAM_MAPPING: Record<string, ProgramDetails> = {
       "Premium Analytics",
       "Personal Career Coach",
     ],
-    price: 59999,
+    price: 700,
     category: "progress",
   },
 }

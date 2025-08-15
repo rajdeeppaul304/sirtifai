@@ -1,11 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "../../../../lib/prisma"
 import crypto from "crypto"
+import { getINRToUSDRate } from "../../../lib/currency"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, studentData, packageData } = body
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = body
 
     console.log("Payment verification data:", {
       razorpay_order_id,
@@ -28,148 +29,124 @@ export async function POST(request: NextRequest) {
     if (isSignatureValid) {
       console.log("Signature verification successful")
 
-      let idDocumentBinary = null
-      let photoBinary = null
-
-      if (studentData?.idDocumentBase64) {
-        try {
-          const base64Data = studentData.idDocumentBase64.split(",")[1] // Remove data:mime;base64, prefix
-          idDocumentBinary = Buffer.from(base64Data, "base64")
-        } catch (error) {
-          console.error("Error processing ID document:", error)
-        }
-      }
-
-      if (studentData?.studentPhotoBase64) {
-        try {
-          const base64Data = studentData.studentPhotoBase64.split(",")[1] // Remove data:mime;base64, prefix
-          photoBinary = Buffer.from(base64Data, "base64")
-        } catch (error) {
-          console.error("Error processing student photo:", error)
-        }
-      }
-
-      const sharedInvoiceLink = crypto.randomUUID()
-
-      const student = await prisma.student.create({
-        data: {
-          // Personal Details - use actual data from form
-          fullName: studentData?.fullName || "John Doe",
-          dateOfBirth: studentData?.dateOfBirth
-            ? new Date(
-                `${studentData.dateOfBirth.year}-${studentData.dateOfBirth.month.padStart(2, "0")}-${studentData.dateOfBirth.day.padStart(2, "0")}`,
-              )
-            : new Date("1995-01-01"),
-          countryOfCitizenship: studentData?.countryOfCitizenship || "India",
-          referralCode: studentData?.referralCode || null,
-
-          // Contact Information - use actual data
-          primaryPhone: studentData?.primaryPhone || "+91 9876543210",
-          secondaryPhone: studentData?.secondaryPhone || null,
-          whatsappNotifications: studentData?.whatsappNotifications || false,
-          email: studentData?.email || "dummy@example.com",
-          residentialAddress: studentData?.residentialAddress || "123 Dummy Street",
-          city: studentData?.city || "Mumbai",
-          state: studentData?.state || "Maharashtra",
-          zipCode: studentData?.zipCode || "400001",
-          country: studentData?.country || "India",
-
-          // Education - use actual data
-          highestQualification: studentData?.highestQualification || "Graduate",
-          specialization: studentData?.specialization || "Computer Science",
-
-          // Professional - use actual data
-          currentProfession: studentData?.currentProfession || "Software Developer",
-          currentOrganization: studentData?.currentOrganization || "Tech Company",
-          linkedinProfile: studentData?.linkedinProfile || null,
-
-          // Identity Document - use actual data and binary files
-          idType: studentData?.idType || "Passport",
-          idNumber: studentData?.idNumber || "A1234567",
-          idDocument: idDocumentBinary, // Store binary data
-          photo: photoBinary, // Store binary data
-
-          // Program Selection - use correct pricing data
-          selectedProgram: packageData?.program || "Skill Phase",
-          programDuration: packageData?.months || 3,
-          programPrice: packageData?.pricing?.totalProgramPrice || 5999,
-          selectedAddon: packageData?.addon || null,
-          addonPrice: packageData?.pricing?.addOnPrice || 0,
-          totalAmount: packageData?.pricing?.totalAmount || 5999,
-
-          invoiceLink: sharedInvoiceLink,
-
-          // Payment Details
-          paymentId: razorpay_payment_id,
-          paymentStatus: "completed",
+      const existingStudent = await prisma.student.findFirst({
+        where: {
           razorpayOrderId: razorpay_order_id,
-          razorpayPaymentId: razorpay_payment_id,
-          razorpaySignature: razorpay_signature,
-
-          // Confirmation - use actual data
-          agreedToTerms: studentData?.agreedToTerms || true,
-          certifiedInformation: studentData?.certifiedInformation || true,
+          paymentStatus: "PROCESSING",
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       })
 
-      const invoice = await prisma.invoice.create({
-        data: {
-          invoiceNumber: `SRTIFAI/US/2023${Date.now().toString().slice(-6)}`,
-          studentId: student.id,
-          invoiceLink: sharedInvoiceLink,
-          programName: packageData?.program || "Skill Phase",
-          programPrice: packageData?.pricing?.programPrice || 5999,
-          programDuration: packageData?.months || 3,
-          addonName: packageData?.addon || null,
-          addonPrice: packageData?.pricing?.addOnPrice || 0,
-          subtotal: packageData?.pricing?.subtotal || 5999,
-          gstAmount: packageData?.pricing?.gstAmount || 0,
-          total: packageData?.pricing?.totalAmount || 5999,
-          paymentStatus: "completed",
-          paymentMethod: "Razorpay",
-          paymentDate: new Date(),
-        },
-      })
+      if (existingStudent) {
+        const timestamp = Date.now()
+        const randomString = crypto.randomBytes(8).toString("hex")
+        const uniqueInvoiceLink = `${timestamp}-${randomString}`
 
-      console.log("Student and invoice created successfully")
+        const inrToUsdRate = await getINRToUSDRate()
+        const usdToInrRate = 1 / inrToUsdRate
 
-      try {
-        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/send-invoice-email`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const programPriceINR = Math.round((existingStudent.programPrice || 72) * usdToInrRate)
+        const addonPriceINR = existingStudent.addonPrice ? Math.round(existingStudent.addonPrice * usdToInrRate) : 0
+
+        const calculatedSubtotalINR = programPriceINR + addonPriceINR
+        const calculatedGstAmountINR = Math.round(calculatedSubtotalINR * 0.18)
+        const calculatedTotalINR = calculatedSubtotalINR + calculatedGstAmountINR
+
+        // Update existing record
+        const updatedStudent = await prisma.student.update({
+          where: { id: existingStudent.id },
+          data: {
+            paymentId: razorpay_payment_id,
+            paymentStatus: "COMPLETED",
+            razorpayPaymentId: razorpay_payment_id,
+            razorpaySignature: razorpay_signature,
+            invoiceLink: uniqueInvoiceLink, // Set unique invoice link
+            exchangeRateUsed: usdToInrRate,
+            totalAmountINR: calculatedTotalINR,
           },
-          body: JSON.stringify({
-            studentEmail: studentData?.email || "dummy@example.com",
-            studentName: studentData?.fullName || "John Doe",
-            invoiceData: {
-              invoiceNumber: invoice.invoiceNumber,
-              programName: packageData?.program || "Skill Phase",
-              duration: packageData?.months || 3,
-              addonName: packageData?.addon || null,
-              total: packageData?.pricing?.totalAmount || 5999,
-              paymentStatus: "Completed",
-              paymentDate: new Date(),
-              invoiceLink: sharedInvoiceLink,
-            },
-          }),
         })
-        console.log("Invoice email sent successfully")
-      } catch (emailError) {
-        console.error("Error sending invoice email:", emailError)
-        // Don't fail the payment if email fails
-      }
 
-      return NextResponse.json({
-        success: true,
-        paymentId: razorpay_payment_id,
-        orderId: razorpay_order_id,
-        invoiceId: invoice.invoiceNumber,
-        studentId: student.id,
-        invoiceLink: sharedInvoiceLink,
-      })
+        const now = new Date()
+        const dateStr = now.toISOString().slice(0, 10).replace(/-/g, "")
+        const timeStr = now.getTime().toString().slice(-6) // Last 6 digits of timestamp
+        const invoiceNumber = `SRT/INT/${dateStr}/${timeStr}`
+
+        const invoice = await prisma.invoice.create({
+          data: {
+            invoiceNumber,
+            studentId: updatedStudent.id,
+            invoiceLink: uniqueInvoiceLink,
+            programName: existingStudent.selectedProgram || "Skill Phase",
+            programPrice: existingStudent.programPrice || 72,
+            programDuration: existingStudent.programDuration || 1,
+            addonName: existingStudent.selectedAddon || null,
+            addonPrice: existingStudent.addonPrice || 0,
+            subtotal: existingStudent.programPrice || 72 - (existingStudent.programPrice || 72) * 0.18, // USD subtotal
+            gstAmount: (existingStudent.programPrice || 72) * 0.18, // USD GST
+            total: existingStudent.programPrice || 72, // USD total
+            exchangeRateUsed: usdToInrRate,
+            programPriceINR: programPriceINR,
+            addonPriceINR: addonPriceINR,
+            subtotalINR: calculatedSubtotalINR,
+            gstAmountINR: calculatedGstAmountINR,
+            totalINR: calculatedTotalINR,
+            paymentStatus: "completed",
+            paymentMethod: "Razorpay",
+            paymentDate: new Date(),
+          },
+        })
+
+        console.log("Student record updated to COMPLETED and invoice created with stored INR amounts")
+
+        // Send invoice email
+        try {
+          await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/send-invoice-email`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              studentEmail: existingStudent.email,
+              studentName: existingStudent.fullName,
+              invoiceLink: uniqueInvoiceLink, // Use the unique invoice link
+              invoiceData: {
+                invoiceNumber: invoice.invoiceNumber,
+                programName: existingStudent.selectedProgram || "Skill Phase",
+                duration: existingStudent.programDuration || 1,
+                addonName: existingStudent.selectedAddon || null,
+                total: calculatedTotalINR, // Send corrected INR amount for email
+                paymentStatus: "Completed",
+                paymentDate: new Date(),
+              },
+            }),
+          })
+          console.log("Invoice email sent successfully")
+        } catch (emailError) {
+          console.error("Error sending invoice email:", emailError)
+        }
+
+        return NextResponse.json({
+          success: true,
+          paymentId: razorpay_payment_id,
+          orderId: razorpay_order_id,
+          invoiceId: invoice.invoiceNumber,
+          studentId: updatedStudent.id,
+          invoiceLink: uniqueInvoiceLink, // Return the unique invoice link
+        })
+      } else {
+        console.log("No PROCESSING student record found for order:", razorpay_order_id)
+        return NextResponse.json(
+          {
+            success: false,
+            error: "No pending application found for this payment",
+          },
+          { status: 404 },
+        )
+      }
     } else {
-      console.log("Signature verification failed")
+      console.log("Signature verification failed - payment remains PROCESSING")
       return NextResponse.json(
         {
           success: false,
