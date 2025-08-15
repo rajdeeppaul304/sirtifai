@@ -6,6 +6,7 @@ import { Download, Mail, Printer } from "lucide-react"
 const InvoiceComponent = () => {
   const [paymentData, setPaymentData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [emailLoading, setEmailLoading] = useState(false)
 
   useEffect(() => {
     // Load payment data from localStorage
@@ -25,9 +26,44 @@ const InvoiceComponent = () => {
     alert("PDF download functionality would be implemented here")
   }
 
-  const handleEmailInvoice = () => {
-    // In a real application, you would send the invoice via email
-    alert("Email functionality would be implemented here")
+  const handleEmailInvoice = async () => {
+    if (!paymentData) return
+
+    setEmailLoading(true)
+    try {
+      const response = await fetch("/api/send-invoice-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentEmail: paymentData.studentData?.email || paymentData.studentData?.studentEmail,
+          studentName: paymentData.studentData?.fullName || paymentData.studentData?.studentName,
+          invoiceData: {
+            invoiceNumber: `SRTIFAI/${new Date().getFullYear()}/${paymentData.invoiceId || "INV001"}`,
+            programName: paymentData.packageData?.program || "Program",
+            duration: paymentData.packageData?.months || 3,
+            addonName: paymentData.packageData?.addon || null,
+            total: paymentData.packageData?.pricing?.total || paymentData.packageData?.total || 0,
+            paymentStatus: "Completed",
+            paymentDate: paymentData.paymentDate || new Date(),
+          },
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        alert("Invoice email sent successfully!")
+      } else {
+        alert("Failed to send email. Please try again.")
+      }
+    } catch (error) {
+      console.error("Error sending email:", error)
+      alert("Error sending email. Please try again.")
+    } finally {
+      setEmailLoading(false)
+    }
   }
 
   if (loading) {
@@ -76,10 +112,13 @@ const InvoiceComponent = () => {
           </button>
           <button
             onClick={handleEmailInvoice}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            disabled={emailLoading}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              emailLoading ? "bg-gray-400 text-gray-600 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
           >
             <Mail className="w-4 h-4" />
-            <span>Email Invoice</span>
+            <span>{emailLoading ? "Sending..." : "Email Invoice"}</span>
           </button>
         </div>
 
@@ -136,24 +175,25 @@ const InvoiceComponent = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p>
-                    <strong>Name:</strong> {paymentData.studentData?.studentName}
+                    <strong>Name:</strong> {paymentData.studentData?.fullName || paymentData.studentData?.studentName}
                   </p>
                   <p>
-                    <strong>Email:</strong> {paymentData.studentData?.studentEmail}
+                    <strong>Email:</strong> {paymentData.studentData?.email || paymentData.studentData?.studentEmail}
                   </p>
                   <p>
-                    <strong>Phone:</strong> {paymentData.studentData?.studentPhone}
+                    <strong>Phone:</strong>{" "}
+                    {paymentData.studentData?.primaryPhone || paymentData.studentData?.studentPhone}
                   </p>
                 </div>
                 <div>
                   <p>
                     <strong>Address:</strong>
                   </p>
-                  <p>{paymentData.studentData?.address}</p>
+                  <p>{paymentData.studentData?.residentialAddress || paymentData.studentData?.address}</p>
                   <p>
                     {paymentData.studentData?.city}, {paymentData.studentData?.state}
                   </p>
-                  <p>{paymentData.studentData?.pincode}</p>
+                  <p>{paymentData.studentData?.zipCode || paymentData.studentData?.pincode}</p>
                 </div>
               </div>
             </div>
@@ -177,41 +217,37 @@ const InvoiceComponent = () => {
                   <td className="border border-gray-300 px-4 py-2">1</td>
                   <td className="border border-gray-300 px-4 py-2">
                     <div>
-                      <p className="font-semibold">{paymentData.packageData?.program?.name}</p>
+                      <p className="font-semibold">{paymentData.packageData?.program || "Program"}</p>
                       <p className="text-sm text-gray-600">
                         Training Program, Career Projects, AI Tools, PDF Initial Certification, Career Mapping
                       </p>
                     </div>
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">One-time</td>
+                  <td className="border border-gray-300 px-4 py-2">{paymentData.packageData?.months || 3} months</td>
                   <td className="border border-gray-300 px-4 py-2">1</td>
                   <td className="border border-gray-300 px-4 py-2 text-right">
-                    {((paymentData.packageData?.program?.price || 0) / 84).toFixed(2)}
+                    {((paymentData.packageData?.pricing?.total || paymentData.packageData?.total || 0) / 84).toFixed(2)}
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-right">
-                    {((paymentData.packageData?.program?.price || 0) / 84).toFixed(2)}
+                    {((paymentData.packageData?.pricing?.total || paymentData.packageData?.total || 0) / 84).toFixed(2)}
                   </td>
                 </tr>
 
-                {paymentData.packageData?.addOns?.filter(Boolean).map((addOn: any, index: number) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">{index + 2}</td>
+                {paymentData.packageData?.addon && (
+                  <tr>
+                    <td className="border border-gray-300 px-4 py-2">2</td>
                     <td className="border border-gray-300 px-4 py-2">
                       <div>
-                        <p className="font-semibold">{addOn.name}</p>
+                        <p className="font-semibold">{paymentData.packageData.addon}</p>
                         <p className="text-sm text-gray-600">Additional service support</p>
                       </div>
                     </td>
                     <td className="border border-gray-300 px-4 py-2">One-time</td>
                     <td className="border border-gray-300 px-4 py-2">1</td>
-                    <td className="border border-gray-300 px-4 py-2 text-right">
-                      {((addOn.price || 0) / 84).toFixed(2)}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-right">
-                      {((addOn.price || 0) / 84).toFixed(2)}
-                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-right">Included</td>
+                    <td className="border border-gray-300 px-4 py-2 text-right">Included</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -246,7 +282,12 @@ const InvoiceComponent = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Subtotal:</span>
-                    <span>$ {((paymentData.packageData?.total || 0) / 84).toFixed(2)}</span>
+                    <span>
+                      ${" "}
+                      {((paymentData.packageData?.pricing?.total || paymentData.packageData?.total || 0) / 84).toFixed(
+                        2,
+                      )}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Sales Tax (if applicable):</span>
@@ -255,10 +296,17 @@ const InvoiceComponent = () => {
                   <hr />
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total Invoice Value (USD):</span>
-                    <span>$ {((paymentData.packageData?.total || 0) / 84).toFixed(2)}</span>
+                    <span>
+                      ${" "}
+                      {((paymentData.packageData?.pricing?.total || paymentData.packageData?.total || 0) / 84).toFixed(
+                        2,
+                      )}
+                    </span>
                   </div>
                   <p className="text-xs text-gray-600 mt-2">
-                    In Words: US Dollars {Math.floor((paymentData.packageData?.total || 0) / 84)} Only
+                    In Words: US Dollars{" "}
+                    {Math.floor((paymentData.packageData?.pricing?.total || paymentData.packageData?.total || 0) / 84)}{" "}
+                    Only
                   </p>
                 </div>
               </div>

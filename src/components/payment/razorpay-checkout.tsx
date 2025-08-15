@@ -11,6 +11,7 @@ interface RazorpayCheckoutProps {
   studentData: any
   onSuccess?: (paymentData: any) => void
   onError?: (error: any) => void
+  validateForm?: () => boolean // Added form validation prop
 }
 
 declare global {
@@ -26,6 +27,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
   studentData,
   onSuccess,
   onError,
+  validateForm, // Added validateForm prop
 }) => {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -40,10 +42,56 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
     })
   }
 
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = (error) => reject(error)
+    })
+  }
+
   const handlePayment = async () => {
+    if (validateForm && !validateForm()) {
+      alert("Please fill in all required fields before proceeding with payment.")
+      return
+    }
+
     setLoading(true)
 
     try {
+      const processedStudentData = { ...studentData }
+
+      if (studentData.idDocument) {
+        try {
+          processedStudentData.idDocumentBase64 = await fileToBase64(studentData.idDocument)
+          processedStudentData.idDocumentName = studentData.idDocument.name
+          processedStudentData.idDocumentType = studentData.idDocument.type
+        } catch (error) {
+          console.error("Error processing ID document:", error)
+          alert("Error processing ID document. Please try again.")
+          setLoading(false)
+          return
+        }
+      }
+
+      if (studentData.studentPhoto) {
+        try {
+          processedStudentData.studentPhotoBase64 = await fileToBase64(studentData.studentPhoto)
+          processedStudentData.studentPhotoName = studentData.studentPhoto.name
+          processedStudentData.studentPhotoType = studentData.studentPhoto.type
+        } catch (error) {
+          console.error("Error processing student photo:", error)
+          alert("Error processing student photo. Please try again.")
+          setLoading(false)
+          return
+        }
+      }
+
+      // Remove File objects as they can't be serialized
+      delete processedStudentData.idDocument
+      delete processedStudentData.studentPhoto
+
       // Load Razorpay script
       const scriptLoaded = await loadRazorpayScript()
       if (!scriptLoaded) {
@@ -83,9 +131,9 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         description: `Payment for ${selectedProgram}`,
         order_id: order.id,
         prefill: {
-          name: studentData.fullName || studentData.studentName,
-          email: studentData.email || studentData.studentEmail,
-          contact: studentData.primaryPhone || studentData.studentPhone,
+          name: processedStudentData.fullName || processedStudentData.studentName,
+          email: processedStudentData.email || processedStudentData.studentEmail,
+          contact: processedStudentData.primaryPhone || processedStudentData.studentPhone,
         },
         theme: {
           color: "#FC4C03",
@@ -102,7 +150,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                studentData,
+                studentData: processedStudentData, // Send processed data with base64 files
                 packageData: {
                   program: selectedProgram,
                   months: selectedMonths,
@@ -120,7 +168,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
                 "paymentData",
                 JSON.stringify({
                   ...verifyResult,
-                  studentData,
+                  studentData: processedStudentData,
                   packageData: {
                     program: selectedProgram,
                     months: selectedMonths,

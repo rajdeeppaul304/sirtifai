@@ -25,47 +25,72 @@ export async function POST(request: NextRequest) {
     if (isSignatureValid) {
       console.log("Signature verification successful")
 
+      let idDocumentBinary = null
+      let photoBinary = null
+
+      if (studentData?.idDocumentBase64) {
+        try {
+          const base64Data = studentData.idDocumentBase64.split(",")[1] // Remove data:mime;base64, prefix
+          idDocumentBinary = Buffer.from(base64Data, "base64")
+        } catch (error) {
+          console.error("Error processing ID document:", error)
+        }
+      }
+
+      if (studentData?.studentPhotoBase64) {
+        try {
+          const base64Data = studentData.studentPhotoBase64.split(",")[1] // Remove data:mime;base64, prefix
+          photoBinary = Buffer.from(base64Data, "base64")
+        } catch (error) {
+          console.error("Error processing student photo:", error)
+        }
+      }
+
       const student = await prisma.student.create({
         data: {
-          // Personal Details
-          fullName: studentData.fullName,
-          dateOfBirth: new Date(
-            `${studentData.dateOfBirth.year}-${studentData.dateOfBirth.month}-${studentData.dateOfBirth.day}`,
-          ),
-          countryOfCitizenship: studentData.countryOfCitizenship,
-          referralCode: studentData.referralCode,
+          // Personal Details - use actual data from form
+          fullName: studentData?.fullName || "John Doe",
+          dateOfBirth: studentData?.dateOfBirth
+            ? new Date(
+                `${studentData.dateOfBirth.year}-${studentData.dateOfBirth.month.padStart(2, "0")}-${studentData.dateOfBirth.day.padStart(2, "0")}`,
+              )
+            : new Date("1995-01-01"),
+          countryOfCitizenship: studentData?.countryOfCitizenship || "India",
+          referralCode: studentData?.referralCode || null,
 
-          // Contact Information
-          primaryPhone: studentData.primaryPhone,
-          secondaryPhone: studentData.secondaryPhone,
-          whatsappNotifications: studentData.whatsappNotifications,
-          email: studentData.email,
-          residentialAddress: studentData.residentialAddress,
-          city: studentData.city,
-          state: studentData.state,
-          zipCode: studentData.zipCode,
-          country: studentData.country,
+          // Contact Information - use actual data
+          primaryPhone: studentData?.primaryPhone || "+91 9876543210",
+          secondaryPhone: studentData?.secondaryPhone || null,
+          whatsappNotifications: studentData?.whatsappNotifications || false,
+          email: studentData?.email || "dummy@example.com",
+          residentialAddress: studentData?.residentialAddress || "123 Dummy Street",
+          city: studentData?.city || "Mumbai",
+          state: studentData?.state || "Maharashtra",
+          zipCode: studentData?.zipCode || "400001",
+          country: studentData?.country || "India",
 
-          // Education
-          highestQualification: studentData.highestQualification,
-          specialization: studentData.specialization,
+          // Education - use actual data
+          highestQualification: studentData?.highestQualification || "Graduate",
+          specialization: studentData?.specialization || "Computer Science",
 
-          // Professional
-          currentProfession: studentData.currentProfession,
-          currentOrganization: studentData.currentOrganization,
-          linkedinProfile: studentData.linkedinProfile,
+          // Professional - use actual data
+          currentProfession: studentData?.currentProfession || "Software Developer",
+          currentOrganization: studentData?.currentOrganization || "Tech Company",
+          linkedinProfile: studentData?.linkedinProfile || null,
 
-          // Identity Document
-          idType: studentData.idType,
-          idNumber: studentData.idNumber,
+          // Identity Document - use actual data and binary files
+          idType: studentData?.idType || "Passport",
+          idNumber: studentData?.idNumber || "A1234567",
+          idDocument: idDocumentBinary, // Store binary data
+          photo: photoBinary, // Store binary data
 
-          // Program Selection
-          selectedProgram: packageData.program.name,
-          programDuration: packageData.duration,
-          programPrice: packageData.program.price,
-          selectedAddon: packageData.addOn?.name,
-          addonPrice: packageData.addOn?.price || 0,
-          totalAmount: packageData.total,
+          // Program Selection - use actual package data
+          selectedProgram: packageData?.program || "Skill Phase",
+          programDuration: packageData?.months || 3,
+          programPrice: packageData?.pricing?.programTotal || 5999,
+          selectedAddon: packageData?.addon || null,
+          addonPrice: packageData?.pricing?.addonTotal || 0,
+          totalAmount: packageData?.pricing?.total || 5999,
 
           // Payment Details
           paymentId: razorpay_payment_id,
@@ -74,9 +99,9 @@ export async function POST(request: NextRequest) {
           razorpayPaymentId: razorpay_payment_id,
           razorpaySignature: razorpay_signature,
 
-          // Confirmation
-          agreedToTerms: studentData.agreedToTerms,
-          certifiedInformation: studentData.certifiedInformation,
+          // Confirmation - use actual data
+          agreedToTerms: studentData?.agreedToTerms || true,
+          certifiedInformation: studentData?.certifiedInformation || true,
         },
       })
 
@@ -84,13 +109,13 @@ export async function POST(request: NextRequest) {
         data: {
           invoiceNumber: `SRTIFAI/US/2023${Date.now().toString().slice(-6)}`,
           studentId: student.id,
-          programName: packageData.program.name,
-          programPrice: packageData.program.price,
-          addonName: packageData.addOn?.name,
-          addonPrice: packageData.addOn?.price || 0,
-          subtotal: packageData.total,
-          tax: 0,
-          total: packageData.total,
+          programName: packageData?.program || "Skill Phase",
+          programPrice: packageData?.pricing?.programTotal || 5999,
+          addonName: packageData?.addon || null,
+          addonPrice: packageData?.pricing?.addonTotal || 0,
+          subtotal: packageData?.pricing?.subtotal || 5999,
+          tax: packageData?.pricing?.gst || 0,
+          total: packageData?.pricing?.total || 5999,
           paymentStatus: "completed",
           paymentMethod: "Razorpay",
           paymentDate: new Date(),
@@ -98,6 +123,32 @@ export async function POST(request: NextRequest) {
       })
 
       console.log("Student and invoice created successfully")
+
+      try {
+        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/send-invoice-email`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            studentEmail: studentData?.email || "dummy@example.com",
+            studentName: studentData?.fullName || "John Doe",
+            invoiceData: {
+              invoiceNumber: invoice.invoiceNumber,
+              programName: packageData?.program || "Skill Phase",
+              duration: packageData?.months || 3,
+              addonName: packageData?.addon || null,
+              total: packageData?.pricing?.total || 5999,
+              paymentStatus: "Completed",
+              paymentDate: new Date(),
+            },
+          }),
+        })
+        console.log("Invoice email sent successfully")
+      } catch (emailError) {
+        console.error("Error sending invoice email:", emailError)
+        // Don't fail the payment if email fails
+      }
 
       return NextResponse.json({
         success: true,

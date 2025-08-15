@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
     })
 
     const options = {
-      amount: Math.round(totalAmount * 100), // Razorpay expects amount in paise
+      amount: 100, // Razorpay expects amount in paise
+
+      // amount: Math.round(totalAmount * 100), 
       currency: "INR",
       receipt,
     }

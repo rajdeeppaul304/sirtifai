@@ -44,6 +44,8 @@ model Student {
   // Identity Document
   idType        String
   idNumber      String
+  idDocument    Bytes?  // Store ID document PDF as binary
+  photo         Bytes?  // Store passport-size photo as binary
   idDocumentUrl String?
   photoUrl      String?
 
