@@ -38,7 +38,7 @@ export const PartnersSection = () => {
   ];
   return (
     <section className="relative w-full bg-white py-20 pb-8">
-      <div className=" sm:max-w-7xl mx-auto px-6">
+      <div className="sm:max-w-7xl mx-auto px-6">
         <div className="flex flex-col justify-center items-center gap-20">
           {/* Left Side - Large Wireframe Globe */}
           <div className="flex-1 flex justify-center">
@@ -57,23 +57,12 @@ export const PartnersSection = () => {
             </div>
 
             {/* ACADEMIC PARTNERS */}
-            <div className="text-left">
+            <div className="w-full">
               <h3 className="text-2xl text-center font-bold text-gray-900 uppercase tracking-wider mb-12">
                 ACADEMIC PARTNERS
               </h3>
-              <div className="w-full overflow-hidden bg-white border-b border-gray-100">
-                <div className="relative py-8">
-                {/* flex animate-marquee space-x-32 */}
-                  <div className="">
-                    <Morquee logos={accLogos} />
-
-                    
-                  </div>
-         
-                </div>
-              </div>
+              <Morquee logos={accLogos} />
             </div>
-
           </div>
         </div>
       </div>
