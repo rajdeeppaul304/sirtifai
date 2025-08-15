@@ -40,8 +40,8 @@ export async function GET(request: NextRequest) {
     const transformedStudents = students.map((student) => ({
       ...student,
       // Convert binary data to base64 for frontend display
-      photoBase64: student.photo ? Buffer.from(student.photo).toString("base64") : null,
-      idDocumentBase64: student.idDocument ? Buffer.from(student.idDocument).toString("base64") : null,
+       photoBase64: (student as any).photo ? Buffer.from((student as any).photo).toString("base64") : null,
+      idDocumentBase64: (student as any).idDocument ? Buffer.from((student as any).idDocument).toString("base64") : null,
       // Format dates for display
       dateOfBirth: student.dateOfBirth.toISOString().split("T")[0],
       createdAt: student.createdAt.toISOString(),
