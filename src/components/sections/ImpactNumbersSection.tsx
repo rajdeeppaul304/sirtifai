@@ -45,7 +45,7 @@ export const ImpactNumbersSection = () => {
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">
+          <h2 className="sm:text-4xl text-3xl font-semibold sm:font-bold text-white mb-4">
             Our Impact in Numbers
           </h2>
         </div>

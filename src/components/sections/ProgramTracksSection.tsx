@@ -12,7 +12,7 @@ export const ProgramTracksSection = () => {
           <h2 className="text-orange-500 font-open-sans text-lg font-semibold uppercase tracking-wider mb-3">
             Program Tracks Overview
           </h2>
-          <h3 className="text-5xl font-bold text-gray-900 font-open-sans">
+          <h3 className="text-[10vw] leading-tight sm:leading-none sm:text-5xl font-semibold sm:font-bold text-gray-900 font-open-sans">
             Choose Your Path To <span className="text-orange-500">Success</span>
           </h3>
         </div>
@@ -26,11 +26,12 @@ export const ProgramTracksSection = () => {
             return (
               <div
                 key={track.id}
-                className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-8 transition-all duration-300 hover:scale-105 ${
-                  isHighlighted
-                    ? 'bg-orange-500 text-white shadow-2xl'
-                    : 'bg-white text-gray-900 shadow-lg hover:shadow-xl'
-                }`}
+className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-8 transition-all duration-300 hover:scale-105 ${
+  isHighlighted
+    ? 'order-1 md:order-none bg-orange-500 text-white shadow-2xl'
+    : 'order-2 md:order-none bg-white text-gray-900 shadow-lg hover:shadow-xl'
+}`}
+
               >
                 {/* Icon */}
                 
@@ -61,14 +62,18 @@ export const ProgramTracksSection = () => {
                     : 'bg-[#F9FAFB]'
                 }`}>
                 {/* Features */}
-                <div className="space-y-4 mb-8">
+                <div className="sm:space-y-4 mb-8">
                   {track.features?.map((feature, index) => (
                     <div key={index} className="flex items-start gap-3">
                       <BsCheckCircleFill 
                         size={20} 
-                        className="text-green-500 mt-0.5 flex-shrink-0" 
+                        className={`flex-shrink-0 mt-0.5 text-orange-500`} 
                       />
-                      <span className="text-gray-600">{feature}</span>
+                      <span className={`text-sm ${
+                        isHighlighted ? '' : 'text-gray-700'
+                      }`}>
+                        {feature}
+                      </span>
                     </div>
                   ))}
                 </div>
