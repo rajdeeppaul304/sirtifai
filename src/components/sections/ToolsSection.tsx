@@ -46,14 +46,14 @@ const TOOL_CARDS: ToolCard[] = [
 
 export const ToolsSection = () => {
   return (
-    <section className="w-full bg-[#FEF7F1] py-20">
+    <section className="w-full bg-[#FEF7F1] py-20 px-3 sm:px-0">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 mb-4">
             Tools To Accelerate Your Journey
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-sm sm:text-xl  text-gray-600 max-w-3xl mx-auto">
             Free resources to help you identify your strengths, plan your career path, and showcase your skills.
           </p>
         </div>
@@ -83,7 +83,7 @@ export const ToolsSection = () => {
                 </div>
 
                 {/* Call-to-Action Button */}
-                <button className="w-full bg-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors">
+                <button className="w-full bg-orange-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-orange-600 transition-colors">
                   {tool.buttonText}
                 </button>
               </div>

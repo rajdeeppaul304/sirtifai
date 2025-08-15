@@ -20,7 +20,7 @@ const JOURNEY_STEPS: JourneyStep[] = [
       'Industry-relevant curriculum',
       'Practical assignments'
     ],
-    color: 'bg-blue-500'
+    color: 'bg-[#607294]'
   },
   {
     id: 'practice',
@@ -68,10 +68,12 @@ export const LearningJourneySection = () => {
           <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-blue-200 transform -translate-x-1/2"></div>
           
           <div className="space-y-16">
-            {JOURNEY_STEPS.map((step) => (
+            {JOURNEY_STEPS.map((step, index) => (
               <div key={step.id} className="relative flex flex-col items-center">
                 {/* Step Number Circle */}
-                <div className={`w-16 h-16 ${step.color} rounded-full flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg z-10 relative`}>
+                <div
+                  className={`w-16 h-16 ${step.color} rounded-full flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg z-10 relative`}
+                >
                   {step.number}
                 </div>
                 
@@ -81,7 +83,15 @@ export const LearningJourneySection = () => {
                 {/* Step Card */}
                 <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 w-full max-w-2xl">
                   {/* Step Title */}
-                  <h3 className={`text-2xl font-bold mb-4 text-left ${step.title === 'PRACTICE' ? 'text-orange-500' : 'text-gray-900'}`}>
+                  <h3
+                    className={`text-2xl font-bold mb-4 text-left ${
+                      index === 0
+                        ? 'text-[#607294]' // first - grey
+                        : index === 1
+                          ? 'text-orange-500' // second - orange
+                          : 'text-green-500' // last - green
+                    }`}
+                  >
                     {step.title}
                   </h3>
                   
@@ -94,7 +104,10 @@ export const LearningJourneySection = () => {
                   <div className="space-y-3">
                     {step.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center">
-                        <CheckCircle2 size={20} className="text-green-500 mr-3 flex-shrink-0" />
+                        <CheckCircle2
+                          size={20}
+                          className="text-green-500 mr-3 flex-shrink-0"
+                        />
                         <span className="text-gray-700">{feature}</span>
                       </div>
                     ))}
