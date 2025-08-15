@@ -1,14 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import Razorpay from "razorpay"
 
-const razorpay = new Razorpay({
-  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-  // key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_zHfDuyyqkZrhhP",
-  // key_secret: process.env.RAZORPAY_KEY_SECRET || "0oZnTjgtBeJP9vbY9xMc0O8T",
-
-})
-
 const PROGRAM_PRICES: Record<string, number> = {
   skill: 5999,
   "practice-basic": 5999,
@@ -29,6 +21,12 @@ const GST_RATE = 0.18 // 18% GST
 
 export async function POST(request: NextRequest) {
   try {
+    // Initialize Razorpay inside the function to avoid build-time execution
+    const razorpay = new Razorpay({
+      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
+      key_secret: process.env.RAZORPAY_KEY_SECRET || "",
+    })
+
     const body = await request.json()
     const { selectedProgram, selectedMonths, selectedAddon, receipt } = body
 

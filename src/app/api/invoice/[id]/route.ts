@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const invoiceId = params.id
 
     // Find invoice by invoiceLink UUID
-    const invoice = await prisma.invoice.findUnique({
+    const invoice = await prisma.invoice.findFirst({
       where: {
         invoiceLink: invoiceId,
       },
