@@ -71,7 +71,7 @@ export const HeroSection = () => {
   {/* Mobile Image */}
   <img
     className="block sm:hidden object-contain max-w-[100%]"
-    src="/assets/girl-book-home-img.png"
+    src="/assets/home/girl-book-home-img.png"
     alt="Woman Holding Book"
   />
 
