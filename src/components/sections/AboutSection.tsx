@@ -9,10 +9,10 @@ export const AboutSection = () => {
           <div className="w-full flex flex-col justify-start items-start gap-20">
             {/* Header */}
             <div className='w-full flex flex-col justify-start items-start gap-3 '>
-              <p className="text-orange-500 text-sm font-semibold font-open-sans uppercase tracking-wider mb-3">About Sirtifai</p>
-              <h2 className="text-6xl text-gray-900 font-open-sans">Sirtifai Is India's Only</h2>
-              <h3 className="text-6xl  text-gray-900 leading-tight font-open-sans tracking-tight">
-               <span className='font-bold '>Skill • Practice • Progress</span> Platform
+              <p className="text-orange-500 text-lg font-semibold font-open-sans uppercase tracking-wider -mb-6 sm:mb-2">About Sirtifai</p>
+              <h2 className="text-4xl leading-22 sm:leading-none sm:text-6xl text-gray-900  font-open-sans">Sirtifai Is India's Only</h2>
+              <h3 className="text-4xl sm:text-6xl  text-gray-900  sm:leading-tight font-open-sans -mt-8 sm:mt-0 tracking-tight">
+               <span className='skillpracpro  font-semibold sm:font-bold'>Skill • Practice • Progress</span> Platform
               </h3>
             </div>
 
@@ -23,23 +23,29 @@ export const AboutSection = () => {
             </button> */}
 
             <div className='w-full flex flex-col lg:flex-row justify-between items-center gap-20'>
-              <div className='w-full lg:w-[50%] flex justify-center items-center gap-10'>
-                <div className='relative'>
+              <div className='  w-full lg:w-[50%] flex justify-center items-center gap-10'>
+                <div className='relative hidden sm:block'>
                   <img className='relative' src="/assets/male.png" alt="Male" />
                   <img className='absolute bottom-[-30%] left-4' src="/assets/male-name.png" alt="Male" />
                 </div>
                 
-                <div className='flex flex-col gap-4'>
+                <div className='flex flex-col gap-4 hidden sm:block'>
                   <button className="px-8 py-4 bg-[#FC4C03] text-white rounded-full text-lg font-semibold flex items-center gap-3 hover:bg-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
                     <img src="/assets/home/transform-icon.svg" alt="Share Icon" />
                     Transform Your Career With Sirtifai
                   </button> 
 
-                  <div className='relative'>
+                  <div className='relative hidden sm:block'>
                     <img className='relative' src="/assets/female.png" alt="Female" />
                     <img className='absolute bottom-[-50%] right-[-40%]' src="/assets/female-name.png" alt="Female Name" />
                   </div>
                 </div>
+
+                {/* home-page-2-png.png */}
+              <div className='sm:hidden block w-55 absolute top-[335vw] right-[10vw]'>
+                <img src="src/assets/home-page-2-png.png" alt="" />
+              </div>
+                {/*  */}
               </div>
                 <div className="w-full lg:w-[50%] flex flex-col gap-[62px]">
                   {STEPS.map((step) => {

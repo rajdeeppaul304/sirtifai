@@ -34,14 +34,14 @@ const TESTIMONIALS: Testimonial[] = [
 
 export const TestimonialsSection = () => {
   return (
-    <section className="w-full bg-white py-20">
+    <section className="w-full bg-white py-20 px-4 sm:px-0">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="w-[230px] sm:w-[610px] h-9 text-center text-nowrap mx-auto justify-center text-zinc-900 text-2xl sm:text-6xl  font-semibold font-['Open Sans'] capitalize leading-[80px] mb-18">
             What Our Learners Say
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-sm sm:text-lg text-gray-600 max-w-3xl mx-auto">
             Hear from those who have transformed their careers through our programs.
           </p>
         </div>
@@ -66,7 +66,7 @@ export const TestimonialsSection = () => {
               </blockquote>
 
               {/* Star Rating and Program */}
-              <div className="flex items-center justify-between">
+              <div className="flex sm:flex-row flex-col gap-1 items-start sm:items-center justify-between">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, index) => (
                     <Star
@@ -86,7 +86,7 @@ export const TestimonialsSection = () => {
 
         {/* Navigation and Call to Action */}
         <div className="flex justify-end items-center gap-4">
-          <button className="px-8 py-3 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg">
+          <button className="px-8 py-3 bg-orange-500 text-white rounded-full font-semibold hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg">
             View More
           </button>
           <button className="w-12 h-12 bg-gray-800 text-white rounded-full flex items-center justify-center hover:bg-gray-900 transition-colors shadow-md">
