@@ -1,6 +1,6 @@
 export const ContactFeaturesBanner = () => {
   return (
-    <section className="w-full bg-[#FFF8F3] py-8">
+  <section className="hidden md:block w-full bg-[#FFF8F3] py-8">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-center divide-y md:divide-y-0 md:divide-x divide-orange-500">
           
