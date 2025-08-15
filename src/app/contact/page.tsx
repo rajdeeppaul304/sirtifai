@@ -1,10 +1,12 @@
-import { Header } from "../../components/layout/Header"
-import { Footer } from "../../components/layout/Footer"
-import { ContactSupportSection } from "../../components/sections/ContactSupportSection"
-import { ContactFeaturesBanner } from "../../components/sections/ContactFeaturesBanner"
-import { EmailSupportSection } from "../../components/sections/EmailSupportSection"
-import { PhoneSupportSection } from "../../components/sections/PhoneSupportSection"
-import { SupportServicesSection } from "../../components/sections/SupportServicesSection"
+import { Header } from "../../components/layout/Header";
+import { Footer } from "../../components/layout/Footer";
+import { ContactSupportSection } from "../../components/sections/ContactSupportSection";
+import { ContactFormSection } from "../../components/sections/ContactFormSection";
+import { ContactFeaturesBanner } from "../../components/sections/ContactFeaturesBanner";
+import { EmailSupportSection } from "../../components/sections/EmailSupportSection";
+import { PhoneSupportSection } from "../../components/sections/PhoneSupportSection";
+import { SupportServicesSection } from "../../components/sections/SupportServicesSection";
+import { ContactCTASection } from "../../components/sections/ContactCTASection";
 
 export default function ContactPage() {
   return (
@@ -15,7 +17,9 @@ export default function ContactPage() {
       <EmailSupportSection />
       <PhoneSupportSection />
       <SupportServicesSection />
+      <ContactFormSection />
+      <ContactCTASection />
       <Footer />
     </div>
-  )
+  );
 }
