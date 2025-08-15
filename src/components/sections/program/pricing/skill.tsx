@@ -1,6 +1,6 @@
 "use client"
 
-import { CheckIcon } from "@/components/icons" // Assuming CheckIcon is imported from a different file
+// import { CheckIcon } from "../../../../components/icons" // Assuming CheckIcon is imported from a different file
 import { PRICING, formatPrice } from "../../../../lib/pricing"
 
 const SkillPhase = () => {
@@ -57,22 +57,22 @@ const SkillPhase = () => {
         {/* Features */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center w-full justify-between my-4 gap-3 sm:gap-0">
           <div className="flex items-center gap-2">
-            <CheckIcon />
+            {/* <CheckIcon /> */}
             <p className="text-sm font-inter sm:text-base font-normal">Core skill development</p>
           </div>
           <div className="flex items-center gap-2">
-            <CheckIcon />
+            {/* <CheckIcon /> */}
             <p className="text-sm font-inter sm:text-base font-normal">Learning Materials</p>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center w-full justify-between gap-3 sm:gap-0">
           <div className="flex items-center gap-2">
-            <CheckIcon />
+            {/* <CheckIcon /> */}
             <p className="text-sm font-inter sm:text-base font-normal">Foundational Knowledge</p>
           </div>
           <div className="flex items-center gap-2">
-            <CheckIcon />
+            {/* <CheckIcon /> */}
             <p className="text-sm font-inter sm:text-base font-normal">Core Tracking progress</p>
           </div>
         </div>

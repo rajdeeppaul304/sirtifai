@@ -39,7 +39,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         gstAmountINR: invoice.gstAmountINR,
         total: invoice.total,
         totalINR: invoice.totalINR,
-        exchangeRate: invoice.exchangeRate,
+        exchangeRate: invoice.exchangeRateUsed,
         paymentStatus: invoice.paymentStatus,
         paymentMethod: invoice.paymentMethod,
         paymentDate: invoice.paymentDate,

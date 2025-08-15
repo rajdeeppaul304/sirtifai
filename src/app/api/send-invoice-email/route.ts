@@ -9,15 +9,15 @@ export async function POST(request: NextRequest) {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER || "rajdeeppaul304@gmail.com",
-        pass: process.env.EMAIL_PASSWORD || "gmdb yrtg rybx recz",
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD ,
       },
     })
 
     const invoiceUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/invoice/${invoiceLink}`
 
     const mailOptions = {
-      from: process.env.EMAIL_USER || "rajdeeppaul304@gmail.com",
+      from: process.env.EMAIL_USER,
       to: studentEmail,
       subject: `Invoice ${invoiceData.invoiceNumber} - SIRTIFAI Programme`,
       html: `
