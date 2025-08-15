@@ -87,6 +87,8 @@ const ApplicationForm = () => {
     certifiedInformation: false,
   })
 
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
   useEffect(() => {
     // Load selected package from localStorage
     const packageData = localStorage.getItem("selectedPackage")
@@ -111,11 +113,57 @@ const ApplicationForm = () => {
         [field]: value,
       }))
     }
+
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }))
+    }
   }
 
   const handleFileUpload = (field: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null
     handleInputChange(field, file)
+  }
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    // Personal Details
+    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required"
+    if (!formData.dateOfBirth.day) newErrors["dateOfBirth.day"] = "Day is required"
+    if (!formData.dateOfBirth.month) newErrors["dateOfBirth.month"] = "Month is required"
+    if (!formData.dateOfBirth.year) newErrors["dateOfBirth.year"] = "Year is required"
+    if (!formData.countryOfCitizenship.trim()) newErrors.countryOfCitizenship = "Country of citizenship is required"
+
+    // Contact Information
+    if (!formData.primaryPhone.trim()) newErrors.primaryPhone = "Primary phone is required"
+    if (!formData.email.trim()) newErrors.email = "Email is required"
+    if (!formData.residentialAddress.trim()) newErrors.residentialAddress = "Address is required"
+    if (!formData.city.trim()) newErrors.city = "City is required"
+    if (!formData.state.trim()) newErrors.state = "State is required"
+    if (!formData.zipCode.trim()) newErrors.zipCode = "Zip code is required"
+    if (!formData.country.trim()) newErrors.country = "Country is required"
+
+    // Education
+    if (!formData.highestQualification.trim()) newErrors.highestQualification = "Highest qualification is required"
+    if (!formData.specialization.trim()) newErrors.specialization = "Specialization is required"
+
+    // Professional
+    if (!formData.currentProfession.trim()) newErrors.currentProfession = "Current profession is required"
+    if (!formData.currentOrganization.trim()) newErrors.currentOrganization = "Current organization is required"
+    if (!formData.linkedinProfile.trim()) newErrors.linkedinProfile = "LinkedIn profile is required"
+
+    // Identity Document
+    if (!formData.idType.trim()) newErrors.idType = "ID type is required"
+    if (!formData.idNumber.trim()) newErrors.idNumber = "ID number is required"
+    if (!formData.idDocument) newErrors.idDocument = "ID document is required"
+    if (!formData.studentPhoto) newErrors.studentPhoto = "Student photo is required"
+
+    // Confirmation
+    if (!formData.agreedToTerms) newErrors.agreedToTerms = "You must agree to terms"
+    if (!formData.certifiedInformation) newErrors.certifiedInformation = "You must certify information"
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const handlePaymentSuccess = (paymentData: any) => {
@@ -147,52 +195,92 @@ const ApplicationForm = () => {
             <h2 className="text-lg font-semibold text-[#FC4C03] mb-4">Personal Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Legal Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Legal Name <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.fullName}
                   onChange={(e) => handleInputChange("fullName", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.fullName ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="Daniel Brown"
                 />
+                {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Date of Birth <span className="text-red-500">*</span>
+                </label>
                 <div className="grid grid-cols-3 gap-2">
-                  <input
-                    type="text"
-                    placeholder="DD"
-                    value={formData.dateOfBirth.day}
-                    onChange={(e) => handleInputChange("dateOfBirth.day", e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
-                  />
-                  <input
-                    type="text"
-                    placeholder="MM"
-                    value={formData.dateOfBirth.month}
-                    onChange={(e) => handleInputChange("dateOfBirth.month", e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
-                  />
-                  <input
-                    type="text"
-                    placeholder="YYYY"
-                    value={formData.dateOfBirth.year}
-                    onChange={(e) => handleInputChange("dateOfBirth.year", e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
-                  />
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="DD"
+                      required
+                      value={formData.dateOfBirth.day}
+                      onChange={(e) => handleInputChange("dateOfBirth.day", e.target.value)}
+                      className={`px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                        errors["dateOfBirth.day"] ? "border-red-500" : "border-gray-300"
+                      }`}
+                    />
+                    {errors["dateOfBirth.day"] && (
+                      <p className="text-red-500 text-xs mt-1">{errors["dateOfBirth.day"]}</p>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="MM"
+                      required
+                      value={formData.dateOfBirth.month}
+                      onChange={(e) => handleInputChange("dateOfBirth.month", e.target.value)}
+                      className={`px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                        errors["dateOfBirth.month"] ? "border-red-500" : "border-gray-300"
+                      }`}
+                    />
+                    {errors["dateOfBirth.month"] && (
+                      <p className="text-red-500 text-xs mt-1">{errors["dateOfBirth.month"]}</p>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="YYYY"
+                      required
+                      value={formData.dateOfBirth.year}
+                      onChange={(e) => handleInputChange("dateOfBirth.year", e.target.value)}
+                      className={`px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                        errors["dateOfBirth.year"] ? "border-red-500" : "border-gray-300"
+                      }`}
+                    />
+                    {errors["dateOfBirth.year"] && (
+                      <p className="text-red-500 text-xs mt-1">{errors["dateOfBirth.year"]}</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Country of Citizenship</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Country of Citizenship <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.countryOfCitizenship}
                   onChange={(e) => handleInputChange("countryOfCitizenship", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
-                  placeholder="danielbrown@gmail.com"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.countryOfCitizenship ? "border-red-500" : "border-gray-300"
+                  }`}
+                  placeholder="India"
                 />
+                {errors.countryOfCitizenship && (
+                  <p className="text-red-500 text-xs mt-1">{errors.countryOfCitizenship}</p>
+                )}
               </div>
 
               <div className="md:col-span-2">
@@ -213,14 +301,20 @@ const ApplicationForm = () => {
             <h2 className="text-lg font-semibold text-[#FC4C03] mb-4">Contact Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Primary Phone Number</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Primary Phone Number <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="tel"
+                  required
                   value={formData.primaryPhone}
                   onChange={(e) => handleInputChange("primaryPhone", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.primaryPhone ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="+91 7888089345"
                 />
+                {errors.primaryPhone && <p className="text-red-500 text-xs mt-1">{errors.primaryPhone}</p>}
               </div>
 
               <div>
@@ -263,67 +357,103 @@ const ApplicationForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email (Primary)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email (Primary) <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
+                  required
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="danielbrown@gmail.com"
                 />
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Residential Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Residential Address <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.residentialAddress}
                   onChange={(e) => handleInputChange("residentialAddress", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.residentialAddress ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="985/bkmini cAsomgs"
                 />
+                {errors.residentialAddress && <p className="text-red-500 text-xs mt-1">{errors.residentialAddress}</p>}
               </div>
 
               <div className="grid grid-cols-4 gap-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    City <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="text"
+                    required
                     value={formData.city}
                     onChange={(e) => handleInputChange("city", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                      errors.city ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Indore"
                   />
+                  {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    State <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="text"
+                    required
                     value={formData.state}
                     onChange={(e) => handleInputChange("state", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                      errors.state ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Mp"
                   />
+                  {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Zip</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Zip <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="text"
+                    required
                     value={formData.zipCode}
                     onChange={(e) => handleInputChange("zipCode", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                      errors.zipCode ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="453000"
                   />
+                  {errors.zipCode && <p className="text-red-500 text-xs mt-1">{errors.zipCode}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Country <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="text"
+                    required
                     value={formData.country}
                     onChange={(e) => handleInputChange("country", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                      errors.country ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="India"
                   />
+                  {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country}</p>}
                 </div>
               </div>
             </div>
@@ -334,25 +464,39 @@ const ApplicationForm = () => {
             <h2 className="text-lg font-semibold text-[#FC4C03] mb-4">Education</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Highest Qualification</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Highest Qualification <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.highestQualification}
                   onChange={(e) => handleInputChange("highestQualification", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.highestQualification ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="graduate"
                 />
+                {errors.highestQualification && (
+                  <p className="text-red-500 text-xs mt-1">{errors.highestQualification}</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Specialization <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.specialization}
                   onChange={(e) => handleInputChange("specialization", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.specialization ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="Science"
                 />
+                {errors.specialization && <p className="text-red-500 text-xs mt-1">{errors.specialization}</p>}
               </div>
             </div>
           </section>
@@ -362,36 +506,56 @@ const ApplicationForm = () => {
             <h2 className="text-lg font-semibold text-[#FC4C03] mb-4">Professional</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Current Profession</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Current Profession <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.currentProfession}
                   onChange={(e) => handleInputChange("currentProfession", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.currentProfession ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="graduate"
                 />
+                {errors.currentProfession && <p className="text-red-500 text-xs mt-1">{errors.currentProfession}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Current Organisation</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Current Organisation <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.currentOrganization}
                   onChange={(e) => handleInputChange("currentOrganization", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.currentOrganization ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="Science"
                 />
+                {errors.currentOrganization && (
+                  <p className="text-red-500 text-xs mt-1">{errors.currentOrganization}</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  LinkedIn <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="url"
+                  required
                   value={formData.linkedinProfile}
                   onChange={(e) => handleInputChange("linkedinProfile", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
-                  placeholder="Science"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.linkedinProfile ? "border-red-500" : "border-gray-300"
+                  }`}
+                  placeholder="https://linkedin.com/in/yourprofile"
                 />
+                {errors.linkedinProfile && <p className="text-red-500 text-xs mt-1">{errors.linkedinProfile}</p>}
               </div>
             </div>
           </section>
@@ -446,30 +610,48 @@ const ApplicationForm = () => {
             <h2 className="text-lg font-semibold text-[#FC4C03] mb-4">Identity Document</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">ID Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  ID Type <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.idType}
                   onChange={(e) => handleInputChange("idType", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.idType ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="E.g. Passport"
                 />
+                {errors.idType && <p className="text-red-500 text-xs mt-1">{errors.idType}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">ID Number</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  ID Number <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   value={formData.idNumber}
                   onChange={(e) => handleInputChange("idNumber", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent ${
+                    errors.idNumber ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="777-888-444-11"
                 />
+                {errors.idNumber && <p className="text-red-500 text-xs mt-1">{errors.idNumber}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Upload ID Document</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#FC4C03] transition-colors">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Upload ID Document <span className="text-red-500">*</span>
+                </label>
+                <div
+                  className={`border-2 border-dashed rounded-lg p-4 text-center hover:border-[#FC4C03] transition-colors ${
+                    errors.idDocument ? "border-red-500" : "border-gray-300"
+                  }`}
+                >
                   <Upload className="mx-auto h-8 w-8 text-gray-400" />
                   <div className="mt-2">
                     <label className="cursor-pointer">
@@ -478,6 +660,7 @@ const ApplicationForm = () => {
                         type="file"
                         className="hidden"
                         accept=".pdf,.doc,.docx"
+                        required
                         onChange={(e) => handleFileUpload("idDocument", e)}
                       />
                     </label>
@@ -486,19 +669,27 @@ const ApplicationForm = () => {
                     <p className="mt-1 text-xs text-green-600">File selected: {formData.idDocument.name}</p>
                   )}
                 </div>
+                {errors.idDocument && <p className="text-red-500 text-xs mt-1">{errors.idDocument}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Upload Photo (Passport - Size )</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#FC4C03] transition-colors">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Upload Photo (Passport - Size) <span className="text-red-500">*</span>
+                </label>
+                <div
+                  className={`border-2 border-dashed rounded-lg p-4 text-center hover:border-[#FC4C03] transition-colors ${
+                    errors.studentPhoto ? "border-red-500" : "border-gray-300"
+                  }`}
+                >
                   <Upload className="mx-auto h-8 w-8 text-gray-400" />
                   <div className="mt-2">
                     <label className="cursor-pointer">
-                      <span className="text-sm font-medium text-gray-900">Upload PDF/Doc</span>
+                      <span className="text-sm font-medium text-gray-900">Upload Image</span>
                       <input
                         type="file"
                         className="hidden"
                         accept="image/*"
+                        required
                         onChange={(e) => handleFileUpload("studentPhoto", e)}
                       />
                     </label>
@@ -507,6 +698,7 @@ const ApplicationForm = () => {
                     <p className="mt-1 text-xs text-green-600">File selected: {formData.studentPhoto.name}</p>
                   )}
                 </div>
+                {errors.studentPhoto && <p className="text-red-500 text-xs mt-1">{errors.studentPhoto}</p>}
               </div>
             </div>
           </section>
@@ -518,26 +710,32 @@ const ApplicationForm = () => {
               <label className="flex items-start space-x-3">
                 <input
                   type="checkbox"
+                  required
                   checked={formData.agreedToTerms}
                   onChange={(e) => handleInputChange("agreedToTerms", e.target.checked)}
                   className="w-4 h-4 text-[#FC4C03] border-gray-300 rounded focus:ring-[#FC4C03] mt-1"
                 />
                 <span className="text-sm text-gray-700">
-                  I have reviewed and understand the membership benefits, features, and services.
+                  I have reviewed and understand the membership benefits, features, and services.{" "}
+                  <span className="text-red-500">*</span>
                 </span>
               </label>
+              {errors.agreedToTerms && <p className="text-red-500 text-xs">{errors.agreedToTerms}</p>}
 
               <label className="flex items-start space-x-3">
                 <input
                   type="checkbox"
+                  required
                   checked={formData.certifiedInformation}
                   onChange={(e) => handleInputChange("certifiedInformation", e.target.checked)}
                   className="w-4 h-4 text-[#FC4C03] border-gray-300 rounded focus:ring-[#FC4C03] mt-1"
                 />
                 <span className="text-sm text-gray-700">
-                  I agree to the terms, community guidelines, and privacy policy.
+                  I agree to the terms, community guidelines, and privacy policy.{" "}
+                  <span className="text-red-500">*</span>
                 </span>
               </label>
+              {errors.certifiedInformation && <p className="text-red-500 text-xs">{errors.certifiedInformation}</p>}
 
               <div className="mt-4">
                 <p className="text-sm text-gray-700 mb-2">
@@ -605,6 +803,7 @@ const ApplicationForm = () => {
                   studentData={formData}
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}
+                  validateForm={validateForm} // Pass validation function
                 />
               </div>
             </section>

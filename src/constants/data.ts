@@ -37,9 +37,9 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     hasDropdown: true,
     dropdownItems: [
 
-      { label: "International ", href: "/international" },
-      { label: "Freelancer ", href: "/program-practice" },
-      { label: "Spp", href: "/program-progress" },
+      { label: "International ", href: "/sirtifai-international" },
+      { label: "Freelancer ", href: "/freelancer" },
+      { label: "Spp", href: "/program" },
 
     ],
 

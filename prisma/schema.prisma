@@ -44,6 +44,8 @@ model Student {
   // Identity Document
   idType        String
   idNumber      String
+  idDocument    Bytes?  // Store ID document PDF as binary
+  photo         Bytes?  // Store passport-size photo as binary
   idDocumentUrl String?
   photoUrl      String?
 
@@ -61,6 +63,8 @@ model Student {
   razorpayOrderId   String?
   razorpayPaymentId String?
   razorpaySignature String?
+
+  invoiceLink       String? @unique // UUID for public invoice access
 
   // Confirmation
   agreedToTerms        Boolean @default(false)
@@ -80,13 +84,17 @@ model Invoice {
   studentId     String
   student       Student @relation(fields: [studentId], references: [id])
 
-  programName  String
-  programPrice Float
-  addonName    String?
-  addonPrice   Float?
-  subtotal     Float
-  tax          Float   @default(0)
-  total        Float
+  invoiceLink   String  @unique // UUID for public invoice access
+
+  programName     String
+  programPrice    Float
+  programDuration Int   // Added duration for proper calculation
+  addonName       String?
+  addonPrice      Float?
+  subtotal        Float // Program price * duration + addon price
+  gstRate         Float   @default(18) // Added GST rate
+  gstAmount       Float // Added GST amount
+  total           Float // Subtotal + GST
 
   paymentStatus String
   paymentMethod String

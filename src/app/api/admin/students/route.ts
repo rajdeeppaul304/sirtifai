@@ -1,67 +1,67 @@
 import { type NextRequest, NextResponse } from "next/server"
-
-// Mock data - In a real application, this would come from your database
-const mockStudents = [
-  {
-    id: "1",
-    studentName: "Rahul Sharma",
-    studentEmail: "rahul.sharma@email.com",
-    studentPhone: "+91-9876543210",
-    guardianName: "Suresh Sharma",
-    guardianPhone: "+91-9876543211",
-    program: "Practice Phase",
-    programTier: "Pro",
-    duration: 6,
-    amount: 9999,
-    paymentId: "pay_123456789",
-    paymentDate: "2024-01-15T10:30:00Z",
-    status: "completed",
-    addOns: ["Legal Services"],
-    institution: "IIT Delhi",
-    city: "Delhi",
-    state: "Delhi",
-  },
-  // Add more mock data as needed
-]
+import { prisma } from "../../../../../lib/prisma"
 
 export async function GET(request: NextRequest) {
   try {
-    // In a real application, you would:
-    // 1. Verify admin authentication
-    // 2. Query your database for student records
-    // 3. Apply any filters or pagination
-
     const { searchParams } = new URL(request.url)
     const status = searchParams.get("status")
     const program = searchParams.get("program")
     const search = searchParams.get("search")
 
-    let filteredStudents = mockStudents
+    // Build where clause for filtering
+    const whereClause: any = {}
 
     if (status && status !== "all") {
-      filteredStudents = filteredStudents.filter((student) => student.status === status)
+      whereClause.paymentStatus = status
     }
 
     if (program && program !== "all") {
-      filteredStudents = filteredStudents.filter((student) => student.program === program)
+      whereClause.selectedProgram = program
     }
 
     if (search) {
-      filteredStudents = filteredStudents.filter(
-        (student) =>
-          student.studentName.toLowerCase().includes(search.toLowerCase()) ||
-          student.studentEmail.toLowerCase().includes(search.toLowerCase()) ||
-          student.paymentId.toLowerCase().includes(search.toLowerCase()),
-      )
+      whereClause.OR = [
+        { fullName: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+        { razorpayPaymentId: { contains: search, mode: "insensitive" } },
+      ]
     }
+
+    // Fetch students from database with all fields
+    const students = await prisma.student.findMany({
+      where: whereClause,
+      orderBy: { createdAt: "desc" },
+      include: {
+        invoices: true,
+      },
+    })
+
+    // Transform data for frontend (convert binary data to base64 for display)
+    const transformedStudents = students.map((student) => ({
+      ...student,
+      // Convert binary data to base64 for frontend display
+      photoBase64: student.photo ? Buffer.from(student.photo).toString("base64") : null,
+      idDocumentBase64: student.idDocument ? Buffer.from(student.idDocument).toString("base64") : null,
+      // Format dates for display
+      dateOfBirth: student.dateOfBirth.toISOString().split("T")[0],
+      createdAt: student.createdAt.toISOString(),
+      updatedAt: student.updatedAt.toISOString(),
+    }))
 
     return NextResponse.json({
       success: true,
-      data: filteredStudents,
-      total: filteredStudents.length,
+      data: transformedStudents,
+      total: transformedStudents.length,
     })
   } catch (error) {
     console.error("Error fetching students:", error)
-    return NextResponse.json({ success: false, error: "Failed to fetch students" }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to fetch students",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    )
   }
 }
