@@ -9,6 +9,7 @@ export interface NavigationItem {
   }>;
 }
 
+// Comment
 export interface User {
   id: string;
   name: string;
