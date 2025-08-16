@@ -1,83 +1,106 @@
 "use client"
-import { ArrowRight } from "lucide-react";
-import { Button } from "../ui/Button";
+import { Button } from "../ui/Button"
+import { motion, useInView } from "framer-motion"
+import { useRef } from "react"
 
+const heroIllustration = "/assets/about-header.png"
+const dontQuit = "/assets/dont-quit.jpg"
+const bulbsImage = "/assets/blb.jpg"
+const aboutStart = "/assets/about-start.png"
+const avatar1 = "/assets/user-1.png"
+const avatar2 = "/assets/user-2.png"
+const avatar3 = "/assets/user-3.jpg"
+const avatar4 = "/assets/user-4.jpg"
+const avatar5 = "/assets/user-5.jpg"
+const avatar6 = "/assets/user-6.jpg"
 
-// import Link from 'next/link';
+import UniversityPartners from "./UniversityPartners"
+import UpcomingProjectsHero from "./UpcomingProjects"
+import TeamMemberCarousel from "./TeamMember"
+import CareerSection from "./CareerSection"
 
+const industries = ["HR", "Finance", "Legal", "Education", "Construction", "Healthcare", "Aerospace", "BFSI"]
 
-const heroIllustration = "/assets/about-header.png";
-const dontQuit = "/assets/dont-quit.jpg";
-const bulbsImage = "/assets/blb.jpg";
-const aboutStart = "/assets/about-start.png";
-const avatar1 = "/assets/user-1.png";
-const avatar2 = "/assets/user-2.png";
-const avatar3 = "/assets/user-3.jpg";
-const avatar4 = "/assets/user-4.jpg";
-const avatar5 = "/assets/user-5.jpg";
-const avatar6 = "/assets/user-6.jpg";
+import { AboutSection } from "./AboutSection"
 
-
-import UniversityPartners from "./UniversityPartners";
-
-import UpcomingProjectsHero from "./UpcomingProjects";
-import TeamMemberCarousel from "./TeamMember";
-import CareerSection from "./CareerSection";
-
-const industries = [
-  "HR",
-  "Finance",
-  "Legal",
-  "Education",
-  "Construction",
-  "Healthcare",
-  "Aerospace",
-  "BFSI",
-];
-
-import { AboutSection } from "./AboutSection";
+const MotionDiv = motion.div
+const MotionImg = motion.img
+const MotionH1 = motion.h1
+const MotionP = motion.p
+const MotionH2 = motion.h2
+const MotionH3 = motion.h3
+const MotionUl = motion.ul
+const MotionLi = motion.li
+const MotionSection = motion.section
 
 export const AboutUsPage = () => {
+  const heroRef = useRef(null)
+  const whySertifaiRef = useRef(null)
+  const industriesRef = useRef(null)
+  const howDifferentRef = useRef(null)
+
+  const heroInView = useInView(heroRef, { once: true, margin: "-100px" })
+  const whySertifaiInView = useInView(whySertifaiRef, { once: true, margin: "-100px" })
+  const industriesInView = useInView(industriesRef, { once: true, margin: "-100px" })
+  const howDifferentInView = useInView(howDifferentRef, { once: true, margin: "-100px" })
+
   return (
     <div className="min-h-screen bg-[#FEF7F1]">
       {/* Hero Section (Figma: Learn. Earn. Get Placed. Rise.) */}
-  <section className="pt-2 sm:pt-10 md:pt-16 pb-10 bg-white">
+      <MotionSection
+        ref={heroRef}
+        className="pt-2 sm:pt-10 md:pt-16 pb-10 bg-white"
+        initial={{ opacity: 0 }}
+        animate={heroInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Left copy */}
-          <div>
+          <MotionDiv
+            initial={{ opacity: 0, x: -50 }}
+            animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             {/* Heading */}
-            <h1 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+            <MotionH1
+              className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
+              initial={{ opacity: 0, y: 30 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
               Learn. Earn. Get
               <br />
               Placed. Rise.
-            </h1>
+            </MotionH1>
 
             {/* Subheading */}
-            <p className="text-xs sm:text-sm md:text-base lg:text-lg mt-4 sm:mt-5 text-[#989491] max-w-xl">
-              India's first Job-First Education Ecosystem, building skilled
-              professionals with real work experience and lifetime career
-              support.
-            </p>
+            <MotionP
+              className="text-xs sm:text-sm md:text-base lg:text-lg mt-4 sm:mt-5 text-[#989491] max-w-xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              India's first Job-First Education Ecosystem, building skilled professionals with real work experience and
+              lifetime career support.
+            </MotionP>
 
             {/* Join Now Section */}
-            <div className="mt-6 sm:mt-8 w-full overflow-hidden text-left">
-              <div
-                className="flex flex-nowrap items-center justify-start gap-2 sm:gap-4 w-full whitespace-nowrap leading-none text-[clamp(0.95rem,3vw,1rem)] md:text-[clamp(0.85rem,2vw,1.4rem)]"
-              >
+            <MotionDiv
+              className="mt-6 sm:mt-8 w-full overflow-hidden text-left"
+              initial={{ opacity: 0, y: 20 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <div className="flex flex-nowrap items-center justify-start gap-2 sm:gap-4 w-full whitespace-nowrap leading-none text-[clamp(0.95rem,3vw,1rem)] md:text-[clamp(0.85rem,2vw,1.4rem)]">
                 {/* Label */}
-                <span className="font-semibold text-orange-600">
-                  Join Now :
-                </span>
+                <span className="font-semibold text-orange-600">Join Now :</span>
 
                 {/* Links */}
                 <a href="/sirtifai-international" className="text-orange-600 font-medium">
                   International
                 </a>
                 <span className="text-orange-600">|</span>
-                <a
-                  href="/freelancer"
-                  className="text-orange-600 font-medium"
-                >
+                <a href="/freelancer" className="text-orange-600 font-medium">
                   Freelance
                 </a>
                 <span className="text-orange-600">|</span>
@@ -85,64 +108,100 @@ export const AboutUsPage = () => {
                   SPP Student
                 </a>
               </div>
-            </div>
-          </div>
+            </MotionDiv>
+          </MotionDiv>
 
           {/* Right illustration */}
-          <div className="relative">
-            <img
+          <MotionDiv
+            className="relative"
+            initial={{ opacity: 0, x: 50, scale: 0.9 }}
+            animate={heroInView ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: 50, scale: 0.9 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <MotionImg
               src={heroIllustration}
               alt="Hero illustration"
               className="w-full max-w-lg mx-auto"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
             />
-          </div>
+          </MotionDiv>
         </div>
-      </section>
+      </MotionSection>
 
       {/* Why Sertifai (Figma) */}
-      <section className="py-10 sm:py-14 bg-[RGB 254 247 241]">
+      <MotionSection
+        ref={whySertifaiRef}
+        className="py-10 sm:py-14 bg-[RGB 254 247 241]"
+        initial={{ opacity: 0 }}
+        animate={whySertifaiInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           {/* Image collage (hidden on mobile) */}
-          <div className="relative hidden md:block">
+          <MotionDiv
+            className="relative hidden md:block"
+            initial={{ opacity: 0, x: -50 }}
+            animate={whySertifaiInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <img
+              <MotionImg
                 src={dontQuit}
                 alt="Don't Quit"
                 className="rounded-2xl shadow-xl object-cover h-72 w-full md:h-[320px]"
+                initial={{ opacity: 0, y: 30 }}
+                animate={whySertifaiInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                whileHover={{ scale: 1.02, y: -5 }}
               />
-              <img
+              <MotionImg
                 src={bulbsImage}
                 alt="Bulbs"
                 className="rounded-2xl shadow-xl object-cover h-72 w-full md:h-[320px]"
+                initial={{ opacity: 0, y: 30 }}
+                animate={whySertifaiInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                whileHover={{ scale: 1.02, y: -5 }}
               />
             </div>
 
             {/* KPI card */}
-            <div className="absolute -top-8 left-8 md:left-16 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-lg border border-orange-100 w-[220px]">
+            <MotionDiv
+              className="absolute -top-8 left-8 md:left-16 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-lg border border-orange-100 w-[220px]"
+              initial={{ opacity: 0, scale: 0.8, y: -20 }}
+              animate={whySertifaiInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: -20 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              whileHover={{ scale: 1.05, y: -5 }}
+            >
               <p className="text-lg font-extrabold text-gray-900">30,000+</p>
-              <p className="text-[10px] text-gray-500">
-                Sales in July 2021 with 5 star ratings and happy clients.
-              </p>
+              <p className="text-[10px] text-gray-500">Sales in July 2021 with 5 star ratings and happy clients.</p>
               <div className="mt-3 h-px bg-gray-200" />
               <div className="mt-3 flex -space-x-2">
-                {[avatar1, avatar2, avatar3, avatar4, avatar5, avatar6].map(
-                  (a, i) => (
-                    <img
-                      key={i}
-                      src={a}
-                      alt="avatar"
-                      className="w-6 h-6 rounded-full ring-2 ring-white object-cover"
-                    />
-                  )
-                )}
+                {[avatar1, avatar2, avatar3, avatar4, avatar5, avatar6].map((a, i) => (
+                  <MotionImg
+                    key={i}
+                    src={a}
+                    alt="avatar"
+                    className="w-6 h-6 rounded-full ring-2 ring-white object-cover"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={whySertifaiInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+                    transition={{ duration: 0.3, delay: 1.0 + i * 0.1 }}
+                    whileHover={{ scale: 1.2, zIndex: 10 }}
+                  />
+                ))}
               </div>
-            </div>
+            </MotionDiv>
 
             {/* Ratings badge */}
-            <div className="absolute bottom-4 left-10 bg-white/95 backdrop-blur rounded-xl shadow p-3 border border-gray-100">
-              <p className="text-[11px] text-gray-700 font-semibold mb-1">
-                Best ratings
-              </p>
+            <MotionDiv
+              className="absolute bottom-4 left-10 bg-white/95 backdrop-blur rounded-xl shadow p-3 border border-gray-100"
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={whySertifaiInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 20 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+              whileHover={{ scale: 1.05, y: -3 }}
+            >
+              <p className="text-[11px] text-gray-700 font-semibold mb-1">Best ratings</p>
               <div className="flex gap-1 text-base">
                 <span>🙂</span>
                 <span>🙂</span>
@@ -150,80 +209,117 @@ export const AboutUsPage = () => {
                 <span>🙂</span>
                 <span>🙂</span>
               </div>
-            </div>
-          </div>
+            </MotionDiv>
+          </MotionDiv>
 
           {/* Copy */}
-          <div>
-            <p className="tracking-[0.25em] sm:tracking-[0.4em] text-[11px] sm:text-xs text-orange-600 font-semibold mb-2">
+          <MotionDiv
+            initial={{ opacity: 0, x: 50 }}
+            animate={whySertifaiInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <MotionP
+              className="tracking-[0.25em] sm:tracking-[0.4em] text-[11px] sm:text-xs text-orange-600 font-semibold mb-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={whySertifaiInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
               ABOUT
-            </p>
-            <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 leading-snug">
+            </MotionP>
+            <MotionH2
+              className="text-2xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 leading-snug"
+              initial={{ opacity: 0, y: 30 }}
+              animate={whySertifaiInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
               Why Sertifai
-            </h2>
-            <p className="text-gray-600 mb-4 text-sm sm:text-base leading-relaxed">
-              Sirtifai is a career transformation platform that connects
-              learning directly with earning and job placement. Through our
-              flagship SPP (Skill → Practice → Progress) model, we ensure
-              learners gain:
-            </p>
-            <ul className="space-y-2 text-gray-700 list-disc pl-5 text-sm sm:text-base leading-relaxed">
-              <li>
+            </MotionH2>
+            <MotionP
+              className="text-gray-600 mb-4 text-sm sm:text-base leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={whySertifaiInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              Sirtifai is a career transformation platform that connects learning directly with earning and job
+              placement. Through our flagship SPP (Skill → Practice → Progress) model, we ensure learners gain:
+            </MotionP>
+            <MotionUl
+              className="space-y-2 text-gray-700 list-disc pl-5 text-sm sm:text-base leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={whySertifaiInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+            >
+              <MotionLi
+                initial={{ opacity: 0, x: -20 }}
+                animate={whySertifaiInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ duration: 0.4, delay: 1.2 }}
+              >
                 Practical skills through structured, industry-aligned training.
-              </li>
-              <li>
+              </MotionLi>
+              <MotionLi
+                initial={{ opacity: 0, x: -20 }}
+                animate={whySertifaiInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ duration: 0.4, delay: 1.4 }}
+              >
                 Paid work experience with real companies via verified projects.
-              </li>
-              <li>
-                Career support for job switches, re-entry, and global placement
-                across 24 industries.
-              </li>
-              <li>
+              </MotionLi>
+              <MotionLi
+                initial={{ opacity: 0, x: -20 }}
+                animate={whySertifaiInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ duration: 0.4, delay: 1.6 }}
+              >
+                Career support for job switches, re-entry, and global placement across 24 industries.
+              </MotionLi>
+              <MotionLi
+                initial={{ opacity: 0, x: -20 }}
+                animate={whySertifaiInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ duration: 0.4, delay: 1.8 }}
+              >
                 Trusted by employers and universities in India, MENA, and SEA.
-              </li>
-            </ul>
-            <div className="mt-5 sm:mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
-              
-              <Button className="rounded-full" variant="primary" size="md">
-                View More
-              </Button>
-              {/* <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
-                <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px]" />
-              </button> */}
-            </div>
-          </div>
+              </MotionLi>
+            </MotionUl>
+            <MotionDiv
+              className="mt-5 sm:mt-6 flex flex-wrap items-center gap-3 sm:gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={whySertifaiInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 2.0 }}
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button className="rounded-full" variant="primary" size="md">
+                  View More
+                </Button>
+              </motion.div>
+            </MotionDiv>
+          </MotionDiv>
         </div>
-      </section>
+      </MotionSection>
 
-      {/* About Us Feature Image Section (from Figma node 177-1036) */}
-      {/* <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="relative overflow-hidden rounded-3xl border border-orange-100 shadow-xl">
-            <img
-              src={aboutUsSectionImg}
-              alt="About us section"
-              className="w-full h-[420px] object-cover"
-            />
-          </div>
-        </div>
-      </section> */}
+      {/* White gap between Why Sertifai and ribbon */}
+      <div className="h-8 md:h-12 bg-white w-full"></div>
 
       {/* Industries ribbon */}
-  {/* White gap between Why Sertifai and ribbon */}
-  <div className="h-8 md:h-12 bg-white w-full"></div>
-
-      <section className="bg-gray-900 text-white">
+      <MotionSection
+        ref={industriesRef}
+        className="bg-gray-900 text-white"
+        initial={{ opacity: 0 }}
+        animate={industriesInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="max-w-7xl mx-auto px-6 py-4 overflow-hidden">
           <div className="relative w-full">
             {/* Marquee wrapper */}
             <div className="flex whitespace-nowrap animate-marquee">
               {industries.concat(industries).map((item, idx) => (
-                <span
+                <MotionDiv
                   key={idx}
                   className="italic mx-5 opacity-90 text-lg flex-shrink-0"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={industriesInView ? { opacity: 0.9, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.4, delay: idx * 0.1 }}
+                  whileHover={{ scale: 1.1, opacity: 1 }}
                 >
                   {item}
-                </span>
+                </MotionDiv>
               ))}
             </div>
           </div>
@@ -240,157 +336,298 @@ export const AboutUsPage = () => {
           animation: marquee 15s linear infinite;
         }
       `}</style>
-      </section>
+      </MotionSection>
 
       {/* How Sirtifai is different? */}
-      <section className="py-16 bg-white">
+      <MotionSection
+        ref={howDifferentRef}
+        className="py-16 bg-white"
+        initial={{ opacity: 0 }}
+        animate={howDifferentInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Left column */}
-          <div className="flex flex-col gap-8">
+          <MotionDiv
+            className="flex flex-col gap-8"
+            initial={{ opacity: 0, x: -50 }}
+            animate={howDifferentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             {/* Intro text */}
             <div className="text-center lg:text-left">
-              <h2 className="text-xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
+              <MotionH2
+                className="text-xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight"
+                initial={{ opacity: 0, y: 30 }}
+                animate={howDifferentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
                 How Sirtifai is different?
-              </h2>
-              <p className="text-sm ext-gray-600 sm:text-lg max-w-lg mx-auto lg:mx-0">
-                Sirtifai is a career transformation platform that connects
-                learning directly with earning and job placement.
-              </p>
+              </MotionH2>
+              <MotionP
+                className="text-sm ext-gray-600 sm:text-lg max-w-lg mx-auto lg:mx-0"
+                initial={{ opacity: 0, y: 20 }}
+                animate={howDifferentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                Sirtifai is a career transformation platform that connects learning directly with earning and job
+                placement.
+              </MotionP>
             </div>
 
             {/* Global Certifications card */}
-            <div className="hidden md:block rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mt-0 sm:mt-5">
+            <MotionDiv
+              className="hidden md:block rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mt-0 sm:mt-5"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={howDifferentInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
               <div className="flex items-start gap-4 mb-4">
-                <img
+                <MotionImg
                   src={aboutStart}
                   alt="feature icon"
                   className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
+                  initial={{ opacity: 0, rotate: -10 }}
+                  animate={howDifferentInView ? { opacity: 1, rotate: 0 } : { opacity: 0, rotate: -10 }}
+                  transition={{ duration: 0.4, delay: 1.0 }}
                 />
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 leading-6">
+                <MotionH3
+                  className="text-base md:text-lg font-semibold text-gray-900 leading-6"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={howDifferentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, delay: 1.2 }}
+                >
                   Global Certifications
-                </h3>
+                </MotionH3>
               </div>
               <div className="h-px w-full bg-black my-4 sm:my-5" />
-              <p className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7">
-                NSQF Certification: Globally recognized certification, trusted
-                by employers in India, MENA, and SEA.
-              </p>
-            </div>
-          </div>
+              <MotionP
+                className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7"
+                initial={{ opacity: 0, y: 10 }}
+                animate={howDifferentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                transition={{ duration: 0.4, delay: 1.4 }}
+              >
+                NSQF Certification: Globally recognized certification, trusted by employers in India, MENA, and SEA.
+              </MotionP>
+            </MotionDiv>
+          </MotionDiv>
 
           {/* Right column (2×2 grid on desktop, stacked on mobile) */}
-          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8">
+          <MotionDiv
+            className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8"
+            initial={{ opacity: 0, x: 50 }}
+            animate={howDifferentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             {/* Income from Day 1 */}
-            <div className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mx-auto">
+            <MotionDiv
+              className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mx-auto"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={howDifferentInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
               <div className="flex items-start gap-4 mb-4">
-                <img
+                <MotionImg
                   src={aboutStart}
                   alt="feature icon"
                   className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
+                  initial={{ opacity: 0, rotate: -10 }}
+                  animate={howDifferentInView ? { opacity: 1, rotate: 0 } : { opacity: 0, rotate: -10 }}
+                  transition={{ duration: 0.4, delay: 0.8 }}
                 />
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 leading-6">
+                <MotionH3
+                  className="text-base md:text-lg font-semibold text-gray-900 leading-6"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={howDifferentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, delay: 1.0 }}
+                >
                   Income from Day 1
-                </h3>
+                </MotionH3>
               </div>
               <div className="h-px w-full bg-black my-4 sm:my-5" />
-              <p className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7">
+              <MotionP
+                className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7"
+                initial={{ opacity: 0, y: 10 }}
+                animate={howDifferentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                transition={{ duration: 0.4, delay: 1.2 }}
+              >
                 Earn ₹12K–₹35K/month during the Practice Phase.
-              </p>
-            </div>
-            {/* Verified Payroll */}
-            <div className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mx-auto">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src={aboutStart}
-                  alt="feature icon"
-                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
-                />
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 leading-6">
-                  Verified Payroll (DEEL™)
-                </h3>
-              </div>
-              <div className="h-px w-full bg-black my-4 sm:my-5" />
-              <p className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7">
-                EPF/ESI coverage for domestic plans, and international payroll for overseas roles.
-              </p>
-            </div>
-            {/* Mobile-only Global Certifications (reordered) */}
-            <div className="md:hidden rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full mx-auto">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src={aboutStart}
-                  alt="feature icon"
-                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
-                />
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 leading-6">
-                  Global Certifications
-                </h3>
-              </div>
-              <div className="h-px w-full bg-black my-4 sm:my-5" />
-              <p className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7">
-                NSQF Certification: Globally recognized certification, trusted by employers in India, MENA, and SEA.
-              </p>
-            </div>
-            {/* Lifetime Re-entry */}
-            <div className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mx-auto">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src={aboutStart}
-                  alt="feature icon"
-                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
-                />
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 leading-6">
-                  Lifetime Re-entry & Career Switch Support
-                </h3>
-              </div>
-              <div className="h-px w-full bg-black my-4 sm:my-5" />
-              <p className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7">
-                Switch industries, upgrade skills, and re-enter the job market without extra programme cost.
-              </p>
-            </div>
-            {/* Skill-to-job */}
-            <div className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mx-auto">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src={aboutStart}
-                  alt="feature icon"
-                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
-                />
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 leading-6">
-                  Skill-to-job execution gap
-                </h3>
-              </div>
-              <div className="h-px w-full bg-black my-4 sm:my-5" />
-              <p className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7">
-                Solved for all learners, from Tier 1 to Tier 3. Built-in career analytics and AI resume tools.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+              </MotionP>
+            </MotionDiv>
 
-      {/* <MissionVisionGoals/> */}
+            {/* Verified Payroll */}
+            <MotionDiv
+              className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mx-auto"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={howDifferentInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <MotionImg
+                  src={aboutStart}
+                  alt="feature icon"
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
+                  initial={{ opacity: 0, rotate: -10 }}
+                  animate={howDifferentInView ? { opacity: 1, rotate: 0 } : { opacity: 0, rotate: -10 }}
+                  transition={{ duration: 0.4, delay: 1.0 }}
+                />
+                <MotionH3
+                  className="text-base md:text-lg font-semibold text-gray-900 leading-6"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={howDifferentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, delay: 1.2 }}
+                >
+                  Verified Payroll (DEEL™)
+                </MotionH3>
+              </div>
+              <div className="h-px w-full bg-black my-4 sm:my-5" />
+              <MotionP
+                className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7"
+                initial={{ opacity: 0, y: 10 }}
+                animate={howDifferentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                transition={{ duration: 0.4, delay: 1.4 }}
+              >
+                EPF/ESI coverage for domestic plans, and international payroll for overseas roles.
+              </MotionP>
+            </MotionDiv>
+
+            {/* Mobile-only Global Certifications (reordered) */}
+            <MotionDiv
+              className="md:hidden rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full mx-auto"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={howDifferentInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <MotionImg
+                  src={aboutStart}
+                  alt="feature icon"
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
+                  initial={{ opacity: 0, rotate: -10 }}
+                  animate={howDifferentInView ? { opacity: 1, rotate: 0 } : { opacity: 0, rotate: -10 }}
+                  transition={{ duration: 0.4, delay: 1.2 }}
+                />
+                <MotionH3
+                  className="text-base md:text-lg font-semibold text-gray-900 leading-6"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={howDifferentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, delay: 1.4 }}
+                >
+                  Global Certifications
+                </MotionH3>
+              </div>
+              <div className="h-px w-full bg-black my-4 sm:my-5" />
+              <MotionP
+                className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7"
+                initial={{ opacity: 0, y: 10 }}
+                animate={howDifferentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                transition={{ duration: 0.4, delay: 1.6 }}
+              >
+                NSQF Certification: Globally recognized certification, trusted by employers in India, MENA, and SEA.
+              </MotionP>
+            </MotionDiv>
+
+            {/* Lifetime Re-entry */}
+            <MotionDiv
+              className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mx-auto"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={howDifferentInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <MotionImg
+                  src={aboutStart}
+                  alt="feature icon"
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
+                  initial={{ opacity: 0, rotate: -10 }}
+                  animate={howDifferentInView ? { opacity: 1, rotate: 0 } : { opacity: 0, rotate: -10 }}
+                  transition={{ duration: 0.4, delay: 1.4 }}
+                />
+                <MotionH3
+                  className="text-base md:text-lg font-semibold text-gray-900 leading-6"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={howDifferentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, delay: 1.6 }}
+                >
+                  Lifetime Re-entry & Career Switch Support
+                </MotionH3>
+              </div>
+              <div className="h-px w-full bg-black my-4 sm:my-5" />
+              <MotionP
+                className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7"
+                initial={{ opacity: 0, y: 10 }}
+                animate={howDifferentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                transition={{ duration: 0.4, delay: 1.8 }}
+              >
+                Switch industries, upgrade skills, and re-enter the job market without extra programme cost.
+              </MotionP>
+            </MotionDiv>
+
+            {/* Skill-to-job */}
+            <MotionDiv
+              className="rounded-[28px] border border-[#000] bg-white shadow-[0_6px_0_0_#D4D4D4] p-4 sm:p-6 min-h-0 md:min-h-[210px] lg:min-h-[250px] h-auto w-full lg:max-w-[360px] mx-auto"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={howDifferentInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
+              transition={{ duration: 0.6, delay: 1.4 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <MotionImg
+                  src={aboutStart}
+                  alt="feature icon"
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain -mt-1 drop-shadow-[2px_4px_0_rgba(0,0,0,0.25)]"
+                  initial={{ opacity: 0, rotate: -10 }}
+                  animate={howDifferentInView ? { opacity: 1, rotate: 0 } : { opacity: 0, rotate: -10 }}
+                  transition={{ duration: 0.4, delay: 1.6 }}
+                />
+                <MotionH3
+                  className="text-base md:text-lg font-semibold text-gray-900 leading-6"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={howDifferentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, delay: 1.8 }}
+                >
+                  Skill-to-job execution gap
+                </MotionH3>
+              </div>
+              <div className="h-px w-full bg-black my-4 sm:my-5" />
+              <MotionP
+                className="text-sm sm:text-[15px] text-gray-700 leading-6 sm:leading-7"
+                initial={{ opacity: 0, y: 10 }}
+                animate={howDifferentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                transition={{ duration: 0.4, delay: 2.0 }}
+              >
+                Solved for all learners, from Tier 1 to Tier 3. Built-in career analytics and AI resume tools.
+              </MotionP>
+            </MotionDiv>
+          </MotionDiv>
+        </div>
+      </MotionSection>
 
       <AboutSection />
-  {/* Gap between Our Mission (AboutSection) and Upcoming Projects */}
-  <div className="h-8 md:h-12 bg-white w-full" />
+      {/* Gap between Our Mission (AboutSection) and Upcoming Projects */}
+      <div className="h-8 md:h-12 bg-white w-full" />
 
-  <UpcomingProjectsHero />
+      <UpcomingProjectsHero />
 
-  {/* Gap between Upcoming Projects and Team Members */}
-  <div className="h-8 md:h-12 bg-white w-full" />
+      {/* Gap between Upcoming Projects and Team Members */}
+      <div className="h-8 md:h-12 bg-white w-full" />
 
-  <TeamMemberCarousel />
+      <TeamMemberCarousel />
 
-  {/* Gap between Team Members and University Partners */}
-  <div className="h-8 md:h-12 bg-white w-full" />
+      {/* Gap between Team Members and University Partners */}
+      <div className="h-8 md:h-12 bg-white w-full" />
 
-  <UniversityPartners />
+      <UniversityPartners />
 
-  {/* Gap between University Partners and Career Section */}
-  <div className="h-8 md:h-12 bg-white w-full" />
+      {/* Gap between University Partners and Career Section */}
+      <div className="h-8 md:h-12 bg-white w-full" />
 
-  <CareerSection />
+      <CareerSection />
     </div>
-  );
-};
+  )
+}

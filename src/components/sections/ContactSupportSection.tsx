@@ -1,83 +1,191 @@
-import { MessageCircle, Mail, Phone } from "lucide-react";
+"use client"
+
+import { MessageCircle, Mail, Phone } from "lucide-react"
+import { motion, useInView } from "framer-motion"
+import { useRef } from "react"
+
+const MotionSection = motion.section
+const MotionDiv = motion.div
+const MotionH1 = motion.h1
+const MotionP = motion.p
 
 export const ContactSupportSection = () => {
+  const heroRef = useRef(null)
+  const heroInView = useInView(heroRef, { once: true, margin: "-100px" })
+
   return (
-  <section className="relative w-full bg-black min-h-[500px] md:min-h-[560px]">
+    <MotionSection
+      ref={heroRef}
+      className="relative w-full bg-black min-h-[500px] md:min-h-[560px]"
+      initial={{ opacity: 0 }}
+      animate={heroInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.8 }}
+    >
       {/* Background image with dark overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-  style={{ backgroundImage: "url('/assets/contact/mainContact.jpg')" }}
+        style={{ backgroundImage: "url('/assets/contact/mainContact.jpg')" }}
       >
-  <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/55 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/55 to-black/70" />
       </div>
 
       {/* Content Wrapper */}
-  <div className="relative z-10 flex flex-col min-h-[500px] md:min-h-[560px] pb-12 md:pb-16">
+      <div className="relative z-10 flex flex-col min-h-[500px] md:min-h-[560px] pb-12 md:pb-16">
         {/* Top Section */}
-  <div className="flex-1 flex items-start md:items-center px-5 xs:px-5 md:px-16 lg:px-24 pt-12 pb-6 md:py-0">
-          <div className="w-full max-w-[720px] md:pl-2 lg:pl-4 xl:pl-6">
-            <h1 className="text-[1.9rem] xs:text-[2.3rem] md:text-[3.9rem] lg:text-[4.25rem] xl:text-[4.5rem] font-bold text-white tracking-tight flex flex-col gap-1 md:gap-2 lg:gap-3 leading-[1.1] md:leading-[1.12] lg:leading-[1.15]">
-              <span>Get in Touch</span>
-              <span>with Sirtifai Support</span>
-            </h1>
-            <p className="mt-6 md:mt-7 lg:mt-8 text-[13.25px] xs:text-[14px] md:text-[1.25rem] lg:text-[1.45rem] xl:text-[1.55rem] text-white/90 leading-relaxed max-w-[60ch]">
-              Have a question about programmes, payments, certifications, or career support? Our dedicated team is ready to help you through WhatsApp, Email, or Phone.
-            </p>
+        <div className="flex-1 flex items-start md:items-center px-5 xs:px-5 md:px-16 lg:px-24 pt-12 pb-6 md:py-0">
+          <MotionDiv
+            className="w-full max-w-[720px] md:pl-2 lg:pl-4 xl:pl-6"
+            initial={{ opacity: 0, x: -50 }}
+            animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <MotionH1
+              className="text-[1.9rem] xs:text-[2.3rem] md:text-[3.9rem] lg:text-[4.25rem] xl:text-[4.5rem] font-bold text-white tracking-tight flex flex-col gap-1 md:gap-2 lg:gap-3 leading-[1.1] md:leading-[1.12] lg:leading-[1.15]"
+              initial={{ opacity: 0, y: 30 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <motion.span
+                initial={{ opacity: 0, x: -20 }}
+                animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                Get in Touch
+              </motion.span>
+              <motion.span
+                initial={{ opacity: 0, x: -20 }}
+                animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+              >
+                with Sirtifai Support
+              </motion.span>
+            </MotionH1>
+            <MotionP
+              className="mt-6 md:mt-7 lg:mt-8 text-[13.25px] xs:text-[14px] md:text-[1.25rem] lg:text-[1.45rem] xl:text-[1.55rem] text-white/90 leading-relaxed max-w-[60ch]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={heroInView ? { opacity: 0.9, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+            >
+              Have a question about programmes, payments, certifications, or career support? Our dedicated team is ready
+              to help you through WhatsApp, Email, or Phone.
+            </MotionP>
 
             {/* Contact Options (list style like design) */}
-            <div className="mt-8 md:mt-10 lg:mt-12 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-6 sm:gap-10">
+            <MotionDiv
+              className="mt-8 md:mt-10 lg:mt-12 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-6 sm:gap-10"
+              initial={{ opacity: 0, y: 30 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+            >
               {/* WhatsApp */}
-              <a
+              <motion.a
                 href="https://wa.me/0000000000"
                 aria-label="Chat with us on WhatsApp"
                 className="group flex items-center gap-3 text-white hover:opacity-90 transition-opacity"
+                initial={{ opacity: 0, x: -30 }}
+                animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                transition={{ duration: 0.4, delay: 1.4 }}
+                whileHover={{ scale: 1.05, x: 5 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <div className="w-10 h-10 md:w-11 md:h-11 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                <motion.div
+                  className="w-10 h-10 md:w-11 md:h-11 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
                   <MessageCircle size={20} className="text-white" />
-                </div>
+                </motion.div>
                 <span className="text-base md:text-xl lg:text-[1.55rem] font-medium">Chat with Us</span>
-              </a>
+              </motion.a>
               {/* Email */}
-              <a
+              <motion.a
                 href="mailto:support@sirtifai.com"
                 aria-label="Email us"
                 className="group flex items-center gap-3 text-white hover:opacity-90 transition-opacity"
+                initial={{ opacity: 0, x: -30 }}
+                animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                transition={{ duration: 0.4, delay: 1.6 }}
+                whileHover={{ scale: 1.05, x: 5 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <div className="w-10 h-10 md:w-11 md:h-11 bg-yellow-500 rounded-full flex items-center justify-center shadow-lg">
+                <motion.div
+                  className="w-10 h-10 md:w-11 md:h-11 bg-yellow-500 rounded-full flex items-center justify-center shadow-lg"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
                   <Mail size={20} className="text-white" />
-                </div>
+                </motion.div>
                 <span className="text-base md:text-xl lg:text-[1.55rem] font-medium">Email Us</span>
-              </a>
+              </motion.a>
               {/* Call */}
-              <a
+              <motion.a
                 href="tel:+0000000000"
                 aria-label="Call us"
                 className="group flex items-center gap-3 text-white hover:opacity-90 transition-opacity"
+                initial={{ opacity: 0, x: -30 }}
+                animate={heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                transition={{ duration: 0.4, delay: 1.8 }}
+                whileHover={{ scale: 1.05, x: 5 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <div className="w-10 h-10 md:w-11 md:h-11 bg-white/20 rounded-full flex items-center justify-center shadow-lg">
+                <motion.div
+                  className="w-10 h-10 md:w-11 md:h-11 bg-white/20 rounded-full flex items-center justify-center shadow-lg"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
                   <Phone size={20} className="text-white" />
-                </div>
+                </motion.div>
                 <span className="text-base md:text-xl lg:text-[1.55rem] font-medium">Call Us</span>
-              </a>
-            </div>
-          </div>
+              </motion.a>
+            </MotionDiv>
+          </MotionDiv>
         </div>
 
         {/* Bottom Join Now Bar (raised with padding below to let image peek) */}
-  <div className="mt-10 md:mt-14 bg-black/40 backdrop-blur-md px-5 xs:px-5 md:px-16 lg:px-24 py-4 md:py-5 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 text-white text-sm sm:text-base lg:text-lg shadow-lg md:mx-10 lg:mx-20 xl:mx-28">
+        <MotionDiv
+          className="mt-10 md:mt-14 bg-black/40 backdrop-blur-md px-5 xs:px-5 md:px-16 lg:px-24 py-4 md:py-5 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 text-white text-sm sm:text-base lg:text-lg shadow-lg md:mx-10 lg:mx-20 xl:mx-28"
+          initial={{ opacity: 0, y: 30 }}
+          animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 1.4 }}
+        >
           <div className="flex items-center gap-3">
             <span className="font-semibold text-[#FE7642] tracking-wide">Join Now :</span>
             <nav className="flex items-center gap-x-4 gap-y-2 flex-wrap">
-              <a href="#" className="hover:text-orange-300 transition-colors">SPP Int</a>
+              <motion.a
+                href="#"
+                className="hover:text-orange-300 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                SPP Int
+              </motion.a>
               <span className="hidden sm:inline text-blue-400/60">|</span>
-              <a href="#" className="hover:text-orange-300 transition-colors">SPP Freelance</a>
+              <motion.a
+                href="#"
+                className="hover:text-orange-300 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                SPP Freelance
+              </motion.a>
               <span className="hidden sm:inline text-blue-400/60">|</span>
-              <a href="#" className="hover:text-orange-300 transition-colors">SPP Student</a>
+              <motion.a
+                href="#"
+                className="hover:text-orange-300 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                SPP Student
+              </motion.a>
             </nav>
           </div>
-          <div className="text-white/50 text-xs sm:text-sm lg:text-base">24/7 Support • Avg response &lt; 24h</div>
-        </div>
+          <motion.div
+            className="text-white/50 text-xs sm:text-sm lg:text-base"
+            initial={{ opacity: 0 }}
+            animate={heroInView ? { opacity: 0.5 } : { opacity: 0 }}
+            transition={{ duration: 0.6, delay: 1.8 }}
+          >
+            24/7 Support • Avg response &lt; 24h
+          </motion.div>
+        </MotionDiv>
       </div>
-    </section>
-  );
-};
+    </MotionSection>
+  )
+}
