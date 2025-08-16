@@ -1,62 +1,74 @@
-// Data matching design reference
-const benefits = [
-  {
-    title: "Real Projects with Monthly Pay",
-    description: "Work on actual client projects with guaranteed monthly payments.",
-  },
-  {
-    title: "Mentor Feedback on Every Task",
-    description: "Get professional guidance to improve your skills with each project.",
-  },
-  {
-    title: "Legal Contracts (Elite only)",
-    description: "Professional legal protection for your freelance work.",
-  },
-  {
-    title: "Career & Client Growth",
-    description: "Build long-term relationships with clients and expand your network.",
-  },
-  {
-    title: "Verified Portfolio Access",
-    description: "Showcase your verified work experience to future clients.",
-  },
-  {
-    title: "AI Resume & Profile Setup",
-    description: "Get professional help setting up your freelance profile.",
-  },
-];
+import { 
+  FaCalendarAlt, 
+  FaLaptop, 
+  FaCertificate, 
+  FaComments, 
+  FaBook, 
+  FaChartLine,
+  FaMedal 
+} from 'react-icons/fa';
+
 
 const WhatYouGetSection: React.FC = () => {
+
+  const benefits = [
+    {
+      icon: FaCalendarAlt,
+      iconColor: 'text-orange-500',
+      title: 'Paid Weekly With Benefits Pay',
+      description: 'Regular payment cycles with bonuses'
+    },
+    {
+      icon: FaLaptop,
+      iconColor: 'text-orange-500',
+      title: 'Remote Flexibility on Every Task',
+      description: 'Work from anywhere, anytime'
+    },
+    {
+      icon: FaCertificate,
+      iconColor: 'text-red-500',
+      title: 'Legal Certificate When Hired',
+      description: 'Recognized professional credentials'
+    },
+    {
+      icon: FaComments,
+      iconColor: 'text-purple-500',
+      title: 'Support & Communication',
+      description: 'Always available assistance'
+    },
+    {
+      icon: FaBook,
+      iconColor: 'text-orange-500',
+      title: 'Detailed Training Access',
+      description: 'Comprehensive learning materials'
+    },
+    {
+      icon: FaChartLine,
+      iconColor: 'text-pink-500',
+      title: 'Professional Growth Paths',
+      description: 'Career advancement opportunities'
+    }
+  ];
   return (
     <section className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-14">What You Get</h2>
+        <h2 className="text-4xl text-left md:text-center md:text-5xl font-bold tracking-tight mb-14">What You Get</h2>
         <div className="grid gap-x-12 gap-y-12 md:grid-cols-3 text-left mb-10">
-          {benefits.map((b) => (
-            <div key={b.title} className="flex flex-col space-y-2">
-              <div className="flex items-start gap-3">
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500 flex-shrink-0 mt-1" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M4 8.2l2.4 2.4L12 5"
-                      stroke="#fff"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                <div>
-                  <h3 className="font-semibold text-sm md:text-base text-gray-900 leading-snug mb-1">
-                    {b.title}
-                  </h3>
-                  <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
-                    {b.description}
-                  </p>
-                </div>
-              </div>
+          {benefits.map((benefit, index) => (
+          <div key={index} className="flex items-start gap-3">
+            <div className="flex-shrink-0 mt-0.5">
+              <benefit.icon className={`w-4 h-4 text-orange-500`} />
             </div>
-          ))}
+            <div className="flex-1">
+              <h3 className="text-gray-900 font-medium text-[1.125rem] leading-tight mb-1">
+                {benefit.title}
+              </h3>
+              <p className="text-gray-600 text-[1rem] leading-relaxed">
+                {benefit.description}
+              </p>
+            </div>
+          </div>
+        ))}
         </div>
         <div className="flex justify-center">
           <div className="inline-flex items-center gap-2 rounded-md bg-slate-200/70 px-5 py-3 text-[13px] md:text-sm font-medium text-gray-800">

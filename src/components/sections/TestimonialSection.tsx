@@ -84,14 +84,14 @@ const TestimonialSection: React.FC = () => {
                   {f.icon}
                 </div>
                 <div className="flex flex-col gap-.5">
-                  <h3 className="text-[#1A1A1A] text-[.875rem] font-semibold">Receive every task payment</h3>
-                  <p className="text-[#4B5563] text-[.75rem] font-normal">Get paid for each completed task</p>
+                  <h3 className="text-[#1A1A1A] text-[1.125rem] font-semibold">Receive every task payment</h3>
+                  <p className="text-[#4B5563] text-[1rem] font-normal">Get paid for each completed task</p>
                 </div>
               </li>
             ))}
           </ul>
           <p className="hidden lg:flex mt-8 italic font-medium text-slate-800 leading-relaxed">
-            "This isn&apos;t freelancing with guesswork—it&apos;s verified, traceable, and legal."
+            &ldquo;This isn&apos;t freelancing with guesswork—it&apos;s verified, traceable, and legal.&rdquo;
           </p>
         </div>
       </div>

@@ -43,7 +43,7 @@ const TestimonialsSection: React.FC = () => {
         <h2 className="text-center text-4xl md:text-5xl font-bold tracking-tight mb-14">
           Real People. Real Income.
         </h2>
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="flex justify-center items-center md:grid gap-3 md:gap-8 grid-cols-2 overflow-auto whitespace-nowrap md:whitespace-normal pl-[22em] md:pl-0">
           {testimonials.map((t) => (
             <div
               key={t.name}

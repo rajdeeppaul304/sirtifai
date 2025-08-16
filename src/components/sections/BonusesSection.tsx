@@ -36,7 +36,7 @@ const BonusesSection: React.FC = () => {
         <h2 className="text-center text-4xl md:text-5xl font-bold tracking-tight mb-14 leading-tight">
           Enroll Today And Get These Bonuses Free:
         </h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-10">
+        <div className="grid gap-6 grid-cols-2 lg:grid-cols-4 mb-10">
           {bonuses.map((b) => (
             <div
               key={b.title}
@@ -54,7 +54,7 @@ const BonusesSection: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-row gap-4 justify-center">
           <button className="inline-flex justify-center items-center rounded-sm bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm px-8 py-3 shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40">
             Apply Now
           </button>

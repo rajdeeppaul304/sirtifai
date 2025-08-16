@@ -10,16 +10,16 @@ const features = [
 const FinalCTASection: React.FC = () => {
   return (
     <section className="bg-[#FE7642] text-white py-14">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col gap-10">
+      <div className="w-full md:max-w-7xl mx-auto px-2 md:px-6">
+        <div className="w-full flex flex-col gap-10">
           <div className="flex flex-col items-center text-center">
             <div className="flex items-start gap-3 mb-8">
               <span className="text-2xl md:text-3xl leading-none" aria-hidden="true">💬</span>
-              <p className="font-semibold text-2xl md:text-3xl leading-tight">"Still exploring? Let's help you decide."</p>
+              <p className="font-semibold text-2xl md:text-3xl leading-tight">&ldquo;Still exploring? Let&apos;s help you decide.&rdquo;</p>
             </div>
-            <ul className="flex flex-wrap justify-center gap-x-10 gap-y-5 text-sm md:text-[15px] font-medium max-w-5xl">
+            <ul className="grid grid-cols-2 lg:flex justify-center gap-x-10 gap-y-5 text-sm md:text-[15px] font-medium max-w-3xl">
               {features.map(({ label, icon: Icon }) => (
-                <li key={label} className="flex items-center gap-2 whitespace-nowrap">
+                <li key={label} className="flex items-center gap-2 text-left">
                   <span className="inline-flex items-center justify-center w-5 h-5" aria-hidden="true">
                     <Icon />
                   </span>
@@ -28,11 +28,11 @@ const FinalCTASection: React.FC = () => {
               ))}
             </ul>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-2 mt-8">
-            <button className="w-full sm:w-auto inline-flex justify-center items-center rounded-full bg-[#173447] hover:bg-[#132B3B] text-white font-medium text-sm md:text-base px-10 py-4 shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
+          <div className="flex flex-row items-center justify-center gap-2 md:gap-6 pt-2 mt-8">
+            <button className="w-full sm:w-auto inline-flex justify-center items-center rounded-full bg-[#173447] hover:bg-[#132B3B] text-white font-medium text-[.75rem] md:text-base px-2 md:px-10 py-2 md:py-4 shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
               Join The Freelancer Programme
             </button>
-            <button className="w-full sm:w-auto inline-flex justify-center items-center rounded-full bg-white text-gray-900 font-medium text-sm md:text-base px-10 py-4 shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
+            <button className="w-full sm:w-auto inline-flex justify-center items-center rounded-full bg-white text-gray-900 font-medium text-[.75rem] md:text-base px-10 py-4 shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
               Schedule A Free Call
             </button>
           </div>
