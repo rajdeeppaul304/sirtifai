@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
-import { getProgramPrice, getAddonPrice } from "../../../lib/pricing"
+import type { StandardizedPackageData } from "../../../lib/products"
 
 const prisma = new PrismaClient()
 
@@ -18,17 +18,26 @@ function base64ToBuffer(base64String: string): Buffer | null {
 
 export async function POST(request: NextRequest) {
   try {
-    const { studentData, packageData, orderId, paymentStatus } = await request.json()
-
-    const programPrice = getProgramPrice(packageData.program) // Get individual program price
-    const addonPrice = packageData.addon ? getAddonPrice(packageData.addon) : 0 // Get individual addon price
-    const basePrice = programPrice + addonPrice // Combined base price
-    const totalPrice = basePrice * packageData.months
-    const taxAmount = Math.round(totalPrice * 0.18)
-    const finalAmount = totalPrice + taxAmount
+    const {
+      studentData,
+      packageData,
+      orderId,
+      paymentStatus,
+    }: {
+      studentData: any
+      packageData: StandardizedPackageData
+      orderId: string
+      paymentStatus: string
+    } = await request.json()
 
     const photoBuffer = studentData.studentPhotoBase64 ? base64ToBuffer(studentData.studentPhotoBase64) : null
     const idDocumentBuffer = studentData.idDocumentBase64 ? base64ToBuffer(studentData.idDocumentBase64) : null
+
+    const duration = packageData.productData?.duration || packageData.selectedMonths || 1
+
+    const programPrice = packageData.pricing?.programPrice || packageData.programPrice || 0
+    const addonPrice = packageData.pricing?.addonPrice || packageData.addonPrice || 0
+    const totalAmount = packageData.pricing?.total || packageData.total || programPrice + addonPrice
 
     // Create student record with PROCESSING status
     const student = await prisma.student.create({
@@ -68,12 +77,13 @@ export async function POST(request: NextRequest) {
         idDocument: idDocumentBuffer,
 
         // Program Details
-        selectedProgram: packageData.program,
-        programDuration: packageData.months,
-        programPrice: programPrice, // Only the program price, not including addons
-        selectedAddon: packageData.addon || null,
-        addonPrice: addonPrice, // Only the addon price
-        totalAmount: finalAmount,
+        type: packageData.type || "program", // Add type field with fallback
+        selectedProgram: packageData.selectedProduct || packageData.selectedProgram || "",
+        programDuration: duration,
+        programPrice: programPrice,
+        selectedAddon: packageData.selectedAddon || null,
+        addonPrice: addonPrice,
+        totalAmount: totalAmount,
 
         // Payment Details
         razorpayOrderId: orderId,

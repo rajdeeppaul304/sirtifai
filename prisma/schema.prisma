@@ -55,66 +55,42 @@ model Student {
   photoUrl      String?
 
   // Program Selection
-  selectedProgram String
-  programDuration Int
-  programPrice    Float
-  selectedAddon   String?
-  addonPrice      Float?
-  totalAmount     Float
+  type            String        // "program" or "freelancer"
+  selectedProgram String        // Product ID from products.json
+  programDuration Int           // Duration in months (1 for freelancer/one-time)
+  programPrice    Float         // USD price
+  selectedAddon   String?       // Addon ID from products.json (optional)
+  addonPrice      Float?        // USD addon price (optional)
+  
+  invoiceNumber   String?       @unique // Invoice number format: SRT/INT/YYYYMMDD/XXXXXX
+  programName     String?       // Actual program name from products.json
+  addonName       String?       // Actual addon name from products.json
+  subtotal        Float?        // Program price * duration + addon price (USD)
+  gstRate         Float?        @default(18) // GST rate percentage
+  gstAmount       Float?        // GST amount in USD
+  totalAmount     Float?        // Total USD amount (subtotal + GST)
+
+  exchangeRateUsed  Float?      // Store the USD to INR rate used at payment time
+  programPriceINR   Float?      // Program price in INR at time of payment
+  addonPriceINR     Float?      // Addon price in INR at time of payment
+  subtotalINR       Float?      // Subtotal in INR
+  gstAmountINR      Float?      // GST amount in INR
+  totalINR          Float?      // Total amount in INR
 
   // Payment Details
   paymentId         String?
-  paymentStatus     PaymentStatus @default(PROCESSING) // Updated to use enum with PROCESSING default
+  paymentStatus     PaymentStatus @default(PROCESSING)
+  paymentMethod     String?      // Payment method used (Razorpay, etc.)
+  paymentDate       DateTime?    // When payment was completed
   razorpayOrderId   String?
   razorpayPaymentId String?
   razorpaySignature String?
 
-  exchangeRateUsed  Float? // Store the USD to INR rate used at payment time
-  totalAmountINR    Float? // Store the final INR amount calculated at payment time
-
-  invoiceLink       String? @unique // UUID for public invoice access
+  invoiceLink       String?      @unique // UUID for public invoice access
 
   // Confirmation
   agreedToTerms        Boolean @default(false)
   certifiedInformation Boolean @default(false)
 
-  invoices Invoice[]
-
   @@map("students")
-}
-
-model Invoice {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  invoiceNumber String  @unique
-  studentId     String
-  student       Student @relation(fields: [studentId], references: [id])
-
-  invoiceLink   String  @unique // UUID for public invoice access
-
-  programName     String
-  programPrice    Float
-  programDuration Int   // Added duration for proper calculation
-  addonName       String?
-  addonPrice      Float?
-  subtotal        Float // Program price * duration + addon price
-  gstRate         Float   @default(18) // Added GST rate
-  gstAmount       Float // Added GST amount
-  total           Float // Subtotal + GST
-
-  exchangeRateUsed Float // Store the USD to INR rate used at invoice creation time
-  
-  programPriceINR Float // Program price in INR at time of payment
-  addonPriceINR   Float? // Addon price in INR at time of payment
-  subtotalINR     Float // Subtotal in INR
-  gstAmountINR    Float // GST amount in INR
-  totalINR        Float // Total amount in INR
-
-  paymentStatus String
-  paymentMethod String
-  paymentDate   DateTime?
-
-  @@map("invoices")
 }

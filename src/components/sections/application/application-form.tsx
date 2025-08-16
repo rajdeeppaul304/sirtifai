@@ -4,8 +4,8 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Upload } from "lucide-react"
 import RazorpayCheckout from "../../payment/razorpay-checkout"
-import { PRICING, formatPrice, calculateTotal } from "../../../lib/pricing"
-import { getProductById } from "../../../lib/products"
+import { formatPrice } from "../../../lib/pricing"
+import type { StandardizedPackageData } from "../../../lib/products"
 
 interface FormData {
   // Personal Details
@@ -50,7 +50,7 @@ interface FormData {
 }
 
 const ApplicationForm = () => {
-  const [selectedPackage, setSelectedPackage] = useState<any>(null)
+  const [selectedPackage, setSelectedPackage] = useState<StandardizedPackageData | null>(null)
   const [formData, setFormData] = useState<FormData>({
     // Personal Details
     fullName: "",
@@ -98,6 +98,7 @@ const ApplicationForm = () => {
   useEffect(() => {
     // Load selected package from localStorage
     const packageData = localStorage.getItem("selectedPackage")
+    console.log(packageData)
     if (packageData) {
       setSelectedPackage(JSON.parse(packageData))
     }
@@ -267,10 +268,6 @@ const ApplicationForm = () => {
   const handlePaymentError = (error: any) => {
     console.error("Payment failed:", error)
     alert("Payment failed. Please try again.")
-  }
-
-  const getDisplayPrice = (programType: string, duration = 1, addons: string[] = []) => {
-    return formatPrice(calculateTotal(programType, addons) * duration)
   }
 
   return (
@@ -674,55 +671,36 @@ const ApplicationForm = () => {
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="font-medium">
-                      {(() => {
-                        if (selectedPackage.type === "freelancer") {
-                          const product = getProductById(selectedPackage.selectedProgram)
-                          return product?.name || selectedPackage.programData?.name
-                        } else {
-                          const product = getProductById(selectedPackage.selectedProgram)
-                          return product?.name || selectedPackage.programData?.name
-                        }
-                      })()}
-                    </span>
+                    <span className="font-medium">{selectedPackage.productData.name}</span>
                     <span className="text-gray-600">
                       {selectedPackage.type === "freelancer"
-                        ? `${formatPrice(selectedPackage.programData?.price)} one-time`
-                        : `${formatPrice(PRICING.SKILL_PHASE)} × ${selectedPackage.selectedDuration} months`}
+                        ? `${formatPrice(selectedPackage.productData.price)} one-time`
+                        : `${formatPrice(selectedPackage.productData.price)} × ${selectedPackage.productData.duration} months`}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Program Total:</span>
-                    <span className="font-semibold">
-                      {selectedPackage.type === "freelancer"
-                        ? formatPrice(selectedPackage.programData?.price)
-                        : formatPrice(PRICING.SKILL_PHASE * selectedPackage.selectedDuration)}
-                    </span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing.programPrice)}</span>
                   </div>
-                  {selectedPackage.addOnData && (
+                  {selectedPackage.addonData && (
                     <>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm">
-                          Add-on: {(() => {
-                            const addon = getProductById(selectedPackage.selectedAddOn)
-                            return addon?.name || selectedPackage.addOnData.name
-                          })()}
-                        </span>
-                        <span className="font-semibold">{formatPrice(selectedPackage.addOnData.price)}</span>
+                        <span className="text-sm">Add-on: {selectedPackage.addonData.name}</span>
+                        <span className="font-semibold">{formatPrice(selectedPackage.addonData.price)}</span>
                       </div>
                     </>
                   )}
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Subtotal:</span>
-                    <span className="font-semibold">{formatPrice(selectedPackage.pricing?.subtotal || 0)}</span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing.subtotal)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Tax (18%):</span>
-                    <span className="font-semibold">{formatPrice(selectedPackage.pricing?.tax || 0)}</span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing.gst)}</span>
                   </div>
                   <div className="flex justify-between items-center font-bold text-[#FC4C03]">
                     <span>Total Amount:</span>
-                    <span>{formatPrice(selectedPackage.pricing?.total || 0)}</span>
+                    <span>{formatPrice(selectedPackage.pricing.total)}</span>
                   </div>
                 </div>
               </div>
@@ -906,56 +884,41 @@ const ApplicationForm = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">
                       {selectedPackage.type === "freelancer"
-                        ? `${(() => {
-                            const product = getProductById(selectedPackage.selectedProgram)
-                            return product?.name || selectedPackage.programData?.name
-                          })()}:`
-                        : `${(() => {
-                            const product = getProductById(selectedPackage.selectedProgram)
-                            return product?.name || selectedPackage.programData?.name
-                          })()} (${selectedPackage.selectedDuration} months):`}
+                        ? `${selectedPackage.productData.name}:`
+                        : `${selectedPackage.productData.name} (${selectedPackage.productData.duration} months):`}
                     </span>
-                    <span className="font-semibold">
-                      {selectedPackage.type === "freelancer"
-                        ? formatPrice(selectedPackage.programData?.price)
-                        : formatPrice(PRICING.SKILL_PHASE * selectedPackage.selectedDuration)}
-                    </span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing.programPrice)}</span>
                   </div>
 
-                  {selectedPackage.addOnData && (
+                  {selectedPackage.addonData && (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-700">
-                        Add on ({(() => {
-                          const addon = getProductById(selectedPackage.selectedAddOn)
-                          return addon?.name || selectedPackage.addOnData.name
-                        })()}):
-                      </span>
-                      <span className="font-semibold">{formatPrice(selectedPackage.addOnData.price)}</span>
+                      <span className="text-gray-700">Add on ({selectedPackage.addonData.name}):</span>
+                      <span className="font-semibold">{formatPrice(selectedPackage.addonData.price)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Subtotal:</span>
-                    <span className="font-semibold">{formatPrice(selectedPackage.pricing?.subtotal || 0)}</span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing.subtotal)}</span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Tax (18%):</span>
-                    <span className="font-semibold">{formatPrice(selectedPackage.pricing?.tax || 0)}</span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing.gst)}</span>
                   </div>
 
                   <hr className="my-4" />
 
                   <div className="flex justify-between items-center text-lg font-bold">
                     <span>Total Amount</span>
-                    <span className="text-[#FC4C03]">{formatPrice(selectedPackage.pricing?.total || 0)}</span>
+                    <span className="text-[#FC4C03]">{formatPrice(selectedPackage.pricing.total)}</span>
                   </div>
                 </div>
 
                 <RazorpayCheckout
-                  selectedProgram={selectedPackage.selectedProgram}
-                  selectedMonths={selectedPackage.selectedDuration}
-                  selectedAddon={selectedPackage.selectedAddOn}
+                  selectedProgram={selectedPackage.selectedProduct}
+                  selectedMonths={selectedPackage.productData.duration}
+                  selectedAddon={selectedPackage.selectedAddon}
                   studentData={formData}
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}

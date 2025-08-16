@@ -3,6 +3,15 @@
 import { useState, useEffect, useRef } from "react"
 import { ChevronDown } from "lucide-react"
 import { useRouter } from "next/navigation"
+import {
+  getProgramAddons,
+  getSkillPhaseProducts,
+  getPracticePhaseProducts,
+  getProgressPhaseProducts,
+  createStandardizedPackageData,
+  getProductPrice,
+} from "../../../lib/products"
+import { calculatePricing } from "../../../lib/pricing"
 
 interface ProgramOption {
   id: string
@@ -21,125 +30,11 @@ interface AddOn {
   features: string[]
 }
 
-const programOptions: ProgramOption[] = [
-  {
-    id: "skill",
-    name: "Skill Phase",
-    price: 72, // This will be converted to USD for display
-    category: "skill",
-    features: ["Core skill development", "Learning Materials", "Foundational Knowledge", "Core Tracking progress"],
-  },
-  {
-    id: "practice-basic",
-    name: "Practice Phase - Basic",
-    price: 72,
-    category: "practice",
-    tier: "basic",
-    features: ["Basic project assignments", "Peer collaboration", "Weekly mentorship", "Portfolio development"],
-  },
-  {
-    id: "practice-pro",
-    name: "Practice Phase - Pro",
-    price: 120,
-    category: "practice",
-    tier: "pro",
-    features: [
-      "Advanced project assignments",
-      "Client simulation projects",
-      "Daily mentorship",
-      "Professional portfolio",
-      "Industry connections",
-    ],
-  },
-  {
-    id: "practice-elite",
-    name: "Practice Phase - Elite",
-    price: 220,
-    category: "practice",
-    tier: "elite",
-    features: [
-      "Real client projects",
-      "Premium mentorship",
-      "Personal branding",
-      "Elite portfolio",
-      "Direct industry placement",
-      "Global opportunities",
-    ],
-  },
-  {
-    id: "progress-basic",
-    name: "Progress Phase - Basic",
-    price: 220,
-    category: "progress",
-    tier: "basic",
-    features: ["Job placement assistance", "Resume optimization", "Interview preparation", "Basic career support"],
-  },
-  {
-    id: "progress-pro",
-    name: "Progress Phase - Pro",
-    price: 300,
-    category: "progress",
-    tier: "pro",
-    features: [
-      "Guaranteed job placement",
-      "Premium resume service",
-      "Mock interviews",
-      "Salary negotiation",
-      "Career coaching",
-    ],
-  },
-  {
-    id: "progress-elite",
-    name: "Progress Phase - Elite",
-    price: 700,
-    category: "progress",
-    tier: "elite",
-    features: [
-      "Premium job placement",
-      "Executive resume service",
-      "Leadership coaching",
-      "Global placement",
-      "Lifetime career support",
-      "Network access",
-    ],
-  },
-]
-
-const addOns: AddOn[] = [
-  {
-    id: "payroll",
-    name: "Payroll Services (via Deel™)",
-    price: 6, // This is now USD amount
-    description: "Get paid like a professional with verified income, payslips, and statutory benefits.",
-    features: ["Global Freelance Payroll", "International structure for US/UK/Canada clients", "Tax-ready payout"],
-  },
-  {
-    id: "ca",
-    name: "CA Services",
-    price: 48, // Converted to USD
-    description: "Chartered Accountant Support - Manage your income, taxes, and filings with expert CA assistance.",
-    features: ["GST filing", "Advance tax planning", "Bank reconciliation", "Income mapping", "Professional invoicing"],
-  },
-  {
-    id: "legal",
-    name: "Legal Services",
-    price: 60, // Converted to USD
-    description: "Contract & IP Support - Stay legally protected while working with clients—India or abroad.",
-    features: [
-      "5 legal drafts",
-      "IP rights protection",
-      "Basic dispute advisory",
-      "Contract templates",
-      "Legal compliance",
-    ],
-  },
-]
-
 const ProgramSelection = () => {
   const router = useRouter()
-  const [selectedProgram, setSelectedProgram] = useState<string>("skill")
+  const [selectedProgram, setSelectedProgram] = useState<string>("skill-phase")
   const [programDurations, setProgramDurations] = useState<Record<string, number>>({
-    skill: 3,
+    "skill-phase": 3,
     "practice-basic": 3,
     "practice-pro": 3,
     "practice-elite": 3,
@@ -153,16 +48,17 @@ const ProgramSelection = () => {
   const [showAddOnSuggestion, setShowAddOnSuggestion] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Removed USD conversion logic since prices are now in USD
-  const convertToUSD = (usdPrice: number) => {
-    return usdPrice // Prices are already in USD
-  }
+  const skillPhaseProducts = getSkillPhaseProducts()
+  const practicePhaseProducts = getPracticePhaseProducts()
+  const progressPhaseProducts = getProgressPhaseProducts()
+  const addonProducts = getProgramAddons()
 
-  const selectedProgramData = programOptions.find((p) => p.id === selectedProgram)
-  const selectedAddOnData = addOns.find((a) => a.id === selectedAddOn)
+  const selectedProgramData = [...skillPhaseProducts, ...practicePhaseProducts, ...progressPhaseProducts].find(
+    (p) => p.id === selectedProgram,
+  )
+  const selectedAddOnData = addonProducts.find((a) => a.id === selectedAddOn)
   const currentDuration = programDurations[selectedProgram] || 3
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -178,27 +74,18 @@ const ProgramSelection = () => {
 
   useEffect(() => {
     if (selectedProgramData) {
-      const programTotal = selectedProgramData.price * currentDuration
-      const addonTotal = selectedAddOnData?.price || 0
-      const subtotal = programTotal + addonTotal
-      const gst = Math.round(subtotal * 0.18)
-      const total = subtotal + gst
-
-      setCalculatedPricing({
-        programTotal,
-        addonTotal,
-        subtotal,
-        gst,
-        total,
-      })
+      const pricing = calculatePricing(selectedProgram, selectedAddOn || null, currentDuration)
+      setCalculatedPricing(pricing)
     }
   }, [selectedProgram, currentDuration, selectedAddOn, selectedProgramData, selectedAddOnData])
 
   const getDurationOptions = (programId: string) => {
-    const program = programOptions.find((p) => p.id === programId)
-    if (!program) return []
+    const product = [...skillPhaseProducts, ...practicePhaseProducts, ...progressPhaseProducts].find(
+      (p) => p.id === programId,
+    )
+    if (!product) return []
 
-    if (program.category === "progress") {
+    if (programId.startsWith("progress-")) {
       return Array.from({ length: 12 }, (_, i) => i + 1)
     }
     return [3, 6]
@@ -230,14 +117,12 @@ const ProgramSelection = () => {
   }
 
   const proceedToPurchase = () => {
-    const packageData = {
+    const packageData = createStandardizedPackageData(
+      "program",
       selectedProgram,
-      selectedDuration: currentDuration,
-      selectedAddOn,
-      programData: selectedProgramData,
-      addOnData: selectedAddOnData,
-      pricing: calculatedPricing,
-    }
+      selectedAddOn || null,
+      currentDuration,
+    )
 
     localStorage.setItem("selectedPackage", JSON.stringify(packageData))
     router.push("/application")
@@ -262,178 +147,173 @@ const ProgramSelection = () => {
           {/* Program Selection */}
           <div className="space-y-6">
             {/* Skill Phase */}
-            <div className="bg-white rounded-lg border border-gray-200  ">
+            <div className="bg-white rounded-lg border border-gray-200">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Skill Phase</h3>
               </div>
               <div className="p-4">
-                <label className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="program"
-                    value="skill"
-                    checked={selectedProgram === "skill"}
-                    onChange={(e) => setSelectedProgram(e.target.value)}
-                    className="w-4 h-4 text-[#FC4C03] border-gray-300 focus:ring-[#FC4C03]"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900">
-                        {/* ${convertToUSD(5999)} per month  */}
-                        $72 per month
-                      </span>
-                      <div className="relative">
-                        <button
-                          onClick={() => handleDropdownToggle("skill")}
-                          className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
-                        >
-                          <span>{programDurations.skill} Months</span>
-                          <ChevronDown className="w-4 h-4" />
-                        </button>
-                        {openDropdown === "skill" && (
-                          <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px]">
-                            {getDurationOptions("skill").map((duration) => (
-                              <button
-                                key={duration}
-                                onClick={() => handleDurationChange("skill", duration)}
-                                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
-                              >
-                                {duration} Months
-                              </button>
-                            ))}
-                          </div>
-                        )}
+                {skillPhaseProducts.map((program) => (
+                  <label key={program.id} className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="program"
+                      value={program.id}
+                      checked={selectedProgram === program.id}
+                      onChange={(e) => setSelectedProgram(e.target.value)}
+                      className="w-4 h-4 text-[#FC4C03] border-gray-300 focus:ring-[#FC4C03]"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-900">${getProductPrice(program)} per month</span>
+                        <div className="relative">
+                          <button
+                            onClick={() => handleDropdownToggle(program.id)}
+                            className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
+                          >
+                            <span>{programDurations[program.id]} Months</span>
+                            <ChevronDown className="w-4 h-4" />
+                          </button>
+                          {openDropdown === program.id && (
+                            <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px]">
+                              {getDurationOptions(program.id).map((duration) => (
+                                <button
+                                  key={duration}
+                                  onClick={() => handleDurationChange(program.id, duration)}
+                                  className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+                                >
+                                  {duration} Months
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </label>
+                  </label>
+                ))}
               </div>
             </div>
 
             {/* Practice Phase */}
-            <div className="bg-white rounded-lg border border-gray-200  ">
+            <div className="bg-white rounded-lg border border-gray-200">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Practice Phase (Your Selected Plan)</h3>
               </div>
               <div className="space-y-3 p-4">
-                {programOptions
-                  .filter((p) => p.category === "practice")
-                  .map((program) => (
-                    <label
-                      key={program.id}
-                      className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50"
-                    >
-                      <input
-                        type="radio"
-                        name="program"
-                        value={program.id}
-                        checked={selectedProgram === program.id}
-                        onChange={(e) => setSelectedProgram(e.target.value)}
-                        className="w-4 h-4 text-[#FC4C03] border-gray-300 focus:ring-[#FC4C03]"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="font-medium text-gray-900 capitalize">{program.tier}: </span>
-                            <span className="text-[#FC4C03] font-semibold">
-                              ${convertToUSD(program.price).toLocaleString()} per month {/* Display in USD */}
-                            </span>
-                          </div>
-                          <div className="relative">
-                            <button
-                              onClick={() => handleDropdownToggle(program.id)}
-                              className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
-                            >
-                              <span>{programDurations[program.id]} Months</span>
-                              <ChevronDown className="w-4 h-4" />
-                            </button>
-                            {openDropdown === program.id && (
-                              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px]">
-                                {getDurationOptions(program.id).map((duration) => (
-                                  <button
-                                    key={duration}
-                                    onClick={() => handleDurationChange(program.id, duration)}
-                                    className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
-                                  >
-                                    {duration} Months
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                {practicePhaseProducts.map((program) => (
+                  <label
+                    key={program.id}
+                    className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50"
+                  >
+                    <input
+                      type="radio"
+                      name="program"
+                      value={program.id}
+                      checked={selectedProgram === program.id}
+                      onChange={(e) => setSelectedProgram(e.target.value)}
+                      className="w-4 h-4 text-[#FC4C03] border-gray-300 focus:ring-[#FC4C03]"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="font-medium text-gray-900 capitalize">
+                            {program.name.replace("Practice Phase - ", "")}:
+                          </span>
+                          <span className="text-[#FC4C03] font-semibold">${getProductPrice(program)} per month</span>
+                        </div>
+                        <div className="relative">
+                          <button
+                            onClick={() => handleDropdownToggle(program.id)}
+                            className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
+                          >
+                            <span>{programDurations[program.id]} Months</span>
+                            <ChevronDown className="w-4 h-4" />
+                          </button>
+                          {openDropdown === program.id && (
+                            <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px]">
+                              {getDurationOptions(program.id).map((duration) => (
+                                <button
+                                  key={duration}
+                                  onClick={() => handleDurationChange(program.id, duration)}
+                                  className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+                                >
+                                  {duration} Months
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </label>
-                  ))}
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
 
             {/* Progress Phase */}
-            <div className="bg-white rounded-lg border border-gray-200  ">
+            <div className="bg-white rounded-lg border border-gray-200">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Progress Phase</h3>
               </div>
               <div className="space-y-3 p-4">
-                {programOptions
-                  .filter((p) => p.category === "progress")
-                  .map((program) => (
-                    <label
-                      key={program.id}
-                      className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50"
-                    >
-                      <input
-                        type="radio"
-                        name="program"
-                        value={program.id}
-                        checked={selectedProgram === program.id}
-                        onChange={(e) => setSelectedProgram(e.target.value)}
-                        className="w-4 h-4 text-[#FC4C03] border-gray-300 focus:ring-[#FC4C03]"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="font-medium text-gray-900 capitalize">{program.tier}: </span>
-                            <span className="text-[#FC4C03] font-semibold">
-                              ${convertToUSD(program.price).toLocaleString()} per month {/* Display in USD */}
-                            </span>
-                          </div>
-                          <div className="relative">
-                            <button
-                              onClick={() => handleDropdownToggle(program.id)}
-                              className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
-                            >
-                              <span>{programDurations[program.id]} Months</span>
-                              <ChevronDown className="w-4 h-4" />
-                            </button>
-                            {openDropdown === program.id && (
-                              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px] max-h-48 overflow-y-auto">
-                                {getDurationOptions(program.id).map((duration) => (
-                                  <button
-                                    key={duration}
-                                    onClick={() => handleDurationChange(program.id, duration)}
-                                    className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
-                                  >
-                                    {duration} Months
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                {progressPhaseProducts.map((program) => (
+                  <label
+                    key={program.id}
+                    className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50"
+                  >
+                    <input
+                      type="radio"
+                      name="program"
+                      value={program.id}
+                      checked={selectedProgram === program.id}
+                      onChange={(e) => setSelectedProgram(e.target.value)}
+                      className="w-4 h-4 text-[#FC4C03] border-gray-300 focus:ring-[#FC4C03]"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="font-medium text-gray-900 capitalize">
+                            {program.name.replace("Progress Phase - ", "")}:
+                          </span>
+                          <span className="text-[#FC4C03] font-semibold">${getProductPrice(program)} per month</span>
+                        </div>
+                        <div className="relative">
+                          <button
+                            onClick={() => handleDropdownToggle(program.id)}
+                            className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
+                          >
+                            <span>{programDurations[program.id]} Months</span>
+                            <ChevronDown className="w-4 h-4" />
+                          </button>
+                          {openDropdown === program.id && (
+                            <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 min-w-[120px] max-h-48 overflow-y-auto">
+                              {getDurationOptions(program.id).map((duration) => (
+                                <button
+                                  key={duration}
+                                  onClick={() => handleDurationChange(program.id, duration)}
+                                  className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+                                >
+                                  {duration} Months
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </label>
-                  ))}
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
 
             {/* Add-ons */}
-            <div className="bg-white rounded-lg border border-gray-200  ">
+            <div className="bg-white rounded-lg border border-gray-200">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Add-on Services</h3>
                 <p className="text-sm text-gray-600 mt-1">Select one add-on service to enhance your experience</p>
               </div>
               <div className="space-y-4 p-4">
-                {addOns.map((addOn) => (
+                {addonProducts.map((addOn) => (
                   <div key={addOn.id} className="border border-gray-200 rounded-lg p-4">
                     <label className="flex items-start space-x-3 cursor-pointer">
                       <input
@@ -508,41 +388,31 @@ const ProgramSelection = () => {
                     <span className="text-gray-700">
                       {selectedProgramData?.name} ({currentDuration} months):
                     </span>
-                    <span className="font-semibold">
-                      ${convertToUSD(calculatedPricing.programTotal).toLocaleString()} {/* Display in USD */}
-                    </span>
+                    <span className="font-semibold">${calculatedPricing.programPrice.toLocaleString()}</span>
                   </div>
 
                   {selectedAddOnData && (
                     <div className="flex justify-between items-center">
                       <span className="text-gray-700">Add on ({selectedAddOnData.name}):</span>
-                      <span className="font-semibold">
-                        ${convertToUSD(calculatedPricing.addonTotal).toLocaleString()} {/* Display in USD */}
-                      </span>
+                      <span className="font-semibold">${calculatedPricing.addonPrice.toLocaleString()}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Subtotal:</span>
-                    <span className="font-semibold">
-                      ${convertToUSD(calculatedPricing.subtotal).toLocaleString()} {/* Display in USD */}
-                    </span>
+                    <span className="font-semibold">${calculatedPricing.subtotal.toLocaleString()}</span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Tax (18%):</span>
-                    <span className="font-semibold">
-                      ${convertToUSD(calculatedPricing.gst).toLocaleString()} {/* Display in USD */}
-                    </span>
+                    <span className="font-semibold">${calculatedPricing.gst.toLocaleString()}</span>
                   </div>
 
                   <hr className="my-4" />
 
                   <div className="flex justify-between items-center text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-[#FC4C03]">
-                      ${convertToUSD(calculatedPricing.total).toLocaleString()} {/* Display in USD */}
-                    </span>
+                    <span className="text-[#FC4C03]">${calculatedPricing.total.toLocaleString()}</span>
                   </div>
                 </div>
               )}

@@ -31,9 +31,6 @@ export async function GET(request: NextRequest) {
     const students = await prisma.student.findMany({
       where: whereClause,
       orderBy: { createdAt: "desc" },
-      include: {
-        invoices: true,
-      },
     })
 
     // Transform data for frontend (convert binary data to base64 for display)

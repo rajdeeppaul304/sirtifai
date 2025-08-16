@@ -1,115 +1,76 @@
-export const PRICING = {
-  // Main Programs - using environment variables in USD
-  SKILL_PHASE: Number.parseFloat(process.env.NEXT_PUBLIC_SKILL_PHASE_PRICE || "72"),
-  PRACTICE_BASIC: Number.parseFloat(process.env.NEXT_PUBLIC_PRACTICE_BASIC_PRICE || "99"),
-  PRACTICE_PRO: Number.parseFloat(process.env.NEXT_PUBLIC_PRACTICE_PRO_PRICE || "149"),
-  PRACTICE_ELITE: Number.parseFloat(process.env.NEXT_PUBLIC_PRACTICE_ELITE_PRICE || "199"),
-  PROGRESS_BASIC: Number.parseFloat(process.env.NEXT_PUBLIC_PROGRESS_BASIC_PRICE || "299"),
-  PROGRESS_PRO: Number.parseFloat(process.env.NEXT_PUBLIC_PROGRESS_PRO_PRICE || "399"),
-  PROGRESS_ELITE: Number.parseFloat(process.env.NEXT_PUBLIC_PROGRESS_ELITE_PRICE || "499"),
+import productsData from "../data/products.json"
 
-  FREELANCER_BASIC: Number.parseFloat(process.env.NEXT_PUBLIC_FREELANCER_BASIC_PRICE || "140"),
-  FREELANCER_PRO: Number.parseFloat(process.env.NEXT_PUBLIC_FREELANCER_PRO_PRICE || "280"),
-  FREELANCER_ELITE: Number.parseFloat(process.env.NEXT_PUBLIC_FREELANCER_ELITE_PRICE || "505"),
-
-  // Add-ons - converted to USD equivalents
-  CAREER_PLACEMENT_VISA_GUIDANCE: 36,
-  EMPLOYER_CONNECT: 24,
-  RESUME_INTERVIEW_PREP: 12,
-  LIFETIME_REENTRY: 18,
-
-  PAYROLL_EPF: 400,
-  CA_SERVICES: 60,
-  LEGAL_SUPPORT: 66,
-  FREELANCER_SHIELD_COMBO: 480,
-
-  // Optional Add-ons - converted to USD equivalents
-  PERSONAL_BRANDING: 10,
-  LINKEDIN_OPTIMIZATION: 7,
-  MOCK_INTERVIEWS: 11,
-  PORTFOLIO_REVIEW: 8,
-
-  // Bundles - converted to USD equivalents
-  COMPLETE_PACKAGE: 156,
-  CAREER_BOOST_BUNDLE: 60,
-} as const
-
-export type PricingKey = keyof typeof PRICING
-
-export const getProgramPrice = (programType: string): number => {
-  switch (programType) {
-    case "skill-phase":
-      return PRICING.SKILL_PHASE
-    case "practice-basic":
-      return PRICING.PRACTICE_BASIC
-    case "practice-pro":
-      return PRICING.PRACTICE_PRO
-    case "practice-elite":
-      return PRICING.PRACTICE_ELITE
-    case "progress-basic":
-      return PRICING.PROGRESS_BASIC
-    case "progress-pro":
-      return PRICING.PROGRESS_PRO
-    case "progress-elite":
-      return PRICING.PROGRESS_ELITE
-    case "freelancer-basic":
-      return PRICING.FREELANCER_BASIC
-    case "freelancer-pro":
-      return PRICING.FREELANCER_PRO
-    case "freelancer-elite":
-      return PRICING.FREELANCER_ELITE
-    default:
-      return PRICING.SKILL_PHASE
-  }
+// Helper function to get product price from environment or fallback to JSON
+const getProductPrice = (envVar: string, fallbackPrice: number): number => {
+  return Number.parseFloat(process.env[envVar] || fallbackPrice.toString())
 }
 
-export const getAddonPrice = (addonType: string): number => {
-  switch (addonType) {
-    case "career-placement-visa-guidance":
-      return PRICING.CAREER_PLACEMENT_VISA_GUIDANCE
-    case "employer-connect":
-      return PRICING.EMPLOYER_CONNECT
-    case "resume-interview-prep":
-      return PRICING.RESUME_INTERVIEW_PREP
-    case "lifetime-reentry":
-      return PRICING.LIFETIME_REENTRY
-    case "personal-branding":
-      return PRICING.PERSONAL_BRANDING
-    case "linkedin-optimization":
-      return PRICING.LINKEDIN_OPTIMIZATION
-    case "mock-interviews":
-      return PRICING.MOCK_INTERVIEWS
-    case "portfolio-review":
-      return PRICING.PORTFOLIO_REVIEW
-    case "payroll-epf":
-      return PRICING.PAYROLL_EPF
-    case "ca-services":
-      return PRICING.CA_SERVICES
-    case "legal-support":
-      return PRICING.LEGAL_SUPPORT
-    case "freelancer-shield-combo":
-      return PRICING.FREELANCER_SHIELD_COMBO
-    default:
-      return 0
+// Get product by ID from centralized JSON
+export const getProductById = (id: string) => {
+  const allProducts = {
+    ...productsData.programs,
+    ...productsData.programAddons,
+    ...productsData.freelancer,
+    ...productsData.freelancerAddons,
   }
+  return allProducts[id as keyof typeof allProducts]
 }
 
+// Get program price using environment variables or JSON fallback
+export const getProgramPrice = (programId: string): number => {
+  const product = getProductById(programId)
+  if (!product) return 72 // fallback
+
+  return getProductPrice(product.priceEnvVar, product.price)
+}
+
+// Get addon price using environment variables or JSON fallback
+export const getAddonPrice = (addonId: string): number => {
+  const addon = getProductById(addonId)
+  if (!addon) return 0
+
+  return getProductPrice(addon.priceEnvVar, addon.price)
+}
+
+// Format price in USD
 export const formatPrice = (price: number): string => {
   return `$${price.toLocaleString()}`
 }
 
-export const calculateTotal = (programType: string, addons: string[] = []): number => {
-  const programPrice = getProgramPrice(programType)
-  const addonsPrice = addons.reduce((total, addon) => total + getAddonPrice(addon), 0)
+// Calculate total for program and addons
+export const calculateTotal = (programId: string, addonIds: string[] = [], duration = 1): number => {
+  const programPrice = getProgramPrice(programId) * duration
+  const addonsPrice = addonIds.reduce((total, addonId) => total + getAddonPrice(addonId), 0)
   return programPrice + addonsPrice
 }
 
-export const convertUSDToINR = (usdAmount: number): number => {
-  const usdToInrRate = Number.parseFloat(process.env.USD_TO_INR_RATE || "83")
-  return Math.round(usdAmount * usdToInrRate)
+// Calculate pricing breakdown
+export const calculatePricing = (programId: string, addonId: string | null, duration = 1) => {
+  const programPrice = getProgramPrice(programId) * duration
+  const addonPrice = addonId ? getAddonPrice(addonId) : 0
+  const subtotal = programPrice + addonPrice
+  const gst = Math.round(subtotal * 0.18)
+  const total = subtotal + gst
+
+  return {
+    programPrice,
+    addonPrice,
+    subtotal,
+    gst,
+    total,
+  }
 }
 
-export const formatINRPrice = (usdPrice: number): string => {
-  const inrPrice = convertUSDToINR(usdPrice)
-  return `₹${inrPrice.toLocaleString()}`
+// Legacy exports for backward compatibility
+export const PRICING = {
+  SKILL_PHASE: getProgramPrice("skill-phase"),
+  PRACTICE_BASIC: getProgramPrice("practice-basic"),
+  PRACTICE_PRO: getProgramPrice("practice-pro"),
+  PRACTICE_ELITE: getProgramPrice("practice-elite"),
+  PROGRESS_BASIC: getProgramPrice("progress-basic"),
+  PROGRESS_PRO: getProgramPrice("progress-pro"),
+  PROGRESS_ELITE: getProgramPrice("progress-elite"),
+  FREELANCER_BASIC: getProgramPrice("freelancer-basic"),
+  FREELANCER_PRO: getProgramPrice("freelancer-pro"),
+  FREELANCER_ELITE: getProgramPrice("freelancer-elite"),
 }

@@ -5,29 +5,30 @@ import { Button } from "../../ui/Button"
 import { Download, Printer, Mail } from "lucide-react"
 import { getProductById } from "../../../lib/products"
 
-interface InvoiceData {
+interface ApiResponse {
   invoice: {
     id: string
     invoiceNumber: string
     createdAt: string
     programName: string
     programPrice: number
+    programPriceINR: number
     programDuration: number
     addonName?: string
     addonPrice?: number
+    addonPriceINR?: number
     subtotal: number
+    subtotalINR: number
     gstRate: number
     gstAmount: number
-    total: number
-    exchangeRateUsed: number
-    programPriceINR: number
-    addonPriceINR?: number
-    subtotalINR: number
     gstAmountINR: number
+    total: number
     totalINR: number
+    exchangeRate: number
     paymentStatus: string
     paymentMethod: string
     paymentDate: string
+    type: string
   }
   student: {
     fullName: string
@@ -45,8 +46,38 @@ interface PublicInvoiceComponentProps {
   invoiceId: string
 }
 
+const numberToWords = (num: number): string => {
+  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
+  const teens = [
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+  ]
+  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"]
+
+  if (num === 0) return "Zero"
+  if (num < 10) return ones[num]
+  if (num < 20) return teens[num - 10]
+  if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " " + ones[num % 10] : "")
+  if (num < 1000) return ones[Math.floor(num / 100)] + " Hundred" + (num % 100 ? " " + numberToWords(num % 100) : "")
+  if (num < 100000)
+    return numberToWords(Math.floor(num / 1000)) + " Thousand" + (num % 1000 ? " " + numberToWords(num % 1000) : "")
+  if (num < 10000000)
+    return numberToWords(Math.floor(num / 100000)) + " Lakh" + (num % 100000 ? " " + numberToWords(num % 100000) : "")
+  return (
+    numberToWords(Math.floor(num / 10000000)) + " Crore" + (num % 10000000 ? " " + numberToWords(num % 10000000) : "")
+  )
+}
+
 export function PublicInvoiceComponent({ invoiceId }: PublicInvoiceComponentProps) {
-  const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null)
+  const [invoiceData, setInvoiceData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showEmailModal, setShowEmailModal] = useState(false)
@@ -158,6 +189,17 @@ export function PublicInvoiceComponent({ invoiceId }: PublicInvoiceComponentProp
 
   const { invoice, student } = invoiceData
 
+  const isFreelancerPackage = () => {
+    return invoice.type === "freelancer" || invoice.programName.toLowerCase().includes("freelancer")
+  }
+
+  const getDurationText = () => {
+    if (isFreelancerPackage()) {
+      return "One-time"
+    }
+    return invoice.programDuration > 1 ? `${invoice.programDuration} Months` : `${invoice.programDuration} Month`
+  }
+
   const getServiceDetails = (programName: string) => {
     const programProduct = getProductById(programName.toLowerCase().replace(/\s+/g, "-"))
     if (programProduct) {
@@ -168,8 +210,8 @@ export function PublicInvoiceComponent({ invoiceId }: PublicInvoiceComponentProp
       }
     }
 
-    const isFreelancerPackage = programName.toLowerCase().includes("freelancer")
-    if (isFreelancerPackage) {
+    const isFreelancerPackageLocal = isFreelancerPackage()
+    if (isFreelancerPackageLocal) {
       if (programName.toLowerCase().includes("basic")) {
         return {
           title: "Freelancer Basic Package",
@@ -355,7 +397,7 @@ export function PublicInvoiceComponent({ invoiceId }: PublicInvoiceComponentProp
                       </div>
                     </td>
                     <td className="border border-black p-2">{serviceDetails.sacCode}</td>
-                    <td className="border border-black p-2">One-time</td>
+                    <td className="border border-black p-2">{getDurationText()}</td>
                     <td className="border border-black p-2">1</td>
                     <td className="border border-black p-2 text-right">
                       {(invoice.programPriceINR || 0).toLocaleString()}.00
@@ -398,7 +440,7 @@ export function PublicInvoiceComponent({ invoiceId }: PublicInvoiceComponentProp
                     <tr>
                       <td className="border border-black p-2 font-semibold">Total Taxable Value:</td>
                       <td className="border border-black p-2 text-right">
-                        ₹ {invoice.subtotalINR.toLocaleString()}.00
+                        ₹ {(invoice.subtotalINR || 0).toLocaleString()}.00
                       </td>
                     </tr>
                     <tr>
@@ -543,80 +585,4 @@ export function PublicInvoiceComponent({ invoiceId }: PublicInvoiceComponentProp
       </div>
     </div>
   )
-}
-
-function numberToWords(num: number): string {
-  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
-  const teens = [
-    "Ten",
-    "Eleven",
-    "Twelve",
-    "Thirteen",
-    "Fourteen",
-    "Fifteen",
-    "Sixteen",
-    "Seventeen",
-    "Eighteen",
-    "Nineteen",
-  ]
-  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"]
-
-  if (num === 0) return "Zero"
-
-  let result = ""
-  const crores = Math.floor(num / 10000000)
-  const lakhs = Math.floor((num % 10000000) / 100000)
-  const thousands = Math.floor((num % 100000) / 1000)
-  const hundreds = Math.floor((num % 1000) / 100)
-  const remainder = num % 100
-
-  if (crores > 0) {
-    result += convertHundreds(crores) + " Crore "
-  }
-  if (lakhs > 0) {
-    result += convertHundreds(lakhs) + " Lakh "
-  }
-  if (thousands > 0) {
-    result += convertHundreds(thousands) + " Thousand "
-  }
-  if (hundreds > 0) {
-    result += ones[hundreds] + " Hundred "
-  }
-  if (remainder > 0) {
-    if (remainder < 10) {
-      result += ones[remainder]
-    } else if (remainder < 20) {
-      result += teens[(remainder % 10) - 10]
-    } else {
-      result += tens[Math.floor(remainder / 10)]
-      if (remainder % 10 > 0) {
-        result += " " + ones[remainder % 10]
-      }
-    }
-  }
-
-  return result.trim()
-
-  function convertHundreds(n: number): string {
-    let str = ""
-    const h = Math.floor(n / 100)
-    const t = Math.floor((n % 100) / 10)
-    const o = n % 10
-
-    if (h > 0) {
-      str += ones[h] + " Hundred"
-    }
-    if (n % 100 >= 10 && n % 100 < 20) {
-      str += (str ? " " : "") + teens[(n % 100) - 10]
-    } else {
-      if (t > 0) {
-        str += (str ? " " : "") + tens[t]
-      }
-      if (o > 0) {
-        str += (str ? " " : "") + ones[o]
-      }
-    }
-
-    return str
-  }
 }

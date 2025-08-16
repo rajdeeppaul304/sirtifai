@@ -1,5 +1,5 @@
 {
-  "programs": {
+    "programs": {
     "skill-phase": {
       "id": "skill-phase",
       "name": "Skill Phase",
@@ -8,7 +8,12 @@
       "type": "one-time",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_SKILL_PHASE_PRICE",
-      "defaultPrice": 72
+      "price": 72,
+      "features": [
+        "Core skill-building through structured modules",
+        "Hands-on projects to apply learned concepts",
+        "Peer reviews and mentor feedback on projects"
+      ]
     },
     "practice-basic": {
       "id": "practice-basic",
@@ -19,7 +24,12 @@
       "monthlyOptions": "1-12",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_PRACTICE_BASIC_PRICE",
-      "defaultPrice": 99
+      "price": 99,
+      "features": [
+        "Access to basic-level practice projects",
+        "Group mentorship sessions",
+        "Project reviews and feedback"
+      ]
     },
     "practice-pro": {
       "id": "practice-pro",
@@ -30,7 +40,12 @@
       "monthlyOptions": "1-12",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_PRACTICE_PRO_PRICE",
-      "defaultPrice": 149
+      "price": 149,
+      "features": [
+        "Advanced projects aligned with industry standards",
+        "1-on-1 sessions with industry mentors",
+        "Code reviews and optimization suggestions"
+      ]
     },
     "practice-elite": {
       "id": "practice-elite",
@@ -41,7 +56,12 @@
       "monthlyOptions": "1-12",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_PRACTICE_ELITE_PRICE",
-      "defaultPrice": 199
+      "price": 199,
+      "features": [
+        "Exclusive elite-level project access",
+        "Personalized 1-on-1 weekly mentorship",
+        "Career-aligned feedback and project guidance"
+      ]
     },
     "progress-basic": {
       "id": "progress-basic",
@@ -52,7 +72,12 @@
       "monthlyOptions": "3-6",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_PROGRESS_BASIC_PRICE",
-      "defaultPrice": 129
+      "price": 129,
+      "features": [
+        "Guided job search strategies",
+        "Resume and profile building support",
+        "Weekly progress tracking and check-ins"
+      ]
     },
     "progress-pro": {
       "id": "progress-pro",
@@ -63,7 +88,12 @@
       "monthlyOptions": "3-6",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_PROGRESS_PRO_PRICE",
-      "defaultPrice": 179
+      "price": 179,
+      "features": [
+        "Dedicated career coach support",
+        "Customized job application strategies",
+        "Networking and referral guidance"
+      ]
     },
     "progress-elite": {
       "id": "progress-elite",
@@ -74,7 +104,12 @@
       "monthlyOptions": "3-6",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_PROGRESS_ELITE_PRICE",
-      "defaultPrice": 229
+      "price": 229,
+      "features": [
+        "Premium 1-on-1 career mentorship",
+        "Interview coaching and mock sessions",
+        "End-to-end job offer negotiation support"
+      ]
     }
   },
   "programAddons": {
@@ -86,7 +121,12 @@
       "type": "one-time",
       "sacCode": "998596",
       "priceEnvVar": "NEXT_PUBLIC_CAREER_GUIDANCE_PRICE",
-      "defaultPrice": 49
+      "price": 39,
+      "features": [
+        "One-on-one career counseling session",
+        "Customized career roadmap based on goals",
+        "Industry-specific growth advice"
+      ]
     },
     "interview-prep": {
       "id": "interview-prep",
@@ -96,7 +136,12 @@
       "type": "one-time",
       "sacCode": "998596",
       "priceEnvVar": "NEXT_PUBLIC_INTERVIEW_PREP_PRICE",
-      "defaultPrice": 39
+      "price": 39,
+      "features": [
+        "Mock technical and behavioral interviews",
+        "Personalized interview performance feedback",
+        "Tips and techniques to improve confidence"
+      ]
     },
     "resume-review": {
       "id": "resume-review",
@@ -106,7 +151,12 @@
       "type": "one-time",
       "sacCode": "998596",
       "priceEnvVar": "NEXT_PUBLIC_RESUME_REVIEW_PRICE",
-      "defaultPrice": 29
+      "price": 29,
+      "features": [
+        "In-depth review by hiring professionals",
+        "Suggestions for structure, language, and keywords",
+        "ATS-friendly formatting and optimization"
+      ]
     }
   },
   "freelancer": {
@@ -118,7 +168,12 @@
       "type": "one-time",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_FREELANCER_BASIC_PRICE",
-      "defaultPrice": 49
+      "price": 49,
+      "features": [
+        "Access to essential freelancing tools for day-to-day operations",
+        "Basic contract and invoice templates",
+        "Starter guide for client communication and project setup"
+      ]
     },
     "freelancer-pro": {
       "id": "freelancer-pro",
@@ -128,7 +183,12 @@
       "type": "one-time",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_FREELANCER_PRO_PRICE",
-      "defaultPrice": 68
+      "price": 68,
+      "features": [
+        "Advanced freelancing tools including time tracking and proposal builder",
+        "Premium templates for contracts, proposals, and invoices",
+        "Client management tools and access to marketing resources"
+      ]
     },
     "freelancer-elite": {
       "id": "freelancer-elite",
@@ -138,10 +198,15 @@
       "type": "one-time",
       "sacCode": "999293",
       "priceEnvVar": "NEXT_PUBLIC_FREELANCER_ELITE_PRICE",
-      "defaultPrice": 99
+      "price": 99,
+      "features": [
+        "Complete suite including all Pro tools plus financial tracking and CRM integration",
+        "Priority support and access to legal & business experts",
+        "Exclusive access to advanced growth tools and freelancing community"
+      ]
     }
   },
-  "freelancerAddons": {
+ "freelancerAddons": {
     "payroll-epf": {
       "id": "payroll-epf",
       "name": "Payroll + EPF Services",
@@ -150,7 +215,12 @@
       "type": "one-time",
       "sacCode": "998596",
       "priceEnvVar": "NEXT_PUBLIC_PAYROLL_EPF_PRICE",
-      "defaultPrice": 47.2
+      "price": 47.2,
+      "features": [
+        "Automated payroll processing for accurate and timely employee payments",
+        "EPF (Employees' Provident Fund) compliance and contributions management",
+        "Monthly tax calculation and TDS deductions with payment automation"
+      ]
     },
     "tax-filing": {
       "id": "tax-filing",
@@ -160,7 +230,12 @@
       "type": "one-time",
       "sacCode": "998596",
       "priceEnvVar": "NEXT_PUBLIC_TAX_FILING_PRICE",
-      "defaultPrice": 35
+      "price": 35,
+      "features": [
+        "End-to-end support for income tax return (ITR) filing",
+        "Review and optimization of deductions and exemptions",
+        "Assistance with tax notices, queries, and compliance updates"
+      ]
     },
     "legal-support": {
       "id": "legal-support",
@@ -170,7 +245,12 @@
       "type": "one-time",
       "sacCode": "998596",
       "priceEnvVar": "NEXT_PUBLIC_LEGAL_SUPPORT_PRICE",
-      "defaultPrice": 42
+      "price": 42,
+      "features": [
+        "Access to standard legal contract templates (NDA, service agreements, etc.)",
+        "One-on-one legal consultation for business matters",
+        "Guidance on compliance, risk mitigation, and intellectual property protection"
+      ]
     },
     "business-setup": {
       "id": "business-setup",
@@ -180,7 +260,12 @@
       "type": "one-time",
       "sacCode": "998596",
       "priceEnvVar": "NEXT_PUBLIC_BUSINESS_SETUP_PRICE",
-      "defaultPrice": 55
+      "price": 55,
+      "features": [
+        "Company or sole proprietorship registration (GST, PAN, etc.)",
+        "Assistance with obtaining business licenses and permits",
+        "Compliance checklist and documentation setup for new businesses"
+      ]
     }
   }
 }
