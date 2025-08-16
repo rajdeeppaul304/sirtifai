@@ -1,54 +1,140 @@
+"use client"
+
+import { motion, useInView } from "framer-motion"
+import { useRef } from "react"
+
+const MotionSection = motion.section
+const MotionDiv = motion.div
+const MotionH3 = motion.h3
+const MotionP = motion.p
+
 export const NSQFCredibilitySection = () => {
+  const sectionRef = useRef(null)
+  const sectionInView = useInView(sectionRef, { once: true, margin: "-100px" })
+
   return (
-    <section className="w-full bg-[#FEF7F1] py-20">
+    <MotionSection
+      ref={sectionRef}
+      className="w-full bg-[#FEF7F1] py-20"
+      initial={{ opacity: 0 }}
+      animate={sectionInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.8 }}
+    >
       <div className="max-w-7xl mx-auto px-6">
         {/* Top Orange Banner */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-12">
-          <div className="bg-orange-500 text-white px-6 py-3 rounded-lg font-bold text-base whitespace-nowrap">
+        <MotionDiv
+          className="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <MotionDiv
+            className="bg-orange-500 text-white px-6 py-3 rounded-lg font-bold text-base whitespace-nowrap"
+            initial={{ opacity: 0, x: -30 }}
+            animate={sectionInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            whileHover={{ scale: 1.05 }}
+          >
             NSQF-Certified Programs - Credibility & Compliance
-          </div>
-          <p className="text-gray-700 text-lg leading-relaxed">
+          </MotionDiv>
+          <MotionP
+            className="text-gray-700 text-lg leading-relaxed"
+            initial={{ opacity: 0, x: 30 }}
+            animate={sectionInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
             Establish that Sirtifai certifications are officially recognized and structured to national skill standards.
-          </p>
-        </div>
+          </MotionP>
+        </MotionDiv>
 
         {/* Main Content Box - Dark Blue with Three Columns */}
-        <div className="bg-gray-900 rounded-2xl p-12">
+        <MotionDiv
+          className="bg-gray-900 rounded-2xl p-12"
+          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          animate={sectionInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.95 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          whileHover={{ scale: 1.02 }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Column 1 - What is NSQF? */}
-            <div className="text-center md:text-left">
-              <h3 className="text-xl font-bold text-white mb-4">
+            <MotionDiv
+              className="text-center md:text-left"
+              initial={{ opacity: 0, y: 30 }}
+              animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <MotionH3
+                className="text-xl font-bold text-white mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.4, delay: 1.0 }}
+              >
                 What is NSQF?
-              </h3>
-              <p className="text-gray-300 leading-relaxed">
-                National Skills Qualifications Framework, a government-approved standard aligning learning outcomes with job roles.
-              </p>
-            </div>
+              </MotionH3>
+              <MotionP
+                className="text-gray-300 leading-relaxed"
+                initial={{ opacity: 0, y: 15 }}
+                animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                transition={{ duration: 0.4, delay: 1.2 }}
+              >
+                National Skills Qualifications Framework, a government-approved standard aligning learning outcomes with
+                job roles.
+              </MotionP>
+            </MotionDiv>
 
             {/* Column 2 - Why it matters */}
-            <div className="text-center md:text-left">
-              <h3 className="text-xl font-bold text-white mb-4">
+            <MotionDiv
+              className="text-center md:text-left"
+              initial={{ opacity: 0, y: 30 }}
+              animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+            >
+              <MotionH3
+                className="text-xl font-bold text-white mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.4, delay: 1.2 }}
+              >
                 Why it matters:
-              </h3>
-              <p className="text-gray-300 leading-relaxed">
+              </MotionH3>
+              <MotionP
+                className="text-gray-300 leading-relaxed"
+                initial={{ opacity: 0, y: 15 }}
+                animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                transition={{ duration: 0.4, delay: 1.4 }}
+              >
                 Ensures your qualification matches the skill level employers expect.
-              </p>
-            </div>
+              </MotionP>
+            </MotionDiv>
 
             {/* Column 3 - How Sirtifai applies it */}
-            <div className="text-center md:text-left">
-              <h3 className="text-xl font-bold text-white mb-4">
+            <MotionDiv
+              className="text-center md:text-left"
+              initial={{ opacity: 0, y: 30 }}
+              animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+            >
+              <MotionH3
+                className="text-xl font-bold text-white mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.4, delay: 1.4 }}
+              >
                 How Sirtifai applies it:
-              </h3>
-              <p className="text-gray-300 leading-relaxed">
-                Every Skill, Practice, and Progress phase is mapped to specific NSQF levels for accurate, job-ready skill benchmarking.
-              </p>
-            </div>
+              </MotionH3>
+              <MotionP
+                className="text-gray-300 leading-relaxed"
+                initial={{ opacity: 0, y: 15 }}
+                animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                transition={{ duration: 0.4, delay: 1.6 }}
+              >
+                Every Skill, Practice, and Progress phase is mapped to specific NSQF levels for accurate, job-ready
+                skill benchmarking.
+              </MotionP>
+            </MotionDiv>
           </div>
-        </div>
+        </MotionDiv>
       </div>
-    </section>
-
-    
-  );
-};
+    </MotionSection>
+  )
+}

@@ -1,98 +1,102 @@
-import React from "react";
-import { Button } from "../ui/Button";
-import { FaPlay } from "react-icons/fa";
-// Use specific freelancer vector asset
+import type React from "react";
+import { FaShieldAlt, FaWallet } from "react-icons/fa";
+import { MdAccessTimeFilled } from "react-icons/md";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+
 const vectorPath = "/assets/freelancer/Vector.svg";
 
-const LandingFreelancer: React.FC = () => {
+// Circular check icon per design
+const Check: React.FC<{ className?: string }> = ({ className = "" }) => (
+  <span className={"inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FF6A2D] mt-[2px] " + className}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="#ffffff"
+      strokeWidth={2}
+      className="w-3 h-3"
+    >
+      <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </span>
+);
+
+const features = [
+  {
+    icon: <FaWallet className="text-[#FF5C35]"/>,
+    title: 'Receive every task payment',
+    text: 'Get paid for each completed task'
+  },
+  {
+    icon: <FaMoneyBillTransfer className="text-[#FF5C35]"/>,
+    title: 'All payment methods supported',
+    text: 'UPI, Bank transfer, wallet and more'
+  },
+  {
+    icon: <FaShieldAlt className="text-[#FF5C35]"/>,
+    title: 'Secure payment protection',
+    text: 'Your earnings are safe and guaranteed'
+  },
+  {
+    icon: <MdAccessTimeFilled className="text-[#FF5C35]"/>,
+    title: 'Transparent payment processing',
+    text: 'No hidden fees, no surprises'
+  },
+];
+
+const TestimonialSection: React.FC = () => {
   return (
-    <section className="relative bg-[#FCF8F5] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-10 lg:py-28 flex flex-col
-       lg:flex-row gap-6 xl:gap-10 items-center">
-        {/* Left content */}
-        <div className="flex flex-col justify-between items-start lg:pl-2 xl:pl-4">
-          <div className="relative inline-block mb-12 pt-3">
+    <section className="py-24 px-6 bg-white">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+        {/* Visual */}
+        <div className="relative mx-auto w-full max-w-[380px] sm:max-w-[440px] md:max-w-[500px] lg:max-w-[540px] aspect-square">
+          <div className="absolute -top-5 -left-5 w-full h-full bg-orange-500 rounded-md" aria-hidden="true" />
+          <div className="relative w-full h-full border-2 border-sky-500 rounded-sm overflow-hidden shadow-sm">
+            <img
+              src="/assets/freelancer/man-front-view-freelance.png"
+              alt="Professional working with tablet"
+              className="w-full h-full object-cover object-center"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-xl mx-auto lg:mx-0">
+          <div className="relative w-[60%] lg:w-full ">
+            <h2 className="text-[2rem] md:text-4xl font-bold text-slate-900 leading-snug">
+              Get Paid Professionally, Like a Full-Time Employee
+            </h2>
             <img
               src={vectorPath}
               alt=""
               aria-hidden="true"
-              className="pointer-events-none select-none absolute -top-8 left-1/2 ml-60 mt-12 w-14 h-14"
+              className="pointer-events-none select-none absolute -top-15 -left-20 ml-60 mt-12 w-14 h-14"
             />
-            <h1 className="font-bold text-[2.5rem] leading-[1.06] sm:text-[3.2rem] md:text-[3.675rem] tracking-tight text-[#0B0B0B] max-w-[880px]">
-              <span className="block">Sirtifai Freelancer</span>
-              <span className="block">Programme – Earn From</span>
-              <span className="block">Day 1, Grow For Life.</span>
-            </h1>
           </div>
-          <p className="hidden md:flex text-gray-700 text-sm sm:text-base md:text-lg max-w-2xl mb-12 leading-relaxed">
-            Work on real projects, get paid monthly, build a verified freelance career with payroll, legal, and client access.
+          <p className="mt-5 text-sm md:text-base text-slate-600 hidden lg:flex">
+            Your income goes through Deel™, giving you:
           </p>
-          <div className="hidden lg:flex flex-row gap-7 items-center">
-            <Button
-              variant="secondary"
-              size="lg"
-              className="relative rounded-full bg-[#173447] text-white font-medium shadow-md hover:shadow-lg transition-all overflow-hidden ring-1 ring-[#0E212D] ring-inset after:content-[''] after:absolute after:inset-[4px] after:rounded-full after:border-2 after:border-gray-400 after:pointer-events-none hover:bg-[#142C3C] flex justify-between items-center gap-6"
-            >
-              Watch Stories
-              <div className="bg-[#BDBDBD] rounded-full p-2 flex justify-center items-center text-white">
-                <FaPlay/>
-              </div>
-            </Button>
-
-            <Button
-              variant="primary"
-              size="lg"
-              className="rounded-full px-9 py-4 bg-[#FF6A2D] hover:bg-[#fe6d33] text-white font-medium shadow-sm hover:shadow-md transition-all"
-            >
-              Book A Free Call
-            </Button>
-          </div>
+          <ul className="mt-6 space-y-4">
+            {features.map((f, index) => (
+              <li key={index} className="flex gap-3 text-sm md:text-base text-slate-700">
+                <div className="bg-[#FF5C351A] rounded-full w-[40px] h-[40px] flex justify-center items-center">
+                  {f.icon}
+                </div>
+                <div className="flex flex-col gap-.5">
+                  <h3 className="text-[#1A1A1A] text-[1.125rem] font-semibold">Receive every task payment</h3>
+                  <p className="text-[#4B5563] text-[1rem] font-normal">Get paid for each completed task</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p className="hidden lg:flex mt-8 italic font-medium text-slate-800 leading-relaxed">
+            &ldquo;This isn&apos;t freelancing with guesswork—it&apos;s verified, traceable, and legal.&rdquo;
+          </p>
         </div>
-
-        {/* Right visual */}
-
-        {/* <div className="flex lg:hidden justify-center lg:justify-end order-1 lg:order-2 pr-2"> */}
-          {/* <div className="w-[360px] h-[360px] sm:w-[430px] sm:h-[430px] lg:w-[460px] lg:h-[460px] flex items-center justify-center"> */}
-        
-
-        {/* </div> */}
-
-        <div className="relative flex justify-center lg:justify-end order-1 lg:order-2 pr-2">
-          <div className="relative w-[360px] h-[360px] sm:w-[430px] sm:h-[430px] lg:w-[460px] lg:h-[460px] flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-[#FE7642]" aria-hidden />
-              <img
-                src="/assets/freelancer/guy-phone.png"
-                alt="Freelancer using a tablet"
-                className="relative z-10 h-full object-contain"
-              />
-            </div>
-          </div>
-
-          
-        </div>
-
-        <div className="flex lg:hidden gap-2 mt-4 pl-4 items-center">
-            <Button
-              variant="secondary"
-              size="lg"
-              className="relative rounded-full bg-[#173447] text-white font-medium shadow-md hover:shadow-lg transition-all overflow-hidden ring-1 ring-[#0E212D] ring-inset after:content-[''] after:absolute after:inset-[4px] after:rounded-full after:border-2 after:border-gray-400 after:pointer-events-none hover:bg-[#142C3C] flex justify-between items-center gap-6 h-[56px] text-sm md:text-lg"
-            >
-              Watch Stories
-              <div className="bg-[#BDBDBD] rounded-full p-2 flex justify-center items-center text-white">
-                <FaPlay/>
-              </div>
-            </Button>
-
-            <Button
-              variant="primary"
-              size="lg"
-              className="rounded-full px-9 py-4 bg-[#FF6A2D] hover:bg-[#fe6d33] text-white h-[56px] text-sm md:text-lg font-medium shadow-sm hover:shadow-md transition-all"
-            >
-              Book A Free Call
-            </Button>
-          </div>
+      </div>
     </section>
   );
 };
 
-export default LandingFreelancer;
+export default TestimonialSection;
