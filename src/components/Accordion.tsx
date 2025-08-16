@@ -41,7 +41,7 @@ export const Accordion: React.FC = () => {
       {faqData.map((item, index) => (
         <div 
           key={index}
-        className="bg-[#FEF7F1] shadow-xl w-full rounded-lg overflow-hidden transition-all duration-200 hover:shadow-sm"
+        className="bg-white sm:bg-[#FEF7F1] sm:border-none border border-orange-300 shadow-xl w-full rounded-lg overflow-hidden transition-all duration-200 hover:shadow-sm"
         >
           <button
             onClick={() => toggleAccordion(index)}
