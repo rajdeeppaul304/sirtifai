@@ -1,5 +1,6 @@
-import type React from "react"
-import { Check, ArrowRight, FileText, Scale } from "lucide-react"
+
+'use client';
+import { Check, ArrowRight, FileText, Scale } from 'lucide-react';
 
 interface AddOnService {
   id: string
@@ -49,13 +50,11 @@ export const OptionalAddOns = () => {
           </p>
         </div>
 
-        {/* Add-On Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Add-On Services */}
+        <div className="add-ons-wrapper">
           {ADD_ON_SERVICES.map((service) => (
-            <div
-              key={service.id}
-              className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow"
-            >
+            <div key={service.id} className="add-on-card bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+
               {/* Service Header */}
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -86,6 +85,45 @@ export const OptionalAddOns = () => {
           ))}
         </div>
       </div>
+
+      {/* Scoped CSS for mobile scroll */}
+      <style jsx>{`
+        .add-ons-wrapper {
+          display: flex;
+          gap: 1.5rem;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          padding-bottom: 1rem;
+        }
+
+        .add-on-card {
+          flex: 0 0 85%;
+          scroll-snap-align: center;
+        }
+
+        .add-ons-wrapper::-webkit-scrollbar {
+          display: none;
+        }
+        .add-ons-wrapper {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        @media (min-width: 768px) {
+          .add-ons-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            overflow-x: visible;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .add-ons-wrapper {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+      `}</style>
     </section>
   )
 }

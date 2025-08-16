@@ -45,25 +45,23 @@ export const InternationalHeroSection = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Side - Text Content and CTA */}
-          <div>
+          <div className=' sm:block'>
             {/* Headline with Star Icon */}
-            <div className="mb-8">
-              <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight">
+            <div className="-mb-14 sm:mb-8 -mt-7">
+              <h1 className="text-4xl  md:text-6xl font-semibold sm:font-extrabold text-gray-900 mb-6 tracking-tight leading-tight">
                 Your Global Career In Just 18 Months
                 <span className="inline-block ml-3">
-                  <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                    <Star size={16} className="text-white fill-current" />
-                  </div>
+              <div><img src='assets/star.svg' alt="" /></div>
                 </span>
               </h1>
               
-              <p className="text-xl text-gray-700 leading-relaxed font-normal">
+              <p className=" hidden  sm:block text-xl text-gray-700 leading-relaxed font-normal ">
                 A comprehensive roadmap to international opportunities with complete visa support and placement assistance.
               </p>
             </div>
 
             {/* Call-to-Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="hidden sm:flex flex-col sm:flex-row gap-4">
               {/* Start Your Global Career Button */}
 <button className=" double-border-btn ">
   Start Your Global Career
@@ -100,13 +98,30 @@ export const InternationalHeroSection = () => {
                 </div>
               </div>
             </div>
+{/* mobile view paragraph */}
+            <div className="w-96 sm:hidden inline-flex flex-col justify-start items-start gap-4  mt-12">
+    <div className="self-stretch justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal pt-16">A comprehensive roadmap to international opportunities with complete visa support and placement assistance.</div>
+    <div className="flex flex-col justify-center items-start gap-4">
+        <div className="px-[5px] py-[3px] bg-slate-700 rounded-[114px] flex flex-col justify-start items-start gap-2.5">
+            <div className="px-2.5 py-2.5 rounded-[114px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2.5">
+                <div className="justify-start text-white text-xs font-semibold font-['Open_Sans'] capitalize leading-3 tracking-wide">Start Your Golbal Carrier</div>
+            </div>
+        </div>
+        <div className="h-10 px-[5px] py-[3px] bg-orange-400 rounded-[114px] flex flex-col justify-start items-start gap-2.5">
+            <div className="self-stretch px-[5px] py-2.5 rounded-[114px] inline-flex justify-center items-center gap-1">
+                <div className="w-4 h-4 bg-white" />
+                <div className="justify-start text-white text-xs font-semibold font-['Open_Sans'] capitalize leading-3 tracking-wide">Download Brochure</div>
+            </div>
+        </div>
+    </div>
+</div>
 
             {/* Smaller Second Image - Overlapping the bottom */}
-            <div className="absolute bottom-0 right-0 w-3/4 transform translate-y-1/4">
+            <div className="absolute bottom-[50%] right-[-10%] sm:bottom-0 sm:right-0 w-60 sm:w-3/4 transform translate-y-1/4">
               <img
-                src="/assets/international/int2.png"
+                src="/assets/international/image.png"
                 alt="Global Opportunities"
-                className="w-full h-auto rounded-lg shadow-lg border-4 border-white"
+                className="w-full h-auto rounded-lg shadow-lg  "
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.style.display = 'none';
@@ -127,7 +142,7 @@ export const InternationalHeroSection = () => {
       </div>
             <div className="w-full bg-white py-8 mt-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+          <h2 className="text-2xl md:text-4xl font-semibold sm:font-bold text-gray-900">
             Transforming Careers Through Skills, Practice, And Progress
           </h2>
         </div>
