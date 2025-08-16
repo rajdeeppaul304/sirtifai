@@ -61,7 +61,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
       // { label:"Freelancer",  href:"/freelancer"},
       // { label: "Sirtify International", href: "/sirtify-international" },
       { label: "Contact Us", href: "/contact" },
-      // { label: "FAQ", href: "/faq" },         
+      { label: "FAQ", href: "/faq" },         
     ],
 
 
