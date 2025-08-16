@@ -5,13 +5,12 @@ export const SuccessStoryCTABanner = () => {
     <section className="w-full bg-[#FF7846] py-20">
       <div className="max-w-7xl mx-auto px-6 text-center">
         {/* Target Icon */}
-        <div className="mb-6">
-          <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto border-2 border-white">
-            <Target size={32} className="text-white" />
-          </div>
+        <div className="mb-6 mx-auto flex justify-center items-center">
+          <img className='h-12 w-12' src="../../assets/aim.png" alt="aim" />
         </div>
 
         {/* Main Heading */}
+        
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
           Be the Next Sirtifai Success Story
         </h2>

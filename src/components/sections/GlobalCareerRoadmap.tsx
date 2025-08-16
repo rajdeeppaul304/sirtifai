@@ -162,10 +162,62 @@ export const GlobalCareerRoadmap = () => {
           font-weight: 600;
           font-size: 15px;
         }
+
+        @media(max-width:480px){
+        .roadmap-title{
+        width: 100%;
+position: relative;
+font-size: 32px;
+letter-spacing: -0.06em;
+line-height: 42px;
+text-transform: capitalize;
+font-weight: 400;
+color: #000;
+text-align: center;
+display: inline-block;
+margin-top: -20%
+        }
+
+
+        .phase-card h2 {
+        font-size: 18px;
+        font-weight:600;
+        }
+.phase-item{
+ font-size: 12px;
+}
+ .phase-icon{
+ width:12px
+ }
+ .milestone-title{
+ font-size:12px
+
+ }
+.milestone-container{
+ margin-left: -25%;
+ padding:12px;
+ width: 48vw;
+}
+ .milestone-container-2{
+ margin-left: -12% !important;
+ }
+ .milestone-item{
+ font-size: 12px;
+ }
+ .phase-card{
+ margin-right: 5vw;
+ padding:10px;
+ margin-left: -2vw;
+ }
+ .phase-card-2{
+ margin-left:-10vw;
+ width: 44vw;
+ }
+        }
       `}</style>
 
       <div className="roadmap-container">
-        <h1 className="roadmap-title">18-Month Global Career Roadmap</h1>
+        <h1 className="roadmap-title text-2xl">18-Month Global Career Roadmap</h1>
 
         <div className="roadmap-timeline">
           <div className="timeline-line"></div>
@@ -205,7 +257,7 @@ export const GlobalCareerRoadmap = () => {
           </div>
 
           {/* Row 2 */}
-          <div className="milestone-container">
+          <div className="milestone-container milestone-container-2">
             <div className="milestone-section">
               <h3 className="milestone-title">Key Milestones:</h3>
               <div className="milestone-item"><div className="milestone-check"></div>Real client project experience</div>
@@ -214,7 +266,7 @@ export const GlobalCareerRoadmap = () => {
             </div>
           </div>
 
-          <div className="phase-card">
+          <div className="phase-card phase-card-2">
             <h2 className="phase-title">Months 10-15: Practice Phase</h2>
 
             <div className="phase-item">

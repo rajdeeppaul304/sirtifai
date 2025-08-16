@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 interface SuccessStory {
   id: string;
   name: string;
@@ -23,7 +24,7 @@ const SUCCESS_STORIES: SuccessStory[] = [
     location: 'From Bangalore to San Francisco',
     jobTitle: 'UX Designer',
     country: 'USA',
-   image: '/assets/international/1789.png'
+    image: '/assets/international/1789.png'
   },
   {
     id: 'ravi-kumar',
@@ -39,7 +40,7 @@ const SUCCESS_STORIES: SuccessStory[] = [
     location: 'From Pune to Sydney',
     jobTitle: 'DevOps Engineer',
     country: 'Australia',
-   image: '/assets/international/1789.png'
+    image: '/assets/international/1789.png'
   }
 ];
 
@@ -49,15 +50,18 @@ export const RealSuccessStories = () => {
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-5xl font-semibold text-gray-900 mb-4">
             Real Success Stories
           </h2>
         </div>
 
-        {/* Success Stories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Mobile: Horizontal Scroll, Desktop: Grid */}
+        <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6 md:overflow-visible">
           {SUCCESS_STORIES.map((story) => (
-            <div key={story.id} className="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow overflow-hidden">
+            <div
+              key={story.id}
+              className="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow overflow-hidden flex-shrink-0 w-72 snap-start md:w-auto"
+            >
               {/* Image with Overlay */}
               <div className="relative h-48 bg-gray-200">
                 <img
@@ -71,7 +75,7 @@ export const RealSuccessStories = () => {
                     if (fallback) fallback.style.display = 'flex';
                   }}
                 />
-                
+
                 {/* Fallback if image fails to load */}
                 <div className="hidden w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
                   <div className="text-center">
