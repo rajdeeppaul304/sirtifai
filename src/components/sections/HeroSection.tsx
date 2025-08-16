@@ -48,13 +48,14 @@ export const HeroSection = () => {
 
           <div className="flex  sm:flex-row  pb-12 lg:pb-0 gap-3 sm:gap-4 w-full">
             {SPP_OPTIONS.map((option) => (
-              <button
+              <a
                 key={option.id}
-                className="px-2 py-2 sm:px-6 sm:py-[25px] bg-white text-gray-700 rounded-lg text-[10px] sm:text-sm font-medium flex items-center justify-between gap-3 sm:min-w-[140px] hover:bg-gray-50 transition-all duration-300 hover:shadow-md group hover:scale-105"
+                className="cursor-pointer px-2 py-2 sm:px-6 sm:py-[25px] bg-white text-gray-700 rounded-lg text-[10px] sm:text-sm font-medium flex items-center justify-between gap-3 sm:min-w-[140px] hover:bg-gray-50 transition-all duration-300 hover:shadow-md group hover:scale-105"
+                href={option.href}
               >
                 <span className="text-[#FE7642]">{option.label}</span>
                 <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform duration-300" />
-              </button>
+              </a>
             ))}
           </div>
         </div>

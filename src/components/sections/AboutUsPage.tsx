@@ -3,6 +3,9 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "../ui/Button";
 
 
+// import Link from 'next/link';
+
+
 const heroIllustration = "/assets/about-header.png";
 const dontQuit = "/assets/dont-quit.jpg";
 const bulbsImage = "/assets/blb.jpg";
@@ -67,18 +70,18 @@ export const AboutUsPage = () => {
                 </span>
 
                 {/* Links */}
-                <a href="#spp-int" className="text-orange-600 font-medium">
+                <a href="/sirtifai-international" className="text-orange-600 font-medium">
                   International
                 </a>
                 <span className="text-orange-600">|</span>
                 <a
-                  href="#spp-freelance"
+                  href="/freelancer"
                   className="text-orange-600 font-medium"
                 >
                   Freelance
                 </a>
                 <span className="text-orange-600">|</span>
-                <a href="#spp-student" className="text-orange-600 font-medium">
+                <a href="/program" className="text-orange-600 font-medium">
                   SPP Student
                 </a>
               </div>
@@ -180,12 +183,13 @@ export const AboutUsPage = () => {
               </li>
             </ul>
             <div className="mt-5 sm:mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
+              
               <Button className="rounded-full" variant="primary" size="md">
                 View More
               </Button>
-              <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
+              {/* <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
                 <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px]" />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

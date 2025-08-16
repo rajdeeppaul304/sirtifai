@@ -69,9 +69,9 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
 ];
 
 export const SPP_OPTIONS: SPPOption[] = [
-  { id: "spp-int", label: "International", href: "#spp-int" },
-  { id: "spp-freelance", label: "Freelance", href: "#spp-freelance" },
-  { id: "spp-student", label: "SPP Student", href: "#spp-student" },
+  { id: "spp-int", label: "International", href: "/sirtifai-international" },
+  { id: "spp-freelance", label: "Freelance", href: "/freelancer" },
+  { id: "spp-student", label: "SPP Student", href: "/program" },
 ];
 
 export const USERS: User[] = [
@@ -123,6 +123,7 @@ export const PROGRAM_TRACKS: ProgramTrack[] = [
   {
     id: "spp-international",
     title: "SPP International",
+    href:"/sirtifai-international",
     subtitle: "Your global career journey in just 18 months",
     features: [
       "Global job placement with visa support",
@@ -136,6 +137,7 @@ export const PROGRAM_TRACKS: ProgramTrack[] = [
   {
     id: "spp-domestic-freelancer",
     title: "SPP Domestic Freelancer",
+    href: "/freelancer",
     subtitle: "Your global career journey in just 18 months",
     features: [
       "Immediate income through verified projects",
@@ -149,6 +151,7 @@ export const PROGRAM_TRACKS: ProgramTrack[] = [
   {
     id: "spp-freshers-track",
     title: "SPP Freshers Track",
+    href: "/program",
     subtitle: "Perfect for students and recent graduates",
     features: [
       "College-to-career transition support",

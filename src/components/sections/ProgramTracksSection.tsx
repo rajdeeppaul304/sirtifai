@@ -1,7 +1,9 @@
+"use client"
 import { CheckCircle } from 'lucide-react';
 import { PROGRAM_TRACKS } from '../../constants/data';
 import { Button } from '../ui/Button';
 import { BsCheckCircleFill } from 'react-icons/bs';
+import Link from 'next/link';
 
 export const ProgramTracksSection = () => {
   return (
@@ -80,17 +82,21 @@ className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-
 
                 {/* Button */}
                 <div className="text-center w-60">
-                  <Button
-                    variant={isHighlighted ? 'primary' : 'outline'}
-                    size="md"
-                    className={`w-full h-[60px] ${
-                      isHighlighted 
-                        ? 'bg-orange-50 text-orange-500 hover:bg-gray-50 border-white' 
-                        : 'border-orange-500 text-orange-500 hover:bg-white'
-                    }`}
-                  >
-                    {track.buttonText}
-                  </Button>
+<Link href={track.href} passHref>
+  <Button
+    variant={isHighlighted ? 'primary' : 'outline'}
+    size="md"
+    className={`w-full h-[60px] ${
+      isHighlighted 
+        ? 'bg-orange-50 text-orange-500 hover:bg-gray-50 border-white' 
+        : 'border-orange-500 text-orange-500 hover:bg-white'
+    }`}
+  >
+    {track.buttonText}
+  </Button>
+</Link>
+
+                  
                 </div>
 
 
