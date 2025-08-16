@@ -30,17 +30,17 @@ const BENEFIT_ITEMS: BenefitItem[] = [
 
 export const PortfolioCertificationSection = () => {
   return (
-    <section className="w-full bg-white py-20">
+    <section className="w-full bg-white py-20 px-3 sm:px-0">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Side - Content */}
           <div>
             {/* Section Header */}
             <div className="mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="sm:text-4xl text-3xl font-semibold text-gray-900 mb-4">
                 Portfolio & Certification
               </h2>
-              <p className="text-xl text-gray-600 leading-relaxed">
+              <p className="sm:text-xl text-sm text-gray-600 leading-relaxed">
                 Build a professional portfolio and earn industry-recognized certifications that help you stand out to employers.
               </p>
             </div>

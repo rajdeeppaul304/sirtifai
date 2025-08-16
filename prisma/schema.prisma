@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PaymentStatus {
+  PROCESSING
+  COMPLETED
+}
+
 model Student {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -25,7 +30,7 @@ model Student {
   primaryPhone          String
   secondaryPhone        String?
   whatsappNotifications Boolean @default(false)
-  email                 String  @unique
+  email                 String  // Removed @unique constraint to allow multiple payments from same email
   residentialAddress    String
   city                  String
   state                 String
@@ -44,6 +49,8 @@ model Student {
   // Identity Document
   idType        String
   idNumber      String
+  idDocument    Bytes?  // Store ID document PDF as binary
+  photo         Bytes?  // Store passport-size photo as binary
   idDocumentUrl String?
   photoUrl      String?
 
@@ -57,10 +64,15 @@ model Student {
 
   // Payment Details
   paymentId         String?
-  paymentStatus     String  @default("pending")
+  paymentStatus     PaymentStatus @default(PROCESSING) // Updated to use enum with PROCESSING default
   razorpayOrderId   String?
   razorpayPaymentId String?
   razorpaySignature String?
+
+  exchangeRateUsed  Float? // Store the USD to INR rate used at payment time
+  totalAmountINR    Float? // Store the final INR amount calculated at payment time
+
+  invoiceLink       String? @unique // UUID for public invoice access
 
   // Confirmation
   agreedToTerms        Boolean @default(false)
@@ -80,13 +92,25 @@ model Invoice {
   studentId     String
   student       Student @relation(fields: [studentId], references: [id])
 
-  programName  String
-  programPrice Float
-  addonName    String?
-  addonPrice   Float?
-  subtotal     Float
-  tax          Float   @default(0)
-  total        Float
+  invoiceLink   String  @unique // UUID for public invoice access
+
+  programName     String
+  programPrice    Float
+  programDuration Int   // Added duration for proper calculation
+  addonName       String?
+  addonPrice      Float?
+  subtotal        Float // Program price * duration + addon price
+  gstRate         Float   @default(18) // Added GST rate
+  gstAmount       Float // Added GST amount
+  total           Float // Subtotal + GST
+
+  exchangeRateUsed Float // Store the USD to INR rate used at invoice creation time
+  
+  programPriceINR Float // Program price in INR at time of payment
+  addonPriceINR   Float? // Addon price in INR at time of payment
+  subtotalINR     Float // Subtotal in INR
+  gstAmountINR    Float // GST amount in INR
+  totalINR        Float // Total amount in INR
 
   paymentStatus String
   paymentMethod String

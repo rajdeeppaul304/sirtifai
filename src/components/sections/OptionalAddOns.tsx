@@ -1,53 +1,42 @@
+
 'use client';
 import { Check, ArrowRight, FileText, Scale } from 'lucide-react';
 
 interface AddOnService {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  features: string[];
-  price: string;
+  id: string
+  title: string
+  description: string
+  icon: React.ComponentType<{ size?: number; className?: string }>
+  features: string[]
+  price: string
 }
 
 const ADD_ON_SERVICES: AddOnService[] = [
   {
-    id: 'global-payroll',
-    title: 'Global Payroll',
-    description: 'International payroll setup and tax optimization for your global income.',
+    id: "global-payroll",
+    title: "Global Payroll",
+    description: "International payroll setup and tax optimization for your global income.",
     icon: ArrowRight,
-    features: [
-      'International bank account setup',
-      'Tax optimization guidance',
-      'Remittance support'
-    ],
-    price: '₹15,000'
+    features: ["International bank account setup", "Tax optimization guidance", "Remittance support"],
+    price: "$180", // Converted to USD
   },
   {
-    id: 'ca-for-visa',
-    title: 'CA for Visa',
-    description: 'Chartered Accountant services for financial documentation required for visa applications.',
+    id: "ca-for-visa",
+    title: "CA for Visa",
+    description: "Chartered Accountant services for financial documentation required for visa applications.",
     icon: FileText,
-    features: [
-      'Financial documents preparation',
-      'Income verification',
-      'Tax compliance certification'
-    ],
-    price: '₹12,000'
+    features: ["Financial documents preparation", "Income verification", "Tax compliance certification"],
+    price: "$144", // Converted to USD
   },
   {
-    id: 'legal-pack',
-    title: 'Legal Pack',
-    description: 'Legal assistance for international contracts, work permits, and immigration matters.',
+    id: "legal-pack",
+    title: "Legal Pack",
+    description: "Legal assistance for international contracts, work permits, and immigration matters.",
     icon: Scale,
-    features: [
-      'Contract review',
-      'Legal documentation support',
-      'Immigration attorney consultation'
-    ],
-    price: '₹20,000'
-  }
-];
+    features: ["Contract review", "Legal documentation support", "Immigration attorney consultation"],
+    price: "$240", // Converted to USD
+  },
+]
 
 export const OptionalAddOns = () => {
   return (
@@ -55,9 +44,7 @@ export const OptionalAddOns = () => {
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Optional Add-Ons
-          </h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Optional Add-Ons</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Enhance your international journey with these specialized services
           </p>
@@ -67,6 +54,7 @@ export const OptionalAddOns = () => {
         <div className="add-ons-wrapper">
           {ADD_ON_SERVICES.map((service) => (
             <div key={service.id} className="add-on-card bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+
               {/* Service Header */}
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -137,5 +125,5 @@ export const OptionalAddOns = () => {
         }
       `}</style>
     </section>
-  );
-};
+  )
+}

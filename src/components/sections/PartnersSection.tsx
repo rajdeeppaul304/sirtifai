@@ -31,21 +31,16 @@ export const PartnersSection = () => {
     "/assets/about/university_logos/ECON_logo.jpg",
   ];
   return (
-    <section className="relative w-full bg-white py-20 pb-8">
+    <section className="relative w-full bg-white pb-8">
       <div className=" sm:max-w-7xl mx-auto px-6">
         <div className="flex flex-col justify-center items-center gap-20">
           {/* Left Side - Large Wireframe Globe */}
-          <div className="flex-1 flex justify-center">
-            <div className="absolute sm:left-[-10%] left-[-70%] transform-3d sm:top-[-30%] top-[-29%] rotate-[-380deg] sm:rotate-0 w-[400px] h-[400px] sm:w-[700px] sm:h-[700px]">
-              <RotatingGlobe />
-            </div>
-          </div>
 
           {/* Right Side - Partner Categories */}
           <div className="flex flex-col justify-center items-center space-y-16">
             {/* Main Heading */}
-            <div className="text-center -mt-12 sm:mt-24" style={{ display: 'flex', justifyContent: 'center' }}>
-              <h2 className="text-[11vw] sm:text-6xl font-semibold sm:font-bold text-gray-900 mb-16 w-[80%]">
+            <div className="text-center mt-6 sm:mt-24" style={{ display: 'flex', justifyContent: 'center' }}>
+              <h2 className="text-[10vw] text-shadow sm:text-6xl font-semibold sm:font-bold text-gray-900 mb-16 w-[80%] bg-white/10 backdrop-blur-xs rounded-lg p-6">
                 Trusted By Leading Organisations..
               </h2>
             </div>

@@ -1,105 +1,102 @@
-import type React from "react"
+import type React from "react";
+import { FaShieldAlt, FaWallet } from "react-icons/fa";
+import { MdAccessTimeFilled } from "react-icons/md";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+
+const vectorPath = "/assets/freelancer/Vector.svg";
+
+// Circular check icon per design
+const Check: React.FC<{ className?: string }> = ({ className = "" }) => (
+  <span className={"inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FF6A2D] mt-[2px] " + className}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="#ffffff"
+      strokeWidth={2}
+      className="w-3 h-3"
+    >
+      <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </span>
+);
+
+const features = [
+  {
+    icon: <FaWallet className="text-[#FF5C35]"/>,
+    title: 'Receive every task payment',
+    text: 'Get paid for each completed task'
+  },
+  {
+    icon: <FaMoneyBillTransfer className="text-[#FF5C35]"/>,
+    title: 'All payment methods supported',
+    text: 'UPI, Bank transfer, wallet and more'
+  },
+  {
+    icon: <FaShieldAlt className="text-[#FF5C35]"/>,
+    title: 'Secure payment protection',
+    text: 'Your earnings are safe and guaranteed'
+  },
+  {
+    icon: <MdAccessTimeFilled className="text-[#FF5C35]"/>,
+    title: 'Transparent payment processing',
+    text: 'No hidden fees, no surprises'
+  },
+];
 
 const TestimonialSection: React.FC = () => {
   return (
-    <section className="py-16 px-4 bg-white">
-      <style>{`
-        .testimonial-container {
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-        .testimonial-content {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 4rem;
-          align-items: center;
-        }
-        .testimonial-image {
-          border-radius: 16px;
-          overflow: hidden;
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-        .achievement-item {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1rem 0;
-          border-bottom: 1px solid #f1f5f9;
-        }
-        .achievement-item:last-child {
-          border-bottom: none;
-        }
-        .achievement-icon {
-          width: 40px;
-          height: 40px;
-          background: linear-gradient(135deg, #ff6b35, #f7931e);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 18px;
-          flex-shrink: 0;
-        }
-        @media (max-width: 768px) {
-          .testimonial-content {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-          }
-        }
-      `}</style>
-
-      <div className="testimonial-container">
-        <div className="testimonial-content">
-          <div className="testimonial-image">
-            <img src="/professional-man-office.png" alt="Success story" className="w-full h-96 object-cover" />
+    <section className="py-24 px-6 bg-white">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+        {/* Visual */}
+        <div className="relative mx-auto w-full max-w-[380px] sm:max-w-[440px] md:max-w-[500px] lg:max-w-[540px] aspect-square">
+          <div className="absolute -top-5 -left-5 w-full h-full bg-orange-500 rounded-md" aria-hidden="true" />
+          <div className="relative w-full h-full border-2 border-sky-500 rounded-sm overflow-hidden shadow-sm">
+            <img
+              src="/assets/freelancer/man-front-view-freelance.png"
+              alt="Professional working with tablet"
+              className="w-full h-full object-cover object-center"
+              loading="lazy"
+            />
           </div>
+        </div>
 
-          <div className="space-y-6">
-            <h2 className="text-4xl font-bold text-gray-900">Get Paid Professionally, Like a Full-Time Employee</h2>
-            <p className="text-lg text-gray-600">
-              Join thousands of successful freelancers who have transformed their careers with our comprehensive
-              program.
-            </p>
-
-            <div className="space-y-4">
-              <div className="achievement-item">
-                <div className="achievement-icon">💰</div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Earn ₹50,000+ monthly</h4>
-                  <p className="text-gray-600">Average earnings after 6 months</p>
-                </div>
-              </div>
-
-              <div className="achievement-item">
-                <div className="achievement-icon">📈</div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">95% Success Rate</h4>
-                  <p className="text-gray-600">Students finding work within 3 months</p>
-                </div>
-              </div>
-
-              <div className="achievement-item">
-                <div className="achievement-icon">🎯</div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">500+ Projects Completed</h4>
-                  <p className="text-gray-600">Real client work by our students</p>
-                </div>
-              </div>
-
-              <div className="achievement-item">
-                <div className="achievement-icon">⭐</div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">4.9/5 Student Rating</h4>
-                  <p className="text-gray-600">Consistently high satisfaction scores</p>
-                </div>
-              </div>
-            </div>
+        {/* Content */}
+        <div className="max-w-xl mx-auto lg:mx-0">
+          <div className="relative w-[60%] lg:w-full ">
+            <h2 className="text-[2rem] md:text-4xl font-bold text-slate-900 leading-snug">
+              Get Paid Professionally, Like a Full-Time Employee
+            </h2>
+            <img
+              src={vectorPath}
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none select-none absolute -top-15 -left-20 ml-60 mt-12 w-14 h-14"
+            />
           </div>
+          <p className="mt-5 text-sm md:text-base text-slate-600 hidden lg:flex">
+            Your income goes through Deel™, giving you:
+          </p>
+          <ul className="mt-6 space-y-4">
+            {features.map((f, index) => (
+              <li key={index} className="flex gap-3 text-sm md:text-base text-slate-700">
+                <div className="bg-[#FF5C351A] rounded-full w-[40px] h-[40px] flex justify-center items-center">
+                  {f.icon}
+                </div>
+                <div className="flex flex-col gap-.5">
+                  <h3 className="text-[#1A1A1A] text-[.875rem] font-semibold">Receive every task payment</h3>
+                  <p className="text-[#4B5563] text-[.75rem] font-normal">Get paid for each completed task</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p className="hidden lg:flex mt-8 italic font-medium text-slate-800 leading-relaxed">
+            "This isn&apos;t freelancing with guesswork—it&apos;s verified, traceable, and legal."
+          </p>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default TestimonialSection
+export default TestimonialSection;

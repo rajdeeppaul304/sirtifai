@@ -13,7 +13,7 @@ export const RotatingGlobe = () => {
     if (!ctx) return;
 
     // Set canvas size
-    const size = 500;
+    const size = 600;
     canvas.width = size;
     canvas.height = size;
 
@@ -176,7 +176,7 @@ export const RotatingGlobe = () => {
     <div className="relative">
       <canvas
         ref={canvasRef}
-        className="w-[500px] h-[500px] object-contain"
+        className="w-[500px] h-[500px] object-contain -z-20"
       />
     </div>
   );

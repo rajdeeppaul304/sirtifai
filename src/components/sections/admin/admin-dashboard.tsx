@@ -1,26 +1,63 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Download, Eye, Users, CreditCard, TrendingUp, Calendar } from "lucide-react"
+import {
+  Search,
+  Download,
+  Eye,
+  Users,
+  CreditCard,
+  TrendingUp,
+  Calendar,
+  FileText,
+  ImageIcon,
+  ExternalLink,
+} from "lucide-react"
+import { getProgramDetails, getAddonDetails } from "../../../../lib/program-mapping"
 
 interface StudentRecord {
   id: string
-  studentName: string
-  studentEmail: string
-  studentPhone: string
-  guardianName: string
-  guardianPhone: string
-  program: string
-  programTier: string
-  duration: number
-  amount: number
-  paymentId: string
-  paymentDate: string
-  status: "completed" | "pending" | "failed"
-  addOns: string[]
-  institution: string
+  fullName: string
+  email: string
+  primaryPhone: string
+  secondaryPhone?: string
+  dateOfBirth: string
+  countryOfCitizenship: string
+  residentialAddress: string
   city: string
   state: string
+  zipCode: string
+  country: string
+  highestQualification: string
+  specialization?: string
+  currentProfession?: string
+  currentOrganization?: string
+  linkedinProfile?: string
+  idType: string
+  idNumber: string
+  selectedProgram: string
+  programDuration: number
+  programPrice: number
+  selectedAddon?: string
+  addonPrice?: number
+  totalAmount: number
+  paymentId?: string
+  paymentStatus: string
+  razorpayOrderId?: string
+  razorpayPaymentId?: string
+  invoiceLink?: string
+  createdAt: string
+  updatedAt: string
+  referralCode?: string
+  whatsappNotifications: boolean
+  agreedToTerms: boolean
+  certifiedInformation: boolean
+  photo?: string | { type: string; data: number[] } // Hexadecimal format or Buffer object
+  idDocument?: string | { type: string; data: number[] } // Hexadecimal format or Buffer object
+  photoBase64?: string // Legacy base64 format
+  idDocumentBase64?: string // Legacy base64 format
+  photoUrl?: string
+  idDocumentUrl?: string
 }
 
 const AdminDashboard = () => {
@@ -31,109 +68,33 @@ const AdminDashboard = () => {
   const [programFilter, setProgramFilter] = useState("all")
   const [selectedStudent, setSelectedStudent] = useState<StudentRecord | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [showPhotoModal, setShowPhotoModal] = useState(false)
+  const [showDocumentModal, setShowDocumentModal] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
-  // Mock data - In a real application, this would come from your database
   useEffect(() => {
-    const mockStudents: StudentRecord[] = [
-      {
-        id: "1",
-        studentName: "Rahul Sharma",
-        studentEmail: "rahul.sharma@email.com",
-        studentPhone: "+91-9876543210",
-        guardianName: "Suresh Sharma",
-        guardianPhone: "+91-9876543211",
-        program: "Practice Phase",
-        programTier: "Pro",
-        duration: 6,
-        amount: 9999,
-        paymentId: "pay_123456789",
-        paymentDate: "2024-01-15T10:30:00Z",
-        status: "completed",
-        addOns: ["Legal Services"],
-        institution: "IIT Delhi",
-        city: "Delhi",
-        state: "Delhi",
-      },
-      {
-        id: "2",
-        studentName: "Priya Patel",
-        studentEmail: "priya.patel@email.com",
-        studentPhone: "+91-9876543212",
-        guardianName: "Ramesh Patel",
-        guardianPhone: "+91-9876543213",
-        program: "Skill Phase",
-        programTier: "Basic",
-        duration: 3,
-        amount: 5999,
-        paymentId: "pay_123456790",
-        paymentDate: "2024-01-14T14:20:00Z",
-        status: "completed",
-        addOns: [],
-        institution: "NIT Surat",
-        city: "Surat",
-        state: "Gujarat",
-      },
-      {
-        id: "3",
-        studentName: "Arjun Kumar",
-        studentEmail: "arjun.kumar@email.com",
-        studentPhone: "+91-9876543214",
-        guardianName: "Vijay Kumar",
-        guardianPhone: "+91-9876543215",
-        program: "Progress Phase",
-        programTier: "Elite",
-        duration: 12,
-        amount: 59999,
-        paymentId: "pay_123456791",
-        paymentDate: "2024-01-13T09:15:00Z",
-        status: "completed",
-        addOns: ["Payroll Services", "CA Services"],
-        institution: "BITS Pilani",
-        city: "Pilani",
-        state: "Rajasthan",
-      },
-      {
-        id: "4",
-        studentName: "Sneha Reddy",
-        studentEmail: "sneha.reddy@email.com",
-        studentPhone: "+91-9876543216",
-        guardianName: "Krishna Reddy",
-        guardianPhone: "+91-9876543217",
-        program: "Practice Phase",
-        programTier: "Basic",
-        duration: 3,
-        amount: 5999,
-        paymentId: "pay_123456792",
-        paymentDate: "2024-01-12T16:45:00Z",
-        status: "completed",
-        addOns: ["CA Services"],
-        institution: "IIIT Hyderabad",
-        city: "Hyderabad",
-        state: "Telangana",
-      },
-      {
-        id: "5",
-        studentName: "Vikash Singh",
-        studentEmail: "vikash.singh@email.com",
-        studentPhone: "+91-9876543218",
-        guardianName: "Rajesh Singh",
-        guardianPhone: "+91-9876543219",
-        program: "Progress Phase",
-        programTier: "Pro",
-        duration: 8,
-        amount: 29999,
-        paymentId: "pay_123456793",
-        paymentDate: "2024-01-11T11:30:00Z",
-        status: "pending",
-        addOns: ["Legal Services", "Contract & IP Support"],
-        institution: "IIT Bombay",
-        city: "Mumbai",
-        state: "Maharashtra",
-      },
-    ]
+    const fetchStudents = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch("/api/admin/students")
+        const data = await response.json()
 
-    setStudents(mockStudents)
-    setFilteredStudents(mockStudents)
+        if (data.success) {
+          setStudents(data.data)
+          setFilteredStudents(data.data)
+        } else {
+          setError("Failed to fetch student data")
+        }
+      } catch (error) {
+        console.error("Error fetching students:", error)
+        setError("Error loading student data")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStudents()
   }, [])
 
   // Filter students based on search and filters
@@ -144,20 +105,20 @@ const AdminDashboard = () => {
     if (searchTerm) {
       filtered = filtered.filter(
         (student) =>
-          student.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          student.studentEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          student.paymentId.toLowerCase().includes(searchTerm.toLowerCase()),
+          student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.razorpayPaymentId?.toLowerCase().includes(searchTerm.toLowerCase()),
       )
     }
 
     // Status filter
     if (statusFilter !== "all") {
-      filtered = filtered.filter((student) => student.status === statusFilter)
+      filtered = filtered.filter((student) => student.paymentStatus === statusFilter)
     }
 
     // Program filter
     if (programFilter !== "all") {
-      filtered = filtered.filter((student) => student.program === programFilter)
+      filtered = filtered.filter((student) => student.selectedProgram === programFilter)
     }
 
     setFilteredStudents(filtered)
@@ -168,19 +129,174 @@ const AdminDashboard = () => {
     setShowModal(true)
   }
 
+  const handleViewPhoto = (student: StudentRecord) => {
+    setSelectedStudent(student)
+    setShowPhotoModal(true)
+  }
+
+  const handleViewDocument = (student: StudentRecord) => {
+    setSelectedStudent(student)
+    setShowDocumentModal(true)
+  }
+
+  const handleViewInvoice = (student: StudentRecord) => {
+    if (student.invoiceLink) {
+      window.open(`/invoice/${student.invoiceLink}`, "_blank")
+    }
+  }
+
+  const hexToBase64 = (hexString: string): string => {
+    try {
+      // Remove \x prefixes and convert hex pairs to binary
+      const cleanHex = hexString.replace(/\\x/g, "")
+      const binaryString =
+        cleanHex
+          .match(/.{2}/g)
+          ?.map((hex) => String.fromCharCode(Number.parseInt(hex, 16)))
+          .join("") || ""
+
+      // Convert binary to base64
+      return btoa(binaryString)
+    } catch (error) {
+      console.error("Error converting hex to base64:", error)
+      return ""
+    }
+  }
+
+  const bufferToBase64 = (buffer: { type: string; data: number[] }): string => {
+    try {
+      return Buffer.from(buffer.data).toString("base64")
+    } catch (error) {
+      console.error("Error converting buffer to base64:", error)
+      return ""
+    }
+  }
+
+  const getPhotoData = (student: StudentRecord): string | null => {
+    if (student.photo) {
+      // If photo is a Buffer object, convert to base64
+      if (typeof student.photo === "object" && student.photo.type === "Buffer") {
+        return bufferToBase64(student.photo)
+      }
+      // If photo is already a string (legacy hex format), convert from hex
+      if (typeof student.photo === "string") {
+        return hexToBase64(student.photo)
+      }
+    }
+    if (student.photoBase64) {
+      return student.photoBase64
+    }
+    if (student.photoUrl) {
+      return student.photoUrl.replace(/^data:[^;]+;base64,/, "")
+    }
+    return null
+  }
+
+  const getDocumentData = (student: StudentRecord): string | null => {
+    if (student.idDocument) {
+      // If idDocument is a Buffer object, convert to base64
+      if (typeof student.idDocument === "object" && student.idDocument.type === "Buffer") {
+        return bufferToBase64(student.idDocument)
+      }
+      // If idDocument is already a string (legacy hex format), convert from hex
+      if (typeof student.idDocument === "string") {
+        return hexToBase64(student.idDocument)
+      }
+    }
+    if (student.idDocumentBase64) {
+      return student.idDocumentBase64
+    }
+    if (student.idDocumentUrl) {
+      return student.idDocumentUrl.replace(/^data:[^;]+;base64,/, "")
+    }
+    return null
+  }
+
+  const hasPhoto = (student: StudentRecord): boolean => {
+    return !!(student.photo || student.photoBase64 || student.photoUrl)
+  }
+
+  const hasDocument = (student: StudentRecord): boolean => {
+    return !!(student.idDocument || student.idDocumentBase64 || student.idDocumentUrl)
+  }
+
+  const handleDownloadDocument = (student: StudentRecord) => {
+    const documentData = getDocumentData(student)
+    if (documentData) {
+      const byteCharacters = atob(documentData)
+      const byteNumbers = new Array(byteCharacters.length)
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i)
+      }
+      const byteArray = new Uint8Array(byteNumbers)
+      const blob = new Blob([byteArray], { type: "application/pdf" })
+
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `${student.fullName}_ID_Document.pdf`
+      a.click()
+      window.URL.revokeObjectURL(url)
+    }
+  }
+
   const handleExportData = () => {
-    // In a real application, this would generate and download a CSV/Excel file
     const csvContent = [
-      ["Name", "Email", "Phone", "Program", "Amount", "Payment Date", "Status"],
-      ...filteredStudents.map((student) => [
-        student.studentName,
-        student.studentEmail,
-        student.studentPhone,
-        `${student.program} - ${student.programTier}`,
-        student.amount,
-        new Date(student.paymentDate).toLocaleDateString(),
-        student.status,
-      ]),
+      [
+        "Name",
+        "Email",
+        "Phone",
+        "Program",
+        "Duration",
+        "Amount",
+        "Add-on",
+        "Payment Date",
+        "Status",
+        "City",
+        "State",
+        "Qualification",
+        "Organization",
+        "ID Type",
+        "ID Number",
+        "Date of Birth",
+        "Country",
+        "Address",
+        "Zip Code",
+        "WhatsApp",
+        "LinkedIn",
+        "Referral Code",
+        "Invoice Link", // Added invoice link to export
+      ],
+      ...filteredStudents.map((student) => {
+        const programDetails = getProgramDetails(student.selectedProgram)
+        const addonDetails = student.selectedAddon ? getAddonDetails(student.selectedAddon) : null
+
+        return [
+          student.fullName,
+          student.email,
+          student.primaryPhone,
+          programDetails?.name || student.selectedProgram,
+          `${student.programDuration} months`,
+          student.totalAmount,
+          addonDetails?.name || student.selectedAddon || "None",
+          new Date(student.createdAt).toLocaleDateString(),
+          student.paymentStatus,
+          student.city,
+          student.state,
+          student.highestQualification,
+          student.currentOrganization || "N/A",
+          student.idType,
+          student.idNumber,
+          new Date(student.dateOfBirth).toLocaleDateString(),
+          student.countryOfCitizenship,
+          student.residentialAddress,
+          student.zipCode,
+          student.whatsappNotifications ? "Yes" : "No",
+          student.linkedinProfile || "N/A",
+          student.referralCode || "N/A",
+          student.invoiceLink ? `${window.location.origin}/invoice/${student.invoiceLink}` : "N/A", // Added full invoice URL
+        ]
+      }),
     ]
       .map((row) => row.join(","))
       .join("\n")
@@ -189,40 +305,85 @@ const AdminDashboard = () => {
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = "students_data.csv"
+    a.download = `students_data_${new Date().toISOString().split("T")[0]}.csv`
     a.click()
     window.URL.revokeObjectURL(url)
   }
 
   const getStatusBadge = (status: string) => {
     const statusStyles = {
+      COMPLETED: "bg-green-100 text-green-800",
       completed: "bg-green-100 text-green-800",
+      PROCESSING: "bg-yellow-100 text-yellow-800",
+      processing: "bg-yellow-100 text-yellow-800",
       pending: "bg-yellow-100 text-yellow-800",
       failed: "bg-red-100 text-red-800",
     }
 
+    const displayStatus =
+      status === "COMPLETED"
+        ? "Completed"
+        : status === "PROCESSING"
+          ? "Processing"
+          : status.charAt(0).toUpperCase() + status.slice(1)
+
     return (
       <span
-        className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status as keyof typeof statusStyles]}`}
+        className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status as keyof typeof statusStyles] || "bg-gray-100 text-gray-800"}`}
       >
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {displayStatus}
       </span>
     )
   }
 
-  const totalRevenue = students.filter((s) => s.status === "completed").reduce((sum, s) => sum + s.amount, 0)
-  const completedPayments = students.filter((s) => s.status === "completed").length
-  const pendingPayments = students.filter((s) => s.status === "pending").length
+  const totalRevenue = (students || [])
+    .filter((s) => s.paymentStatus === "completed" || s.paymentStatus === "COMPLETED")
+    .reduce((sum, s) => sum + s.totalAmount, 0)
+  const completedPayments = (students || []).filter(
+    (s) => s.paymentStatus === "completed" || s.paymentStatus === "COMPLETED",
+  ).length
+  const pendingPayments = (students || []).filter(
+    (s) => s.paymentStatus === "pending" || s.paymentStatus === "PROCESSING",
+  ).length
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FC4C03] mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading student data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <p className="text-red-600 text-lg">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-4 px-4 py-2 bg-[#FC4C03] text-white rounded-lg hover:bg-[#e63d00]"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage student enrollments and payments</p>
-        </div>
-
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
@@ -232,7 +393,7 @@ const AdminDashboard = () => {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Students</p>
-                <p className="text-2xl font-bold text-gray-900">{students.length}</p>
+                <p className="text-2xl font-bold text-gray-900">{(students || []).length}</p>
               </div>
             </div>
           </div>
@@ -255,7 +416,7 @@ const AdminDashboard = () => {
                 <Calendar className="w-6 h-6 text-yellow-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Pending Payments</p>
+                <p className="text-sm font-medium text-gray-600">Processing Payments</p> {/* Updated label */}
                 <p className="text-2xl font-bold text-gray-900">{pendingPayments}</p>
               </div>
             </div>
@@ -295,8 +456,10 @@ const AdminDashboard = () => {
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
               >
                 <option value="all">All Status</option>
-                <option value="completed">Completed</option>
-                <option value="pending">Pending</option>
+                <option value="COMPLETED">Completed</option> {/* Updated to use enum values */}
+                <option value="PROCESSING">Processing</option>
+                <option value="completed">Completed (Legacy)</option>
+                <option value="pending">Pending (Legacy)</option>
                 <option value="failed">Failed</option>
               </select>
 
@@ -306,9 +469,13 @@ const AdminDashboard = () => {
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
               >
                 <option value="all">All Programs</option>
-                <option value="Skill Phase">Skill Phase</option>
-                <option value="Practice Phase">Practice Phase</option>
-                <option value="Progress Phase">Progress Phase</option>
+                <option value="skill">Skill Phase</option>
+                <option value="practice-basic">Practice Phase - Basic</option>
+                <option value="practice-pro">Practice Phase - Pro</option>
+                <option value="practice-elite">Practice Phase - Elite</option>
+                <option value="progress-basic">Progress Phase - Basic</option>
+                <option value="progress-pro">Progress Phase - Pro</option>
+                <option value="progress-elite">Progress Phase - Elite</option>
               </select>
             </div>
 
@@ -338,10 +505,13 @@ const AdminDashboard = () => {
                     Amount
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Payment Date
+                    Registration Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    Payment Status {/* Updated column header */}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Documents
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
@@ -349,39 +519,81 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{student.studentName}</div>
-                        <div className="text-sm text-gray-500">{student.studentEmail}</div>
-                        <div className="text-sm text-gray-500">{student.studentPhone}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{student.program}</div>
-                      <div className="text-sm text-gray-500">
-                        {student.programTier} - {student.duration} months
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      ₹{student.amount.toLocaleString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {new Date(student.paymentDate).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(student.status)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleViewDetails(student)}
-                        className="flex items-center space-x-1 text-[#FC4C03] hover:text-[#e63d00]"
-                      >
-                        <Eye className="w-4 h-4" />
-                        <span>View</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {filteredStudents.map((student) => {
+                  const programDetails = getProgramDetails(student.selectedProgram)
+                  const addonDetails = student.selectedAddon ? getAddonDetails(student.selectedAddon) : null
+
+                  return (
+                    <tr key={student.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{student.fullName}</div>
+                          <div className="text-sm text-gray-500">{student.email}</div>
+                          <div className="text-sm text-gray-500">{student.primaryPhone}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{programDetails?.name || student.selectedProgram}</div>
+                        <div className="text-sm text-gray-500">{student.programDuration} months</div>
+                        {student.selectedAddon && (
+                          <div className="text-sm text-blue-600">+ {addonDetails?.name || student.selectedAddon}</div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ₹{student.totalAmount.toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {new Date(student.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(student.paymentStatus)}</td>{" "}
+                      {/* Shows payment status with proper styling */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex space-x-2">
+                          {hasPhoto(student) && (
+                            <button
+                              onClick={() => handleViewPhoto(student)}
+                              className="text-blue-600 hover:text-blue-800"
+                              title="View Photo"
+                            >
+                              <ImageIcon className="w-4 h-4" />
+                            </button>
+                          )}
+                          {hasDocument(student) && (
+                            <button
+                              onClick={() => handleViewDocument(student)}
+                              className="text-green-600 hover:text-green-800"
+                              title="View ID Document"
+                            >
+                              <FileText className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleViewDetails(student)}
+                            className="flex items-center space-x-1 text-[#FC4C03] hover:text-[#e63d00]"
+                          >
+                            <Eye className="w-4 h-4" />
+                            <span>View</span>
+                          </button>
+                          {student.invoiceLink &&
+                            (student.paymentStatus === "completed" || student.paymentStatus === "COMPLETED") && (
+                              <button
+                                onClick={() => handleViewInvoice(student)}
+                                className="flex items-center space-x-1 text-green-600 hover:text-green-800"
+                                title="View Invoice"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                                <span>Invoice</span>
+                              </button>
+                            )}
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -396,59 +608,172 @@ const AdminDashboard = () => {
         {/* Student Details Modal */}
         {showModal && selectedStudent && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">Student Details</h2>
                   <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
-                    <span className="sr-only">Close</span>
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Student Information */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* Personal Information */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Student Information</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Name</label>
-                        <p className="text-gray-900">{selectedStudent.studentName}</p>
+                        <label className="text-sm font-medium text-gray-600">Full Name</label>
+                        <p className="text-gray-900">{selectedStudent.fullName}</p>
                       </div>
                       <div>
                         <label className="text-sm font-medium text-gray-600">Email</label>
-                        <p className="text-gray-900">{selectedStudent.studentEmail}</p>
+                        <p className="text-gray-900">{selectedStudent.email}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Phone</label>
-                        <p className="text-gray-900">{selectedStudent.studentPhone}</p>
+                        <label className="text-sm font-medium text-gray-600">Primary Phone</label>
+                        <p className="text-gray-900">{selectedStudent.primaryPhone}</p>
+                      </div>
+                      {selectedStudent.secondaryPhone && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Secondary Phone</label>
+                          <p className="text-gray-900">{selectedStudent.secondaryPhone}</p>
+                        </div>
+                      )}
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">Date of Birth</label>
+                        <p className="text-gray-900">{new Date(selectedStudent.dateOfBirth).toLocaleDateString()}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Institution</label>
-                        <p className="text-gray-900">{selectedStudent.institution}</p>
+                        <label className="text-sm font-medium text-gray-600">Citizenship</label>
+                        <p className="text-gray-900">{selectedStudent.countryOfCitizenship}</p>
+                      </div>
+                      {selectedStudent.referralCode && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Referral Code</label>
+                          <p className="text-gray-900">{selectedStudent.referralCode}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Contact & Address */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact & Address</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">Address</label>
+                        <p className="text-gray-900">{selectedStudent.residentialAddress}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Location</label>
-                        <p className="text-gray-900">
-                          {selectedStudent.city}, {selectedStudent.state}
-                        </p>
+                        <label className="text-sm font-medium text-gray-600">City</label>
+                        <p className="text-gray-900">{selectedStudent.city}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">State</label>
+                        <p className="text-gray-900">{selectedStudent.state}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">Zip Code</label>
+                        <p className="text-gray-900">{selectedStudent.zipCode}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">Country</label>
+                        <p className="text-gray-900">{selectedStudent.country}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">WhatsApp Notifications</label>
+                        <p className="text-gray-900">{selectedStudent.whatsappNotifications ? "Yes" : "No"}</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Guardian Information */}
+                  {/* Education & Professional */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Guardian Information</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Education & Professional</h3>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Guardian Name</label>
-                        <p className="text-gray-900">{selectedStudent.guardianName}</p>
+                        <label className="text-sm font-medium text-gray-600">Highest Qualification</label>
+                        <p className="text-gray-900">{selectedStudent.highestQualification}</p>
+                      </div>
+                      {selectedStudent.specialization && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Specialization</label>
+                          <p className="text-gray-900">{selectedStudent.specialization}</p>
+                        </div>
+                      )}
+                      {selectedStudent.currentProfession && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Current Profession</label>
+                          <p className="text-gray-900">{selectedStudent.currentProfession}</p>
+                        </div>
+                      )}
+                      {selectedStudent.currentOrganization && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Current Organization</label>
+                          <p className="text-gray-900">{selectedStudent.currentOrganization}</p>
+                        </div>
+                      )}
+                      {selectedStudent.linkedinProfile && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">LinkedIn</label>
+                          <p className="text-gray-900">
+                            <a
+                              href={selectedStudent.linkedinProfile}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline"
+                            >
+                              View Profile
+                            </a>
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Identity Document */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Identity Document</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">ID Type</label>
+                        <p className="text-gray-900">{selectedStudent.idType}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Guardian Phone</label>
-                        <p className="text-gray-900">{selectedStudent.guardianPhone}</p>
+                        <label className="text-sm font-medium text-gray-600">ID Number</label>
+                        <p className="text-gray-900">{selectedStudent.idNumber}</p>
+                      </div>
+                      <div className="flex space-x-2 mt-2">
+                        {hasPhoto(selectedStudent) && (
+                          <button
+                            onClick={() => handleViewPhoto(selectedStudent)}
+                            className="flex items-center space-x-1 px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200"
+                          >
+                            <ImageIcon className="w-4 h-4" />
+                            <span>View Photo</span>
+                          </button>
+                        )}
+                        {hasDocument(selectedStudent) && (
+                          <>
+                            <button
+                              onClick={() => handleViewDocument(selectedStudent)}
+                              className="flex items-center space-x-1 px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200"
+                            >
+                              <FileText className="w-4 h-4" />
+                              <span>View Document</span>
+                            </button>
+                            <button
+                              onClick={() => handleDownloadDocument(selectedStudent)}
+                              className="flex items-center space-x-1 px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200"
+                            >
+                              <Download className="w-4 h-4" />
+                              <span>Download</span>
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -458,20 +783,36 @@ const AdminDashboard = () => {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Program Information</h3>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Program</label>
+                        <label className="text-sm font-medium text-gray-600">Selected Program</label>
                         <p className="text-gray-900">
-                          {selectedStudent.program} - {selectedStudent.programTier}
+                          {getProgramDetails(selectedStudent.selectedProgram)?.name || selectedStudent.selectedProgram}
                         </p>
                       </div>
                       <div>
                         <label className="text-sm font-medium text-gray-600">Duration</label>
-                        <p className="text-gray-900">{selectedStudent.duration} months</p>
+                        <p className="text-gray-900">{selectedStudent.programDuration} months</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Add-ons</label>
-                        <p className="text-gray-900">
-                          {selectedStudent.addOns.length > 0 ? selectedStudent.addOns.join(", ") : "None"}
-                        </p>
+                        <label className="text-sm font-medium text-gray-600">Program Price</label>
+                        <p className="text-gray-900">₹{selectedStudent.programPrice.toLocaleString()}</p>
+                      </div>
+                      {selectedStudent.selectedAddon && (
+                        <>
+                          <div>
+                            <label className="text-sm font-medium text-gray-600">Add-on</label>
+                            <p className="text-gray-900">
+                              {getAddonDetails(selectedStudent.selectedAddon)?.name || selectedStudent.selectedAddon}
+                            </p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-600">Add-on Price</label>
+                            <p className="text-gray-900">₹{selectedStudent.addonPrice?.toLocaleString()}</p>
+                          </div>
+                        </>
+                      )}
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">Total Amount</label>
+                        <p className="text-gray-900 font-semibold">₹{selectedStudent.totalAmount.toLocaleString()}</p>
                       </div>
                     </div>
                   </div>
@@ -481,20 +822,53 @@ const AdminDashboard = () => {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Information</h3>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Amount</label>
-                        <p className="text-gray-900">₹{selectedStudent.amount.toLocaleString()}</p>
+                        <label className="text-sm font-medium text-gray-600">Payment Status</label>
+                        <div className="mt-1">{getStatusBadge(selectedStudent.paymentStatus)}</div>
+                      </div>
+                      {selectedStudent.razorpayOrderId && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Razorpay Order ID</label>
+                          <p className="text-gray-900 font-mono text-sm">{selectedStudent.razorpayOrderId}</p>
+                        </div>
+                      )}
+                      {selectedStudent.razorpayPaymentId && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Razorpay Payment ID</label>
+                          <p className="text-gray-900 font-mono text-sm">{selectedStudent.razorpayPaymentId}</p>
+                        </div>
+                      )}
+                      {selectedStudent.invoiceLink && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-600">Invoice Link</label>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <p className="text-gray-900 font-mono text-sm break-all">
+                              {`${window.location.origin}/invoice/${selectedStudent.invoiceLink}`}
+                            </p>
+                            <button
+                              onClick={() => handleViewInvoice(selectedStudent)}
+                              className="flex items-center space-x-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              <span>Open</span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">Registration Date</label>
+                        <p className="text-gray-900">{new Date(selectedStudent.createdAt).toLocaleString()}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Payment ID</label>
-                        <p className="text-gray-900">{selectedStudent.paymentId}</p>
+                        <label className="text-sm font-medium text-gray-600">Last Updated</label>
+                        <p className="text-gray-900">{new Date(selectedStudent.updatedAt).toLocaleString()}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Payment Date</label>
-                        <p className="text-gray-900">{new Date(selectedStudent.paymentDate).toLocaleString()}</p>
+                        <label className="text-sm font-medium text-gray-600">Terms Agreed</label>
+                        <p className="text-gray-900">{selectedStudent.agreedToTerms ? "Yes" : "No"}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-600">Status</label>
-                        <div className="mt-1">{getStatusBadge(selectedStudent.status)}</div>
+                        <label className="text-sm font-medium text-gray-600">Information Certified</label>
+                        <p className="text-gray-900">{selectedStudent.certifiedInformation ? "Yes" : "No"}</p>
                       </div>
                     </div>
                   </div>
@@ -507,6 +881,63 @@ const AdminDashboard = () => {
                   >
                     Close
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showPhotoModal && selectedStudent && hasPhoto(selectedStudent) && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg max-w-2xl w-full">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Student Photo - {selectedStudent.fullName}</h3>
+                  <button onClick={() => setShowPhotoModal(false)} className="text-gray-400 hover:text-gray-600">
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="flex justify-center">
+                  <img
+                    src={`data:image/jpeg;base64,${getPhotoData(selectedStudent)}`}
+                    alt="Student Photo"
+                    className="max-w-full max-h-96 object-contain rounded-lg"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showDocumentModal && selectedStudent && hasDocument(selectedStudent) && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh]">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">ID Document - {selectedStudent.fullName}</h3>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleDownloadDocument(selectedStudent)}
+                      className="flex items-center space-x-1 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download</span>
+                    </button>
+                    <button onClick={() => setShowDocumentModal(false)} className="text-gray-400 hover:text-gray-600">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <iframe
+                    src={`data:application/pdf;base64,${getDocumentData(selectedStudent)}`}
+                    className="w-full h-96 border rounded-lg"
+                    title="ID Document"
+                  />
                 </div>
               </div>
             </div>

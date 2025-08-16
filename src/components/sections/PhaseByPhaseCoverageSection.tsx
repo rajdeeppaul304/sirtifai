@@ -1,45 +1,51 @@
 import React from 'react';
-import { GraduationCap, Monitor, TrendingUp, ArrowRight } from 'lucide-react';
+import { GraduationCap, Monitor, TrendingUp } from 'lucide-react';
 
 export const PhaseByPhaseCoverageSection = () => {
   return (
-    <section className="w-full bg-[#FEF7F1] py-16 px-6">
-      <div className="max-w-7xl mx-auto text-center">
+  <section className="w-full bg-[#FEF7F1] py-10 sm:py-16 px-4 sm:px-6">
+      <div className="w-full max-w-[1400px] xl:max-w-[1550px] 2xl:max-w-[1700px] mx-auto text-center">
         {/* Header Section */}
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+    <h2 className="text-4xl font-bold text-gray-900 mb-4">
           Phase-By-Phase Coverage
         </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto mb-12">
+  <p className="text-gray-600 text-sm sm:text-base lg:text-xl max-w-3xl xl:max-w-4xl mx-auto mb-12">
           Our insurance protection follows you through each phase of your SPP journey, adapting to your evolving needs.
         </p>
 
         {/* Table Component */}
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        {/*highlight-next-line*/}
+  <div className="bg-white rounded-lg shadow-2xl shadow-black/10 overflow-hidden">
           {/* Table Header */}
-          <div className="bg-[#1f2937] text-white p-6">
-            <div className="grid grid-cols-3 gap-6">
-              <div className="text-left font-bold">Program Phase</div>
-              <div className="text-left font-bold">Coverage Type</div>
-              <div className="text-left font-bold">Protection Details</div>
-              {/* <div className="text-right font-bold">Claim Process</div> */}
+          {/*highlight-next-line*/}
+          <div className="bg-[#1f2937] text-white px-3 py-3 md:px-6 md:py-4">
+            {/* Using custom grid columns to better distribute space */}
+            {/*highlight-next-line*/}
+            <div className="grid grid-cols-[1.5fr_1.5fr_2fr] gap-3 md:gap-6">
+              <div className="text-left font-bold text-sm md:text-lg">Program Phase</div>
+              <div className="text-left font-bold text-sm md:text-lg">Coverage Type</div>
+              <div className="text-left font-bold text-sm md:text-lg">Protection Details</div>
             </div>
           </div>
 
           {/* Table Body */}
           <div className="divide-y divide-gray-200">
             {/* Row 1: Skill Phase */}
-            <div className="p-6">
-              <div className="grid grid-cols-3 gap-6 items-start">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#FE7642] rounded-lg flex items-center justify-center">
+            {/*highlight-next-line*/}
+            <div className="p-3 md:p-6">
+              {/*highlight-next-line*/}
+              <div className="grid grid-cols-[1.5fr_1.5fr_2fr] gap-3 md:gap-6 items-start">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <div className="w-7 h-7 md:w-8 md:h-8 bg-[#FE7642] rounded-md md:rounded-lg flex items-center justify-center flex-shrink-0">
                     <GraduationCap className="w-4 h-4 text-white" />
                   </div>
-                  <span className="font-medium text-gray-900">Skill Phase</span>
+                  <span className="font-medium text-gray-900 text-sm md:text-lg">Skill Phase</span>
                 </div>
-                <div className="text-left">
-                  <span className="font-medium text-gray-900">Access Protection</span>
+                <div className="text-left flex flex-col gap-0.5 md:gap-1 pt-0.5">
+                  <span className="font-medium text-gray-900 text-sm md:text-lg lg:text-xl leading-snug">Access</span>
+                  <span className="font-medium text-gray-900 text-sm md:text-lg lg:text-xl leading-snug">Protection</span>
                 </div>
-                <div className="text-left text-gray-600">
+                <div className="text-left text-gray-600 text-xs md:text-base lg:text-lg">
                   <ul className="space-y-1">
                     <li>Course completion guarantee</li>
                     <li>Platform access assurance</li>
@@ -50,18 +56,21 @@ export const PhaseByPhaseCoverageSection = () => {
             </div>
 
             {/* Row 2: Practice Phase */}
-            <div className="p-6">
-              <div className="grid grid-cols-3 gap-6 items-start">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#FE7642] rounded-lg flex items-center justify-center">
+            {/*highlight-next-line*/}
+            <div className="p-3 md:p-6">
+              {/*highlight-next-line*/}
+              <div className="grid grid-cols-[1.5fr_1.5fr_2fr] gap-3 md:gap-6 items-start">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <div className="w-7 h-7 md:w-8 md:h-8 bg-[#FE7642] rounded-md md:rounded-lg flex items-center justify-center flex-shrink-0">
                     <Monitor className="w-4 h-4 text-white" />
                   </div>
-                  <span className="font-medium text-gray-900">Practice Phase</span>
+                  <span className="font-medium text-gray-900 text-sm md:text-lg">Practice Phase</span>
                 </div>
-                <div className="text-left">
-                  <span className="font-medium text-gray-900">Payment Guarantee</span>
+                <div className="text-left flex flex-col gap-0.5 md:gap-1 pt-0.5">
+                  <span className="font-medium text-gray-900 text-sm md:text-lg lg:text-xl leading-snug">Payment</span>
+                  <span className="font-medium text-gray-900 text-sm md:text-lg lg:text-xl leading-snug">Guarantee</span>
                 </div>
-                <div className="text-left text-gray-600">
+                <div className="text-left text-gray-600 text-xs md:text-base lg:text-lg">
                   <ul className="space-y-1">
                     <li>Client payment assurance</li>
                     <li>Monthly minimum income protection</li>
@@ -72,18 +81,21 @@ export const PhaseByPhaseCoverageSection = () => {
             </div>
 
             {/* Row 3: Progress Phase */}
-            <div className="p-6">
-              <div className="grid grid-cols-3 gap-6 items-start">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+            {/*highlight-next-line*/}
+            <div className="p-3 md:p-6">
+              {/*highlight-next-line*/}
+              <div className="grid grid-cols-[1.5fr_1.5fr_2fr] gap-3 md:gap-6 items-start">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <div className="w-7 h-7 md:w-8 md:h-8 bg-green-500 rounded-md md:rounded-lg flex items-center justify-center flex-shrink-0">
                     <TrendingUp className="w-4 h-4 text-white" />
                   </div>
-                  <span className="font-medium text-gray-900">Progress Phase</span>
+                  <span className="font-medium text-gray-900 text-sm md:text-lg">Progress Phase</span>
                 </div>
-                <div className="text-left">
-                  <span className="font-medium text-gray-900">Career Continuity</span>
+                <div className="text-left flex flex-col gap-0.5 md:gap-1 pt-0.5">
+                  <span className="font-medium text-gray-900 text-sm md:text-lg lg:text-xl leading-snug">Career</span>
+                  <span className="font-medium text-gray-900 text-sm md:text-lg lg:text-xl leading-snug">Continuity</span>
                 </div>
-                <div className="text-left text-gray-600">
+                <div className="text-left text-gray-600 text-xs md:text-base lg:text-lg">
                   <ul className="space-y-1">
                     <li>Placement guarantee (program-specific)</li>
                     <li>Career transition support</li>

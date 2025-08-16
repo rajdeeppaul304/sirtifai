@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 const universityImages = [
+  // ... (your original universityImages array remains unchanged)
   { url: '/assets/about/university_logos/AU_University_Horizontal_COLOR_RGB.png', discipline: 'Business', offering: 'Certificate Program' },
   { url: '/assets/about/university_logos/Arcadia-logo-color.jpg', discipline: 'Communications And Design', offering: 'Boot Camps' },
   { url: '/assets/about/university_logos/CWRU_University_Formal_No_Tag_RGB_Blue.jpg', discipline: 'Counseling', offering: 'Certificate Program' },
@@ -50,13 +51,12 @@ const universityImages = [
   { url: '/assets/about/university_logos/Yaleblue.png', discipline: 'Business', offering: 'Certificate Program' },
 ];
 
-
-
 const UniversityPartners = () => {
   const [selectedDiscipline, setSelectedDiscipline] = useState('');
   const [selectedOffering, setSelectedOffering] = useState('');
+  
+  // Removed expansion logic: always show all filtered universities
 
-  // Extract unique disciplines and offerings for filter options
   const disciplines = useMemo(() => {
     return [...new Set(universityImages.map(item => item.discipline))];
   }, []);
@@ -65,7 +65,6 @@ const UniversityPartners = () => {
     return [...new Set(universityImages.map(item => item.offering))];
   }, []);
 
-  // Filter the universities based on selected filters
   const filteredUniversities = useMemo(() => {
     return universityImages.filter(item => {
       const matchesDiscipline = !selectedDiscipline || item.discipline === selectedDiscipline;
@@ -79,18 +78,25 @@ const UniversityPartners = () => {
     setSelectedOffering('');
   };
 
+  // All visible universities (no slicing on mobile now)
+  const visibleUniversities = filteredUniversities;
+
+
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {/* Filter Section */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-6 text-gray-700 text-center">University Partners</h2>
+    <div className="max-w-7xl mx-auto p-4 sm:p-6">
+      {/* Header Section */}
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6 text-gray-700 text-center">
+          University Partners
+        </h2>
         
-        <div className="flex justify-center gap-4 mb-6">
+        {/* Mobile Filter Section */}
+        <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
           {/* Discipline Filter */}
           <select
             value={selectedDiscipline}
             onChange={(e) => setSelectedDiscipline(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white min-w-48"
+            className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white sm:min-w-48"
           >
             <option value="">All Disciplines</option>
             {disciplines.map(discipline => (
@@ -104,7 +110,7 @@ const UniversityPartners = () => {
           <select
             value={selectedOffering}
             onChange={(e) => setSelectedOffering(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white min-w-48"
+            className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent bg-white sm:min-w-48"
           >
             <option value="">All Offerings</option>
             {offerings.map(offering => (
@@ -118,51 +124,64 @@ const UniversityPartners = () => {
           {(selectedDiscipline || selectedOffering) && (
             <button
               onClick={clearFilters}
-              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 font-medium"
+              className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base bg-orange-500 text-white rounded-lg hover:bg-orange-600 active:bg-orange-700 transition-colors duration-200 font-medium"
             >
-              Clear
+              Clear Filters
             </button>
           )}
         </div>
+
+        {/* Results Counter */}
+        <div className="text-center text-sm sm:text-base text-gray-600 mb-4">
+          Showing {filteredUniversities.length} of {universityImages.length} partners
+        </div>
       </div>
 
-      {/* University Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {filteredUniversities.map((item, index) => (
-          <div 
-            key={index} 
-            className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100"
-          >
-            <div className="h-24 bg-gray-50 flex items-center justify-center p-3">
-              <img 
-                src={item.url} 
-                alt={`University Logo ${index}`} 
-                className="max-h-full max-w-full object-contain"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y0ZjRmNCIvPjx0ZXh0IHg9IjEwMCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg==';
-                }}
-              />
+      {/* University logos container: horizontal scroll on mobile, full grid on desktop */}
+      <div className="pb-4 md:pb-0">
+        <div
+          className="flex md:grid gap-3 sm:gap-4 lg:gap-5 hide-scrollbar overflow-x-auto md:overflow-visible md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+          style={{ scrollSnapType: 'x mandatory' }}
+        >
+          {visibleUniversities.map((item, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-orange-200 group relative flex-shrink-0 w-40 sm:w-44 md:w-auto scroll-snap-align-start"
+              style={{ scrollSnapAlign: 'start' }}
+            >
+              <div className="aspect-[3/2] bg-gray-50 flex items-center justify-center p-3 sm:p-4 group-hover:bg-gray-100 transition-colors duration-300">
+                <img
+                  src={item.url}
+                  alt={`University Logo ${index + 1}`}
+                  className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    const img = e.currentTarget as HTMLImageElement;
+                    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y0ZjRmNCIvPjx0ZXh0IHg9IjEwMCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TG9nbyBub3QgZm91bmQ8L3RleHQ+PC9zdmc+';
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
+      
+  {/* Removed View All / Show Less controls (all visible now) */}
 
       {/* No Results Message */}
       {filteredUniversities.length === 0 && (
-        <div className="text-center py-12">
+        <div className="text-center py-8 sm:py-12 px-4">
           <div className="text-gray-400 mb-4">
-            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6M7 8h10a2 2 0 012 2v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6a2 2 0 012-2z" />
+            <svg className="w-12 h-12 sm:w-16 sm:h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-600 mb-2">No partners found</h3>
-          <p className="text-gray-500 mb-4">
-            Try adjusting your filters to see more results.
+          <h3 className="text-base sm:text-lg font-medium text-gray-600 mb-2">No partners found</h3>
+          <p className="text-sm sm:text-base text-gray-500 mb-4 max-w-md mx-auto">
+            No universities match your current filter criteria. Try adjusting your filters to see more results.
           </p>
           <button
             onClick={clearFilters}
-            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
+            className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-orange-500 text-white rounded-lg hover:bg-orange-600 active:bg-orange-700 transition-colors duration-200 font-medium"
           >
             Clear All Filters
           </button>

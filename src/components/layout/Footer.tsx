@@ -182,7 +182,7 @@ export const Footer = () => {
             <div className="space-y-3">
               <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Home</a>
               <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/about'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">About Us</a>
-              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/programs'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Programs</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/program'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Programs</a>
               <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/contact'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Contact</a>
               <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/careers'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Careers</a>
             </div>
