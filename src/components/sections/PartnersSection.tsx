@@ -50,7 +50,7 @@ export const PartnersSection = () => {
               <h3 className="text-2xl text-center font-bold text-gray-900 uppercase tracking-wider mb-12">
                 ACADEMIC PARTNERS
               </h3>
-              <div className="w-full overflow-hidden bg-white border-b border-gray-100">
+              <div className="w-full overflow-hidden bg-white ">
                 <div className="relative py-8">
                 {/* flex animate-marquee space-x-32 */}
                   <div className="">

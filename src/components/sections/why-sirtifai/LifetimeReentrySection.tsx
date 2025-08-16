@@ -1,53 +1,54 @@
+import Image from "next/image"
+
 export const LifetimeReentrySection = () => {
   const benefits = [
     {
-      icon: "🔄",
+      img: "/assets/why-sirtifai/rejoin_anytime.png",
       title: "Rejoin Anytime",
-      description: "Return to Programs anytime your plans later.",
+      description: "Return to Progress Phase even years later",
     },
     {
-      icon: "🔀",
+      img: "/assets/why-sirtifai/switch_industries.png",
       title: "Switch Industries",
-      description: "Change tracks without additional costs.",
+      description: "Change tracks without additional costs",
     },
     {
-      icon: "🌍",
+      img: "/assets/why-sirtifai/global_opportunities.png",
       title: "Global Opportunities",
-      description: "Access support for global job markets.",
+      description: "Visa-ready support included",
     },
   ]
 
   return (
-    <section className="bg-gray-50 py-12 md:py-16">
+    <section className="bg-white py-16 md:py-24">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Image */}
-          <div className="relative">
-            <img
-              src="/placeholder-nytcz.png"
-              alt="Career consultation meeting"
-              className="w-full rounded-2xl shadow-lg"
-            />
-          </div>
+        <h2 className="text-center text-3xl md:text-5xl font-bold text-gray-900 mb-10 md:mb-16 leading-tight">
+          Lifetime Re-Entry & Career Switch
+        </h2>
 
-          {/* Right - Content */}
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Lifetime Re-Entry & Career Switch</h2>
-              <p className="text-gray-600 text-lg">
-                Your career journey doesn't end with graduation. We support you for life.
-              </p>
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-10 items-stretch">
+          {/* Image */}
+            <div className="flex-1 relative rounded-xl md:rounded-2xl overflow-hidden shadow-sm">
+              <Image
+                src="/assets/why-sirtifai/lifetime_main.jpg"
+                alt="Career guidance session"
+                width={880}
+                height={520}
+                className="w-full h-full object-cover hidden md:block"
+                priority
+              />
             </div>
-
-            <div className="space-y-6">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">{benefit.icon}</span>
+          {/* Card */}
+          <div className="flex-1 bg-white rounded-xl md:rounded-2xl shadow-lg p-6 md:p-8 flex flex-col justify-center">
+            <div className="space-y-7">
+              {benefits.map((b) => (
+                <div key={b.title} className="flex items-start gap-4">
+                  <div className="shrink-0 pt-1">
+                    <Image src={b.img} alt={b.title} width={32} height={32} className="w-8 h-8" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{benefit.title}</h3>
-                    <p className="text-gray-600">{benefit.description}</p>
+                    <h3 className="text-[15px] md:text-base font-semibold text-gray-900 leading-snug mb-1">{b.title}</h3>
+                    <p className="text-xs md:text-sm text-gray-600 leading-snug">{b.description}</p>
                   </div>
                 </div>
               ))}

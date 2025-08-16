@@ -71,6 +71,47 @@ export const InternationalPricingPlans = () => {
   return (
     <>
       <style>{`
+        /* ---------- MOBILE HORIZONTAL SCROLL ---------- */
+        .pricing-plans-wrapper {
+          display: flex;
+          gap: 1.5rem; /* 24px */
+          padding-top:6vw;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          padding-bottom: 1rem;
+        }
+        .pricing-plans-wrapper .pricing-card {
+          flex: 0 0 85%;
+          scroll-snap-align: center;
+        }
+        /* Hide scrollbar */
+        .pricing-plans-wrapper::-webkit-scrollbar {
+          display: none;
+        }
+        .pricing-plans-wrapper {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        /* ---------- TABLET & DESKTOP GRID ---------- */
+        @media (min-width: 768px) {
+          .pricing-plans-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            overflow-x: visible;
+          }
+          .pricing-plans-wrapper .pricing-card {
+            flex: unset;
+          }
+        }
+        @media (min-width: 1024px) {
+          .pricing-plans-wrapper {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        /* ---------- CARD STYLES ---------- */
         .pricing-card {
           position: relative;
           background: white;
@@ -80,73 +121,60 @@ export const InternationalPricingPlans = () => {
           transition: all 0.3s ease;
           overflow: hidden;
         }
-        
         .pricing-card:hover {
           box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
           transform: translateY(-2px);
         }
-        
         .pricing-card.popular {
           border-color: #f97316;
           transform: scale(1.05);
         }
-        
         .pricing-card.popular:hover {
           transform: scale(1.05) translateY(-2px);
         }
-        
         .card-header {
           position: relative;
           padding: 0;
           overflow: hidden;
         }
-        
         .header-band {
           height: 8px;
           width: 100%;
         }
-        
         .header-band.basic {
           background: linear-gradient(90deg, #6b7280, #9ca3af);
         }
-        
         .header-band.popular {
           background: linear-gradient(90deg, #f97316, #fb923c);
           position: relative;
-          height:30px;
+          height: 30px;
         }
-        
         .header-band.elite {
           background: linear-gradient(90deg, #f59e0b, #fbbf24);
         }
-        
         .popular-badge {
           position: absolute;
           top: -12px;
           left: 50%;
           transform: translateX(-50%);
-          // background: #f97316;
           color: white;
           padding: 6px 16px;
           border-radius: 20px;
           font-size: 12px;
           font-weight: 600;
           z-index: 10;
-          margin-top:10px;
+          margin-top: 10px;
           box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
         }
-        
         .card-content {
           padding: 24px;
         }
-        
         .plan-title {
           font-size: 24px;
           font-weight: 700;
           color: #111827;
           margin-bottom: 8px;
         }
-        
         .plan-price {
           font-size: 36px;
           font-weight: 800;
@@ -155,14 +183,12 @@ export const InternationalPricingPlans = () => {
           display: inline-block;
           margin-right: 12px;
         }
-        
         .price-period {
           font-size: 14px;
           color: #6b7280;
           margin-bottom: 16px;
           display: inline-block;
         }
-        
         .plan-description {
           color: #4b5563;
           font-size: 14px;
@@ -170,33 +196,27 @@ export const InternationalPricingPlans = () => {
           margin-bottom: 24px;
           text-align: left;
         }
-        
         .features-list {
           margin-bottom: 32px;
         }
-        
         .feature-item {
           display: flex;
           align-items: flex-start;
           margin-bottom: 12px;
         }
-        
         .feature-item.excluded {
           opacity: 0.4;
         }
-        
         .feature-icon {
           margin-right: 12px;
           margin-top: 2px;
           flex-shrink: 0;
         }
-        
         .feature-text {
           font-size: 14px;
           line-height: 1.4;
           color: #374151;
         }
-        
         .cta-button {
           width: 100%;
           background: #f97316;
@@ -209,43 +229,37 @@ export const InternationalPricingPlans = () => {
           cursor: pointer;
           transition: all 0.3s ease;
         }
-        
         .cta-button:hover {
           background: #ea580c;
           transform: translateY(-1px);
           box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
         }
       `}</style>
-      
+
       <section className="w-full bg-gray-50 py-20">
         <div className="max-w-7xl mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="sm:text-5xl text-4xl font-semibold sm:font-bold text-gray-900 mb-6">
               Choose Your International Journey Plan
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="sm:text-xl text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Select the plan that best fits your global career aspirations and budget. All plans include our core 18-month roadmap.
             </p>
           </div>
 
-          {/* Pricing Plans Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+          {/* Pricing Plans */}
+          <div className="pricing-plans-wrapper">
             {PRICING_PLANS.map((plan) => (
               <div key={plan.id} className={`pricing-card ${plan.isPopular ? 'popular' : ''}`}>
-                
                 {/* Header Band */}
                 <div className="card-header">
                   <div className={`header-band ${plan.isPopular ? 'popular' : plan.id}`}></div>
-                  {plan.isPopular && (
-                    <div className="popular-badge">
-                      Most Popular
-                    </div>
-                  )}
+                  {plan.isPopular && <div className="popular-badge">Most Popular</div>}
                 </div>
 
                 {/* Card Content */}
-                <div className="card-content" style={{ paddingTop: plan.isPopular ? '24px' : '24px' }}>
+                <div className="card-content">
                   <h3 className="plan-title">{plan.title}</h3>
                   <div style={{ marginBottom: '16px' }}>
                     <div className="plan-price">{plan.price}</div>
@@ -261,7 +275,6 @@ export const InternationalPricingPlans = () => {
                         <span className="feature-text">{feature}</span>
                       </div>
                     ))}
-                    
                     {plan.excludedFeatures && plan.excludedFeatures.map((feature, index) => (
                       <div key={`excluded-${index}`} className="feature-item excluded">
                         <X size={18} className="text-gray-400 feature-icon" />
@@ -271,9 +284,7 @@ export const InternationalPricingPlans = () => {
                   </div>
 
                   {/* CTA Button */}
-                  <button className="cta-button">
-                    {plan.buttonText}
-                  </button>
+                  <button className="cta-button">{plan.buttonText}</button>
                 </div>
               </div>
             ))}
@@ -282,4 +293,4 @@ export const InternationalPricingPlans = () => {
       </section>
     </>
   );
-}
+};

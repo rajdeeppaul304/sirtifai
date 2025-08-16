@@ -49,7 +49,7 @@
     "eslint": "latest",
     "eslint-plugin-react-hooks": "latest",
     "eslint-plugin-react-refresh": "latest",
-    "geist": "latest",
+    "geist": "^1.4.2",
     "globals": "latest",
     "input-otp": "1.4.1",
     "jiti": "latest",
