@@ -1,51 +1,54 @@
-// Data matching design reference
+import { FaBook, FaCalendarAlt, FaCertificate, FaChartLine, FaComments, FaLaptop } from "react-icons/fa";
+
 const benefits = [
   {
-    title: "Real Projects with Monthly Pay",
-    description: "Work on actual client projects with guaranteed monthly payments.",
+    icon: <FaCalendarAlt className="text-[#FF5C35]"/>,
+    iconColor: 'text-orange-500',
+    title: 'Paid Weekly With Benefits Pay',
+    description: 'Regular payment cycles with bonuses'
   },
   {
-    title: "Mentor Feedback on Every Task",
-    description: "Get professional guidance to improve your skills with each project.",
+    icon: <FaLaptop className="text-[#FF5C35]"/>,
+    iconColor: 'text-orange-500',
+    title: 'Remote Flexibility on Every Task',
+    description: 'Work from anywhere, anytime'
   },
   {
-    title: "Legal Contracts (Elite only)",
-    description: "Professional legal protection for your freelance work.",
+    icon: <FaCertificate className="text-[#FF5C35]"/>,
+    iconColor: 'text-red-500',
+    title: 'Legal Certificate When Hired',
+    description: 'Recognized professional credentials'
   },
   {
-    title: "Career & Client Growth",
-    description: "Build long-term relationships with clients and expand your network.",
+    icon: <FaComments className="text-[#FF5C35]"/>,
+    iconColor: 'text-purple-500',
+    title: 'Support & Communication',
+    description: 'Always available assistance'
   },
   {
-    title: "Verified Portfolio Access",
-    description: "Showcase your verified work experience to future clients.",
+    icon: <FaBook className="text-[#FF5C35]"/>,
+    iconColor: 'text-orange-500',
+    title: 'Detailed Training Access',
+    description: 'Comprehensive learning materials'
   },
   {
-    title: "AI Resume & Profile Setup",
-    description: "Get professional help setting up your freelance profile.",
-  },
+    icon: <FaChartLine className="text-[#FF5C35]"/>,
+    iconColor: 'text-pink-500',
+    title: 'Professional Growth Paths',
+    description: 'Career advancement opportunities'
+  }
 ];
 
 const WhatYouGetSection: React.FC = () => {
   return (
     <section className="py-16 bg-white">
-      <div className="max-w-6xl mx-auto px-4 text-center">
+      <div className="max-w-6xl mx-auto px-4 text-center flex flex-col justify-start items-start gap-4">
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-14">What You Get</h2>
         <div className="grid gap-x-12 gap-y-12 md:grid-cols-3 text-left mb-10">
           {benefits.map((b) => (
             <div key={b.title} className="flex flex-col space-y-2">
               <div className="flex items-start gap-3">
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500 flex-shrink-0 mt-1" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M4 8.2l2.4 2.4L12 5"
-                      stroke="#fff"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
+                {b.icon}
                 <div>
                   <h3 className="font-semibold text-sm md:text-base text-gray-900 leading-snug mb-1">
                     {b.title}

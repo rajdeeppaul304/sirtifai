@@ -15,11 +15,11 @@ const FinalCTASection: React.FC = () => {
           <div className="flex flex-col items-center text-center">
             <div className="flex items-start gap-3 mb-8">
               <span className="text-2xl md:text-3xl leading-none" aria-hidden="true">💬</span>
-              <p className="font-semibold text-2xl md:text-3xl leading-tight">"Still exploring? Let's help you decide."</p>
+              <p className="font-semibold text-2xl md:text-3xl leading-tight">"Still exploring? Let&apos;s help you decide."</p>
             </div>
-            <ul className="flex flex-wrap justify-center gap-x-10 gap-y-5 text-sm md:text-[15px] font-medium max-w-5xl">
+            <ul className="grid grid-cols-2 justify-center gap-x-10 gap-y-5 text-sm md:text-[15px] font-medium max-w-3xl">
               {features.map(({ label, icon: Icon }) => (
-                <li key={label} className="flex items-center gap-2 whitespace-nowrap">
+                <li key={label} className="w-full flex items-center gap-2 whitespace-nowrap">
                   <span className="inline-flex items-center justify-center w-5 h-5" aria-hidden="true">
                     <Icon />
                   </span>
