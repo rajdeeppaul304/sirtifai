@@ -52,33 +52,6 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
     })
   }
 
-  const storeStudentData = async (processedStudentData: any, orderId: string) => {
-    try {
-      const response = await fetch("/api/store-student-data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          studentData: processedStudentData,
-          packageData: {
-            program: selectedProgram,
-            months: selectedMonths,
-            addon: selectedAddon,
-          },
-          orderId: orderId,
-          paymentStatus: "PROCESSING",
-        }),
-      })
-
-      const result = await response.json()
-      return result
-    } catch (error) {
-      console.error("Error storing student data:", error)
-      return { success: false, error: "Failed to store student data" }
-    }
-  }
-
   const handlePayment = async () => {
     if (validateForm && !validateForm()) {
       alert("Please fill in all required fields before proceeding with payment.")
@@ -126,15 +99,17 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         return
       }
 
+      const packageData = JSON.parse(localStorage.getItem("selectedPackage") || "{}")
+      console.log("Creating order with package data:", packageData)
+
       const orderResponse = await fetch("/api/create-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          selectedProgram,
-          selectedMonths,
-          selectedAddon,
+          packageData,
+          studentData: processedStudentData,
           currency: "USD",
           receipt: `receipt_${Date.now()}`,
         }),
@@ -144,13 +119,6 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
 
       if (!orderResponse.ok) {
         alert(`Order creation failed: ${order.error}`)
-        setLoading(false)
-        return
-      }
-
-      const storeResult = await storeStudentData(processedStudentData, order.id)
-      if (!storeResult.success) {
-        alert("Failed to store application data. Please try again.")
         setLoading(false)
         return
       }
@@ -184,7 +152,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                orderId: order.id, // Pass orderId to update existing record
+                orderId: order.id,
               }),
             })
 

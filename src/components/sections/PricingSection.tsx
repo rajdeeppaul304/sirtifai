@@ -3,7 +3,8 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { PRICING, formatPrice } from "../../lib/pricing"
+import { formatPrice, calculatePricing } from "../../lib/pricing"
+import { getProductsByCategory, createStandardizedPackageData } from "../../lib/products"
 
 const CheckIcon = ({ className }: { className?: string }) => (
   <svg
@@ -39,93 +40,22 @@ interface FreelancerAddOn {
   badge?: string
 }
 
-const freelancerPlans: FreelancerPlan[] = [
-  {
-    id: "freelancer-basic",
-    name: "Basic",
-    price: PRICING.FREELANCER_BASIC,
-    earningRange: "Earn up to $1,200/Month",
-    features: ["1 Paid Project", "Mentor Feedback", "Portfolio Development", "Insurance Backed for Payment"],
-  },
-  {
-    id: "freelancer-pro",
-    name: "Pro",
-    price: PRICING.FREELANCER_PRO,
-    earningRange: "Earn $1,260 – $2,208/Month",
-    features: [
-      "Team Projects",
-      "EPF Benefits",
-      "Professional Payroll",
-      "Dedicated Support",
-      "Insurance Backed for Payment",
-    ],
-    popular: true,
-  },
-  {
-    id: "freelancer-elite",
-    name: "Elite",
-    price: PRICING.FREELANCER_ELITE,
-    earningRange: "Earn $2,256 – $3,504/Month",
-    features: ["Premium Projects", "Complete Legal Pack", "Insurance Backed for Payment", "All Pro Features Included"],
-  },
-]
-
-const freelancerAddOns: FreelancerAddOn[] = [
-  {
-    id: "payroll-epf",
-    name: "Payroll + EPF",
-    price: PRICING.PAYROLL_EPF,
-    description: "Get paid like a professional with verified income, payslips, and statutory benefits.",
-    features: ["Deel™ Payroll", "International structure for US/UK/Canada clients", "Tax-ready payout"],
-  },
-  {
-    id: "ca-services",
-    name: "CA Services",
-    price: PRICING.CA_SERVICES,
-    description: "Chartered Accountant Support - Manage your income, taxes, and filings with expert CA assistance.",
-    features: ["ITR Filing", "GST Filing", "Tax Reports", "Bank reconciliation", "Professional invoicing"],
-  },
-  {
-    id: "legal-support",
-    name: "Legal Support",
-    price: PRICING.LEGAL_SUPPORT,
-    description: "Contract & IP Support - Stay legally protected while working with clients—India or abroad.",
-    features: ["NDA Templates", "Service Contract", "IP Safety", "Legal compliance", "Basic dispute advisory"],
-  },
-  {
-    id: "freelancer-shield-combo",
-    name: "Freelancer Shield Combo",
-    price: PRICING.FREELANCER_SHIELD_COMBO,
-    description: "All of the above services in one comprehensive bundle for maximum protection and support.",
-    features: ["All Payroll + EPF features", "Complete CA Services", "Full Legal Support", "Priority support"],
-    highlight: true,
-    badge: "Best Value",
-  },
-]
-
 const PricingSection: React.FC = () => {
   const router = useRouter()
   const [selectedPlan, setSelectedPlan] = useState<string>("freelancer-pro")
   const [selectedAddOn, setSelectedAddOn] = useState<string>("")
   const [calculatedPricing, setCalculatedPricing] = useState<any>(null)
 
-  const selectedPlanData = freelancerPlans.find((p) => p.id === selectedPlan)
+  const freelancerProducts = getProductsByCategory("freelancer")
+  const addonProducts = getProductsByCategory("freelancer-addon")
+
+  const selectedPlanData = freelancerProducts.find((p) => p.id === selectedPlan)
+  const selectedAddOnData = selectedAddOn ? addonProducts.find((a) => a.id === selectedAddOn) : null
 
   useEffect(() => {
     if (selectedPlanData) {
-      const planTotal = selectedPlanData.price
-      const addonTotal = selectedAddOn ? freelancerAddOns.find((a) => a.id === selectedAddOn)?.price || 0 : 0
-      const subtotal = planTotal + addonTotal
-      const tax = Math.round(subtotal * 0.18)
-      const total = subtotal + tax
-
-      setCalculatedPricing({
-        planTotal,
-        addonTotal,
-        subtotal,
-        tax,
-        total,
-      })
+      const pricing = calculatePricing(selectedPlan, selectedAddOn || null, 1)
+      setCalculatedPricing(pricing)
     }
   }, [selectedPlan, selectedAddOn, selectedPlanData])
 
@@ -134,25 +64,7 @@ const PricingSection: React.FC = () => {
   }
 
   const handleBuyNow = () => {
-    const packageData = {
-      selectedProgram: selectedPlan,
-      selectedAddOn: selectedAddOn || null,
-      selectedAddOns: selectedAddOn ? [selectedAddOn] : [],
-      selectedDuration: 1, // One-time payment
-      programData: {
-        name: selectedPlanData?.name,
-        price: selectedPlanData?.price,
-        features: selectedPlanData?.features,
-      },
-      addOnData: selectedAddOn
-        ? {
-            name: freelancerAddOns.find((a) => a.id === selectedAddOn)?.name,
-            price: calculatedPricing?.addonTotal,
-          }
-        : null,
-      pricing: calculatedPricing,
-      type: "freelancer",
-    }
+    const packageData = createStandardizedPackageData("freelancer", selectedPlan, selectedAddOn || null)
 
     localStorage.setItem("selectedPackage", JSON.stringify(packageData))
     router.push("/application")
@@ -177,7 +89,7 @@ const PricingSection: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900">Select Your Freelancer Plan</h3>
               </div>
               <div className="space-y-3 p-4">
-                {freelancerPlans.map((plan) => (
+                {freelancerProducts.map((plan) => (
                   <label
                     key={plan.id}
                     className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50"
@@ -241,7 +153,7 @@ const PricingSection: React.FC = () => {
                   <p className="text-sm text-gray-600">Continue with just the freelancer plan</p>
                 </div>
 
-                {freelancerAddOns.map((addOn) => (
+                {addonProducts.map((addOn) => (
                   <div
                     key={addOn.id}
                     className={`border rounded-lg p-4 cursor-pointer transition-all ${
@@ -310,22 +222,17 @@ const PricingSection: React.FC = () => {
             )}
 
             {/* Selected Add-on Details */}
-            {selectedAddOn && (
+            {selectedAddOnData && (
               <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Selected Add-On Service</h3>
                 <div className="space-y-3">
-                  {(() => {
-                    const addOn = freelancerAddOns.find((a) => a.id === selectedAddOn)
-                    return addOn ? (
-                      <div className="border-l-4 border-[#FC4C03] pl-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-medium text-gray-900">{addOn.name}</h4>
-                          <span className="text-[#FC4C03] font-semibold">{formatPrice(addOn.price)}</span>
-                        </div>
-                        <p className="text-sm text-gray-600">{addOn.description}</p>
-                      </div>
-                    ) : null
-                  })()}
+                  <div className="border-l-4 border-[#FC4C03] pl-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="font-medium text-gray-900">{selectedAddOnData.name}</h4>
+                      <span className="text-[#FC4C03] font-semibold">{formatPrice(selectedAddOnData.price)}</span>
+                    </div>
+                    <p className="text-sm text-gray-600">{selectedAddOnData.description}</p>
+                  </div>
                 </div>
               </div>
             )}
@@ -338,13 +245,13 @@ const PricingSection: React.FC = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">{selectedPlanData?.name} Plan:</span>
-                    <span className="font-semibold">{formatPrice(calculatedPricing.planTotal)}</span>
+                    <span className="font-semibold">{formatPrice(selectedPlanData?.price || 0)}</span>
                   </div>
 
-                  {calculatedPricing.addonTotal > 0 && (
+                  {selectedAddOnData && (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-700">Add-on Service:</span>
-                      <span className="font-semibold">{formatPrice(calculatedPricing.addonTotal)}</span>
+                      <span className="text-gray-700">Add-on ({selectedAddOnData.name}):</span>
+                      <span className="font-semibold">{formatPrice(selectedAddOnData.price)}</span>
                     </div>
                   )}
 
@@ -355,7 +262,7 @@ const PricingSection: React.FC = () => {
 
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Tax (18%):</span>
-                    <span className="font-semibold">{formatPrice(calculatedPricing.tax)}</span>
+                    <span className="font-semibold">{formatPrice(calculatedPricing.gst)}</span>
                   </div>
 
                   <hr className="my-4" />

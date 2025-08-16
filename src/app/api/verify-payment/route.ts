@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "../../../../lib/prisma"
 import crypto from "crypto"
-import { getINRToUSDRate } from "../../../lib/currency"
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,10 +19,6 @@ export async function POST(request: NextRequest) {
       .update(body_string)
       .digest("hex")
 
-    console.log("Body string for signature:", body_string)
-    console.log("Expected signature (full):", expectedSignature)
-    console.log("Received signature (full):", razorpay_signature)
-
     const isSignatureValid = expectedSignature === razorpay_signature
 
     if (isSignatureValid) {
@@ -40,85 +35,42 @@ export async function POST(request: NextRequest) {
       })
 
       if (existingStudent) {
-        const timestamp = Date.now()
-        const randomString = crypto.randomBytes(8).toString("hex")
-        const uniqueInvoiceLink = `${timestamp}-${randomString}`
-
-        const inrToUsdRate = await getINRToUSDRate()
-        const usdToInrRate = 1 / inrToUsdRate
-
-        const programPriceINR = Math.round((existingStudent.programPrice || 72) * usdToInrRate)
-        const addonPriceINR = existingStudent.addonPrice ? Math.round(existingStudent.addonPrice * usdToInrRate) : 0
-
-        const calculatedSubtotalINR = programPriceINR + addonPriceINR
-        const calculatedGstAmountINR = Math.round(calculatedSubtotalINR * 0.18)
-        const calculatedTotalINR = calculatedSubtotalINR + calculatedGstAmountINR
-
-        // Update existing record
         const updatedStudent = await prisma.student.update({
           where: { id: existingStudent.id },
           data: {
             paymentId: razorpay_payment_id,
             paymentStatus: "COMPLETED",
-            razorpayPaymentId: razorpay_payment_id,
-            razorpaySignature: razorpay_signature,
-            invoiceLink: uniqueInvoiceLink, // Set unique invoice link
-            exchangeRateUsed: usdToInrRate,
-            totalAmountINR: calculatedTotalINR,
-          },
-        })
-
-        const now = new Date()
-        const dateStr = now.toISOString().slice(0, 10).replace(/-/g, "")
-        const timeStr = now.getTime().toString().slice(-6) // Last 6 digits of timestamp
-        const invoiceNumber = `SRT/INT/${dateStr}/${timeStr}`
-
-        const invoice = await prisma.invoice.create({
-          data: {
-            invoiceNumber,
-            studentId: updatedStudent.id,
-            invoiceLink: uniqueInvoiceLink,
-            programName: existingStudent.selectedProgram || "Skill Phase",
-            programPrice: existingStudent.programPrice || 72,
-            programDuration: existingStudent.programDuration || 1,
-            addonName: existingStudent.selectedAddon || null,
-            addonPrice: existingStudent.addonPrice || 0,
-            subtotal: existingStudent.programPrice || 72 - (existingStudent.programPrice || 72) * 0.18, // USD subtotal
-            gstAmount: (existingStudent.programPrice || 72) * 0.18, // USD GST
-            total: existingStudent.programPrice || 72, // USD total
-            exchangeRateUsed: usdToInrRate,
-            programPriceINR: programPriceINR,
-            addonPriceINR: addonPriceINR,
-            subtotalINR: calculatedSubtotalINR,
-            gstAmountINR: calculatedGstAmountINR,
-            totalINR: calculatedTotalINR,
-            paymentStatus: "completed",
             paymentMethod: "Razorpay",
             paymentDate: new Date(),
+            razorpayPaymentId: razorpay_payment_id, // Fixed field name from razorpay_payment_id to razorpayPaymentId to match Prisma schema
+            razorpaySignature: razorpay_signature,
           },
         })
 
-        console.log("Student record updated to COMPLETED and invoice created with stored INR amounts")
+        console.log("Payment completed successfully")
 
-        // Send invoice email
         try {
-          await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/send-invoice-email`, {
+          const protocol = request.headers.get("x-forwarded-proto") || "https"
+          const host = request.headers.get("host") || request.headers.get("x-forwarded-host")
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (host ? `${protocol}://${host}` : "http://localhost:3000")
+
+          await fetch(`${baseUrl}/api/send-invoice-email`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              studentEmail: existingStudent.email,
-              studentName: existingStudent.fullName,
-              invoiceLink: uniqueInvoiceLink, // Use the unique invoice link
+              studentEmail: updatedStudent.email,
+              studentName: updatedStudent.fullName,
+              invoiceLink: updatedStudent.invoiceLink,
               invoiceData: {
-                invoiceNumber: invoice.invoiceNumber,
-                programName: existingStudent.selectedProgram || "Skill Phase",
-                duration: existingStudent.programDuration || 1,
-                addonName: existingStudent.selectedAddon || null,
-                total: calculatedTotalINR, // Send corrected INR amount for email
+                invoiceNumber: updatedStudent.invoiceNumber,
+                programName: updatedStudent.programName,
+                duration: updatedStudent.programDuration,
+                addonName: updatedStudent.addonName,
+                total: updatedStudent.totalINR,
                 paymentStatus: "Completed",
-                paymentDate: new Date(),
+                paymentDate: updatedStudent.paymentDate,
               },
             }),
           })
@@ -131,9 +83,9 @@ export async function POST(request: NextRequest) {
           success: true,
           paymentId: razorpay_payment_id,
           orderId: razorpay_order_id,
-          invoiceId: invoice.invoiceNumber,
+          invoiceId: updatedStudent.invoiceLink,
           studentId: updatedStudent.id,
-          invoiceLink: uniqueInvoiceLink, // Return the unique invoice link
+          invoiceLink: updatedStudent.invoiceLink,
         })
       } else {
         console.log("No PROCESSING student record found for order:", razorpay_order_id)
@@ -151,11 +103,6 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "Invalid signature",
-          debug: {
-            bodyString: body_string,
-            expected: expectedSignature,
-            received: razorpay_signature,
-          },
         },
         { status: 400 },
       )
