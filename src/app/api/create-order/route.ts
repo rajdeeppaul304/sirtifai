@@ -83,32 +83,34 @@ export async function POST(request: NextRequest) {
     const invoiceNumber = generateInvoiceNumber()
     const invoiceLink = uuidv4()
 
-    let parsedDateOfBirth: Date | null = null
-    if (studentData.dateOfBirth) {
-      if (
-        typeof studentData.dateOfBirth === "object" &&
-        studentData.dateOfBirth.day &&
-        studentData.dateOfBirth.month &&
-        studentData.dateOfBirth.year
-      ) {
-        const { day, month, year } = studentData.dateOfBirth
-        // Create date using year, month-1 (0-indexed), day format
-        const dateValue = new Date(Number.parseInt(year), Number.parseInt(month) - 1, Number.parseInt(day))
-        if (!isNaN(dateValue.getTime())) {
-          parsedDateOfBirth = dateValue
-        } else {
-          console.error("Invalid date of birth components:", studentData.dateOfBirth)
-          return NextResponse.json({ error: "Invalid date of birth format" }, { status: 400 })
-        }
+    let parsedDateOfBirth: Date
+    if (!studentData.dateOfBirth) {
+      return NextResponse.json({ error: "Date of birth is required" }, { status: 400 })
+    }
+
+    if (
+      typeof studentData.dateOfBirth === "object" &&
+      studentData.dateOfBirth.day &&
+      studentData.dateOfBirth.month &&
+      studentData.dateOfBirth.year
+    ) {
+      const { day, month, year } = studentData.dateOfBirth
+      // Create date using year, month-1 (0-indexed), day format
+      const dateValue = new Date(Number.parseInt(year), Number.parseInt(month) - 1, Number.parseInt(day))
+      if (!isNaN(dateValue.getTime())) {
+        parsedDateOfBirth = dateValue
       } else {
-        // Fallback for string format
-        const dateValue = new Date(studentData.dateOfBirth)
-        if (!isNaN(dateValue.getTime())) {
-          parsedDateOfBirth = dateValue
-        } else {
-          console.error("Invalid date of birth:", studentData.dateOfBirth)
-          return NextResponse.json({ error: "Invalid date of birth format" }, { status: 400 })
-        }
+        console.error("Invalid date of birth components:", studentData.dateOfBirth)
+        return NextResponse.json({ error: "Invalid date of birth format" }, { status: 400 })
+      }
+    } else {
+      // Fallback for string format
+      const dateValue = new Date(studentData.dateOfBirth)
+      if (!isNaN(dateValue.getTime())) {
+        parsedDateOfBirth = dateValue
+      } else {
+        console.error("Invalid date of birth:", studentData.dateOfBirth)
+        return NextResponse.json({ error: "Invalid date of birth format" }, { status: 400 })
       }
     }
 
