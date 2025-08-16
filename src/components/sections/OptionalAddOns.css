@@ -1,0 +1,38 @@
+/* Mobile horizontal scroll */
+.add-ons-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 1rem;
+}
+
+.add-ons-wrapper .add-on-card {
+  flex: 0 0 85%;
+  scroll-snap-align: center;
+}
+
+/* Hide scrollbar */
+.add-ons-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.add-ons-wrapper {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Tablet and Desktop grid */
+@media (min-width: 768px) {
+  .add-ons-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    overflow-x: visible;
+  }
+}
+
+@media (min-width: 1024px) {
+  .add-ons-wrapper {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
