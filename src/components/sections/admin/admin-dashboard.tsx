@@ -45,15 +45,17 @@ interface StudentRecord {
   paymentStatus: string
   razorpayOrderId?: string
   razorpayPaymentId?: string
-  invoiceLink?: string // Added invoice link field
+  invoiceLink?: string
   createdAt: string
   updatedAt: string
   referralCode?: string
   whatsappNotifications: boolean
   agreedToTerms: boolean
   certifiedInformation: boolean
-  photoBase64?: string
-  idDocumentBase64?: string
+  photo?: string | { type: string; data: number[] } // Hexadecimal format or Buffer object
+  idDocument?: string | { type: string; data: number[] } // Hexadecimal format or Buffer object
+  photoBase64?: string // Legacy base64 format
+  idDocumentBase64?: string // Legacy base64 format
   photoUrl?: string
   idDocumentUrl?: string
 }
@@ -143,9 +145,85 @@ const AdminDashboard = () => {
     }
   }
 
-  const handleDownloadDocument = (student: StudentRecord) => {
+  const hexToBase64 = (hexString: string): string => {
+    try {
+      // Remove \x prefixes and convert hex pairs to binary
+      const cleanHex = hexString.replace(/\\x/g, "")
+      const binaryString =
+        cleanHex
+          .match(/.{2}/g)
+          ?.map((hex) => String.fromCharCode(Number.parseInt(hex, 16)))
+          .join("") || ""
+
+      // Convert binary to base64
+      return btoa(binaryString)
+    } catch (error) {
+      console.error("Error converting hex to base64:", error)
+      return ""
+    }
+  }
+
+  const bufferToBase64 = (buffer: { type: string; data: number[] }): string => {
+    try {
+      return Buffer.from(buffer.data).toString("base64")
+    } catch (error) {
+      console.error("Error converting buffer to base64:", error)
+      return ""
+    }
+  }
+
+  const getPhotoData = (student: StudentRecord): string | null => {
+    if (student.photo) {
+      // If photo is a Buffer object, convert to base64
+      if (typeof student.photo === "object" && student.photo.type === "Buffer") {
+        return bufferToBase64(student.photo)
+      }
+      // If photo is already a string (legacy hex format), convert from hex
+      if (typeof student.photo === "string") {
+        return hexToBase64(student.photo)
+      }
+    }
+    if (student.photoBase64) {
+      return student.photoBase64
+    }
+    if (student.photoUrl) {
+      return student.photoUrl.replace(/^data:[^;]+;base64,/, "")
+    }
+    return null
+  }
+
+  const getDocumentData = (student: StudentRecord): string | null => {
+    if (student.idDocument) {
+      // If idDocument is a Buffer object, convert to base64
+      if (typeof student.idDocument === "object" && student.idDocument.type === "Buffer") {
+        return bufferToBase64(student.idDocument)
+      }
+      // If idDocument is already a string (legacy hex format), convert from hex
+      if (typeof student.idDocument === "string") {
+        return hexToBase64(student.idDocument)
+      }
+    }
     if (student.idDocumentBase64) {
-      const byteCharacters = atob(student.idDocumentBase64)
+      return student.idDocumentBase64
+    }
+    if (student.idDocumentUrl) {
+      return student.idDocumentUrl.replace(/^data:[^;]+;base64,/, "")
+    }
+    return null
+  }
+
+  const hasPhoto = (student: StudentRecord): boolean => {
+    return !!(student.photo || student.photoBase64 || student.photoUrl)
+  }
+
+  const hasDocument = (student: StudentRecord): boolean => {
+    return !!(student.idDocument || student.idDocumentBase64 || student.idDocumentUrl)
+  }
+
+  const handleDownloadDocument = (student: StudentRecord) => {
+    const documentData = getDocumentData(student)
+    if (documentData) {
+      const byteCharacters = atob(documentData)
       const byteNumbers = new Array(byteCharacters.length)
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i)
@@ -234,25 +312,39 @@ const AdminDashboard = () => {
 
   const getStatusBadge = (status: string) => {
     const statusStyles = {
+      COMPLETED: "bg-green-100 text-green-800",
       completed: "bg-green-100 text-green-800",
+      PROCESSING: "bg-yellow-100 text-yellow-800",
+      processing: "bg-yellow-100 text-yellow-800",
       pending: "bg-yellow-100 text-yellow-800",
       failed: "bg-red-100 text-red-800",
     }
+
+    const displayStatus =
+      status === "COMPLETED"
+        ? "Completed"
+        : status === "PROCESSING"
+          ? "Processing"
+          : status.charAt(0).toUpperCase() + status.slice(1)
 
     return (
       <span
         className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status as keyof typeof statusStyles] || "bg-gray-100 text-gray-800"}`}
       >
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {displayStatus}
       </span>
     )
   }
 
   const totalRevenue = (students || [])
-    .filter((s) => s.paymentStatus === "completed")
+    .filter((s) => s.paymentStatus === "completed" || s.paymentStatus === "COMPLETED")
     .reduce((sum, s) => sum + s.totalAmount, 0)
-  const completedPayments = (students || []).filter((s) => s.paymentStatus === "completed").length
-  const pendingPayments = (students || []).filter((s) => s.paymentStatus === "pending").length
+  const completedPayments = (students || []).filter(
+    (s) => s.paymentStatus === "completed" || s.paymentStatus === "COMPLETED",
+  ).length
+  const pendingPayments = (students || []).filter(
+    (s) => s.paymentStatus === "pending" || s.paymentStatus === "PROCESSING",
+  ).length
 
   if (loading) {
     return (
@@ -324,7 +416,7 @@ const AdminDashboard = () => {
                 <Calendar className="w-6 h-6 text-yellow-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Pending Payments</p>
+                <p className="text-sm font-medium text-gray-600">Processing Payments</p> {/* Updated label */}
                 <p className="text-2xl font-bold text-gray-900">{pendingPayments}</p>
               </div>
             </div>
@@ -364,8 +456,10 @@ const AdminDashboard = () => {
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FC4C03] focus:border-transparent"
               >
                 <option value="all">All Status</option>
-                <option value="completed">Completed</option>
-                <option value="pending">Pending</option>
+                <option value="COMPLETED">Completed</option> {/* Updated to use enum values */}
+                <option value="PROCESSING">Processing</option>
+                <option value="completed">Completed (Legacy)</option>
+                <option value="pending">Pending (Legacy)</option>
                 <option value="failed">Failed</option>
               </select>
 
@@ -414,7 +508,7 @@ const AdminDashboard = () => {
                     Registration Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    Payment Status {/* Updated column header */}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Documents
@@ -451,10 +545,11 @@ const AdminDashboard = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {new Date(student.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(student.paymentStatus)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(student.paymentStatus)}</td>{" "}
+                      {/* Shows payment status with proper styling */}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex space-x-2">
-                          {student.photoBase64 && (
+                          {hasPhoto(student) && (
                             <button
                               onClick={() => handleViewPhoto(student)}
                               className="text-blue-600 hover:text-blue-800"
@@ -463,7 +558,7 @@ const AdminDashboard = () => {
                               <ImageIcon className="w-4 h-4" />
                             </button>
                           )}
-                          {student.idDocumentBase64 && (
+                          {hasDocument(student) && (
                             <button
                               onClick={() => handleViewDocument(student)}
                               className="text-green-600 hover:text-green-800"
@@ -483,16 +578,17 @@ const AdminDashboard = () => {
                             <Eye className="w-4 h-4" />
                             <span>View</span>
                           </button>
-                          {student.invoiceLink && student.paymentStatus === "completed" && (
-                            <button
-                              onClick={() => handleViewInvoice(student)}
-                              className="flex items-center space-x-1 text-green-600 hover:text-green-800"
-                              title="View Invoice"
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                              <span>Invoice</span>
-                            </button>
-                          )}
+                          {student.invoiceLink &&
+                            (student.paymentStatus === "completed" || student.paymentStatus === "COMPLETED") && (
+                              <button
+                                onClick={() => handleViewInvoice(student)}
+                                className="flex items-center space-x-1 text-green-600 hover:text-green-800"
+                                title="View Invoice"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                                <span>Invoice</span>
+                              </button>
+                            )}
                         </div>
                       </td>
                     </tr>
@@ -651,7 +747,7 @@ const AdminDashboard = () => {
                         <p className="text-gray-900">{selectedStudent.idNumber}</p>
                       </div>
                       <div className="flex space-x-2 mt-2">
-                        {selectedStudent.photoBase64 && (
+                        {hasPhoto(selectedStudent) && (
                           <button
                             onClick={() => handleViewPhoto(selectedStudent)}
                             className="flex items-center space-x-1 px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200"
@@ -660,7 +756,7 @@ const AdminDashboard = () => {
                             <span>View Photo</span>
                           </button>
                         )}
-                        {selectedStudent.idDocumentBase64 && (
+                        {hasDocument(selectedStudent) && (
                           <>
                             <button
                               onClick={() => handleViewDocument(selectedStudent)}
@@ -791,7 +887,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        {showPhotoModal && selectedStudent && selectedStudent.photoBase64 && (
+        {showPhotoModal && selectedStudent && hasPhoto(selectedStudent) && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg max-w-2xl w-full">
               <div className="p-6">
@@ -805,7 +901,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className="flex justify-center">
                   <img
-                    src={`data:image/jpeg;base64,${selectedStudent.photoBase64}`}
+                    src={`data:image/jpeg;base64,${getPhotoData(selectedStudent)}`}
                     alt="Student Photo"
                     className="max-w-full max-h-96 object-contain rounded-lg"
                   />
@@ -815,7 +911,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        {showDocumentModal && selectedStudent && selectedStudent.idDocumentBase64 && (
+        {showDocumentModal && selectedStudent && hasDocument(selectedStudent) && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh]">
               <div className="p-6">
@@ -838,7 +934,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className="flex justify-center">
                   <iframe
-                    src={`data:application/pdf;base64,${selectedStudent.idDocumentBase64}`}
+                    src={`data:application/pdf;base64,${getDocumentData(selectedStudent)}`}
                     className="w-full h-96 border rounded-lg"
                     title="ID Document"
                   />

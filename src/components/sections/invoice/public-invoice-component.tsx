@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "../../ui/Button"
-import { Separator } from "../../ui/Separator"
 import { Download, Printer, Mail } from "lucide-react"
-import { getProgramDetails, getAddonDetails } from "../../../../lib/program-mapping"
+import { getProductById } from "../../../lib/products"
 
 interface InvoiceData {
   invoice: {
@@ -20,6 +19,12 @@ interface InvoiceData {
     gstRate: number
     gstAmount: number
     total: number
+    exchangeRateUsed: number
+    programPriceINR: number
+    addonPriceINR?: number
+    subtotalINR: number
+    gstAmountINR: number
+    totalINR: number
     paymentStatus: string
     paymentMethod: string
     paymentDate: string
@@ -153,184 +158,332 @@ export function PublicInvoiceComponent({ invoiceId }: PublicInvoiceComponentProp
 
   const { invoice, student } = invoiceData
 
-  const programDetails = getProgramDetails(invoice.programName)
+  const getServiceDetails = (programName: string) => {
+    const programProduct = getProductById(programName.toLowerCase().replace(/\s+/g, "-"))
+    if (programProduct) {
+      return {
+        title: programProduct.name,
+        description: programProduct.description,
+        sacCode: programProduct.sacCode,
+      }
+    }
+
+    const isFreelancerPackage = programName.toLowerCase().includes("freelancer")
+    if (isFreelancerPackage) {
+      if (programName.toLowerCase().includes("basic")) {
+        return {
+          title: "Freelancer Basic Package",
+          description: "Essential freelancing tools and basic templates",
+          sacCode: "999293",
+        }
+      } else if (programName.toLowerCase().includes("pro")) {
+        return {
+          title: "Freelancer Pro Package",
+          description: "Advanced freelancing tools, premium templates, client management pro, marketing resources",
+          sacCode: "999293",
+        }
+      } else if (programName.toLowerCase().includes("elite")) {
+        return {
+          title: "Freelancer Elite Package",
+          description: "Complete freelancing suite with advanced tools and premium support",
+          sacCode: "999293",
+        }
+      }
+    }
+    return {
+      title: "SPP - International Edition Pro",
+      description:
+        "Training & Certification Recorded + Live Classes, Projects, AI Tools, NSQF Global Certification, Career Mapping",
+      sacCode: "999293",
+    }
+  }
+
+  const getAddonDetails = (addonName: string) => {
+    const addonProduct = getProductById(addonName.toLowerCase().replace(/\s+/g, "-"))
+    if (addonProduct) {
+      return {
+        title: addonProduct.name,
+        description: addonProduct.description,
+        sacCode: addonProduct.sacCode,
+      }
+    }
+
+    if (addonName.toLowerCase().includes("payroll")) {
+      return {
+        title: "Payroll + EPF Services",
+        description: "Complete payroll management, EPF compliance, tax calculations, automated payments",
+        sacCode: "998596",
+      }
+    }
+    return {
+      title: "Career Placement & Visa Guidance Services",
+      description: "Employer Connect, Visa Sponsorship Support, Resume & Interview Prep, Lifetime Re-Entry",
+      sacCode: "998596",
+    }
+  }
+
+  const serviceDetails = getServiceDetails(invoice.programName)
   const addonDetails = invoice.addonName ? getAddonDetails(invoice.addonName) : null
 
+  const cgstAmount = invoice.gstAmountINR / 2
+  const sgstAmount = invoice.gstAmountINR / 2
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-orange-500">SIRTIFAI - INVOICE</h1>
-              </div>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-4xl mx-auto p-8">
+        <div className="border-2 border-black">
+          <div className="bg-white p-6">
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold text-black">SIRTIFAI – TAX INVOICE</h1>
             </div>
-            <div className="text-right text-sm text-gray-600">
-              <p>Registered Office (India):</p>
-              <p>123 Tech Park, Whitefield</p>
-              <p>Bangalore, Karnataka 560066</p>
-              <p>Email: accounts@sirtifai.com</p>
-              <p>Phone: +91 98 76543210</p>
-              <p>Website: www.sirtifai.com</p>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Invoice No:</h3>
-              <p className="text-gray-600">{invoice.invoiceNumber}</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Invoice Date:</h3>
-              <p className="text-gray-600">{new Date(invoice.createdAt).toLocaleDateString()}</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Due Date:</h3>
-              <p className="text-gray-600">{new Date(invoice.paymentDate).toLocaleDateString()}</p>
-            </div>
-          </div>
-
-          {/* Bill To Customer Details */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-gray-900 mb-4">Bill To (Customer Details):</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <p className="font-medium text-gray-900">{student.fullName}</p>
-                <p className="text-gray-600">{student.residentialAddress}</p>
-                <p className="text-gray-600">
-                  {student.city}, {student.state}
+            <div className="grid grid-cols-2 gap-8 mb-6">
+              <div className="text-sm">
+                <p className="font-semibold mb-2">Registered Office:</p>
+                <p>123 Tech Park, Whitefield</p>
+                <p>Bangalore, Karnataka 560066</p>
+                <p className="mt-2">
+                  <strong>CIN:</strong> U72900KA2020PTC123456
                 </p>
-                <p className="text-gray-600">
-                  {student.zipCode}, {student.country}
+                <p>
+                  <strong>GSTIN:</strong> 29AABCS1234A1Z5
+                </p>
+                <p>
+                  <strong>Email:</strong> accounts@sirtifai.com
+                </p>
+                <p>
+                  <strong>Phone:</strong> +91-9876543210
+                </p>
+                <p>
+                  <strong>Website:</strong> www.sirtifai.com
                 </p>
               </div>
-              <div>
-                <p className="text-gray-600">
-                  <span className="font-medium">Email:</span> {student.email}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Phone:</span> {student.primaryPhone}
-                </p>
+
+              <div className="text-sm">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p>
+                      <strong>Invoice No:</strong>
+                    </p>
+                    <p>{invoice.invoiceNumber}</p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>Due Date:</strong>
+                    </p>
+                    <p>
+                      {new Date(new Date(invoice.paymentDate).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(
+                        "en-GB",
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>State Code:</strong>
+                    </p>
+                    <p>29</p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>Invoice Date:</strong>
+                    </p>
+                    <p>{new Date(invoice.createdAt).toLocaleDateString("en-GB")}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p>
+                      <strong>Place of Supply:</strong>
+                    </p>
+                    <p>Karnataka</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Invoice Items */}
-          <div className="mb-8">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-300">
+            <div className="mb-6">
+              <div className="bg-gray-100 p-4 border border-black">
+                <h3 className="font-bold mb-3">Bill To:</h3>
+                <div className="grid grid-cols-2 gap-8 text-sm">
+                  <div>
+                    <p>
+                      <strong>Name:</strong> {student.fullName}
+                    </p>
+                    <p>
+                      <strong>City:</strong> {student.city}
+                    </p>
+                    <p>
+                      <strong>PIN:</strong> {student.zipCode}
+                    </p>
+                    <p>
+                      <strong>Mobile:</strong> {student.primaryPhone}
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <strong>Address:</strong> {student.residentialAddress}
+                    </p>
+                    <p>
+                      <strong>State:</strong> {student.state}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {student.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <table className="w-full border-collapse border border-black text-sm">
                 <thead>
-                  <tr className="bg-gray-50">
-                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Sr. No.</th>
-                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Description</th>
-                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Duration</th>
-                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Qty</th>
-                    <th className="border border-gray-300 px-4 py-3 text-right font-semibold">Unit Price (USD)</th>
-                    <th className="border border-gray-300 px-4 py-3 text-right font-semibold">Amount (USD)</th>
+                  <tr className="bg-gray-100">
+                    <th className="border border-black p-2 text-left">Sr. No.</th>
+                    <th className="border border-black p-2 text-left">Description of Service</th>
+                    <th className="border border-black p-2 text-left">SAC Code</th>
+                    <th className="border border-black p-2 text-left">Duration</th>
+                    <th className="border border-black p-2 text-left">Qty</th>
+                    <th className="border border-black p-2 text-right">Unit Price (₹)</th>
+                    <th className="border border-black p-2 text-right">Taxable Value (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="border border-gray-300 px-4 py-3">1</td>
-                    <td className="border border-gray-300 px-4 py-3">
+                    <td className="border border-black p-2">1</td>
+                    <td className="border border-black p-2">
                       <div>
-                        <p className="font-medium">{programDetails?.name || invoice.programName}</p>
-                        <p className="text-sm text-gray-600">
-                          {programDetails?.features.join(", ") ||
-                            "Training Program, Career Projects, AI Tools, PDF Initial Certification, Career Mapping"}
-                        </p>
+                        <p className="font-semibold">{serviceDetails.title}</p>
+                        <p className="text-xs">{serviceDetails.description}</p>
                       </div>
                     </td>
-                    <td className="border border-gray-300 px-4 py-3">{invoice.programDuration} months</td>
-                    <td className="border border-gray-300 px-4 py-3">1</td>
-                    <td className="border border-gray-300 px-4 py-3 text-right">₹{invoice.programPrice.toFixed(2)}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-right">
-                      ₹{(invoice.programPrice * invoice.programDuration).toFixed(2)}
+                    <td className="border border-black p-2">{serviceDetails.sacCode}</td>
+                    <td className="border border-black p-2">One-time</td>
+                    <td className="border border-black p-2">1</td>
+                    <td className="border border-black p-2 text-right">
+                      {(invoice.programPriceINR || 0).toLocaleString()}.00
+                    </td>
+                    <td className="border border-black p-2 text-right">
+                      {(invoice.programPriceINR || 0).toLocaleString()}.00
                     </td>
                   </tr>
-                  {invoice.addonName && (
+                  {invoice.addonName && addonDetails && (
                     <tr>
-                      <td className="border border-gray-300 px-4 py-3">2</td>
-                      <td className="border border-gray-300 px-4 py-3">
+                      <td className="border border-black p-2">2</td>
+                      <td className="border border-black p-2">
                         <div>
-                          <p className="font-medium">{addonDetails?.name || invoice.addonName}</p>
-                          <p className="text-sm text-gray-600">
-                            {addonDetails?.features.join(", ") || "Additional Service"}
-                          </p>
+                          <p className="font-semibold">{addonDetails.title}</p>
+                          <p className="text-xs">{addonDetails.description}</p>
                         </div>
                       </td>
-                      <td className="border border-gray-300 px-4 py-3">One-time</td>
-                      <td className="border border-gray-300 px-4 py-3">1</td>
-                      <td className="border border-gray-300 px-4 py-3 text-right">₹{invoice.addonPrice?.toFixed(2)}</td>
-                      <td className="border border-gray-300 px-4 py-3 text-right">₹{invoice.addonPrice?.toFixed(2)}</td>
+                      <td className="border border-black p-2">{addonDetails.sacCode}</td>
+                      <td className="border border-black p-2">One-time</td>
+                      <td className="border border-black p-2">1</td>
+                      <td className="border border-black p-2 text-right">
+                        {invoice.addonPriceINR && invoice.addonPriceINR > 0
+                          ? `${invoice.addonPriceINR.toLocaleString()}.00`
+                          : "Included"}
+                      </td>
+                      <td className="border border-black p-2 text-right">
+                        {(invoice.addonPriceINR || 0).toLocaleString()}.00
+                      </td>
                     </tr>
                   )}
                 </tbody>
               </table>
             </div>
-          </div>
 
-          {/* Payment Summary */}
-          <div className="flex justify-end mb-8">
-            <div className="w-full max-w-sm">
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal:</span>
-                  <span className="font-medium">₹{invoice.subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">GST ({invoice.gstRate}%):</span>
-                  <span className="font-medium">₹{invoice.gstAmount.toFixed(2)}</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total Invoice Value (INR):</span>
-                  <span>₹{invoice.total.toFixed(2)}</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-2">In Words: {numberToWords(invoice.total)} Rupees Only</p>
+            <div className="grid grid-cols-2 gap-8 mb-6">
+              <div></div>
+              <div className="text-sm">
+                <table className="w-full border-collapse border border-black">
+                  <tbody>
+                    <tr>
+                      <td className="border border-black p-2 font-semibold">Total Taxable Value:</td>
+                      <td className="border border-black p-2 text-right">
+                        ₹ {invoice.subtotalINR.toLocaleString()}.00
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-2">Tax Type</td>
+                      <td className="border border-black p-2 text-center">Rate</td>
+                      <td className="border border-black p-2 text-right">Amount (₹)</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-2">CGST</td>
+                      <td className="border border-black p-2 text-center">9%</td>
+                      <td className="border border-black p-2 text-right">
+                        {Math.round(cgstAmount).toLocaleString()}.00
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-2">SGST</td>
+                      <td className="border border-black p-2 text-center">9%</td>
+                      <td className="border border-black p-2 text-right">
+                        {Math.round(sgstAmount).toLocaleString()}.00
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-2">IGST</td>
+                      <td className="border border-black p-2 text-center">18%</td>
+                      <td className="border border-black p-2 text-right">N/A</td>
+                    </tr>
+                    <tr className="bg-gray-100">
+                      <td className="border border-black p-2 font-bold">Total GST:</td>
+                      <td className="border border-black p-2 text-center font-bold">*</td>
+                      <td className="border border-black p-2 text-right font-bold">
+                        {invoice.gstAmountINR.toLocaleString()}.00
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-200">
+                      <td className="border border-black p-2 font-bold">Total Invoice Value (INR):</td>
+                      <td className="border border-black p-2"></td>
+                      <td className="border border-black p-2 text-right font-bold">
+                        ₹{invoice.totalINR.toLocaleString()}.00
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p className="mt-2 text-xs">
+                  <strong>In Words:</strong> {numberToWords(invoice.totalINR)} Only
+                </p>
               </div>
             </div>
-          </div>
 
-          {/* Payment Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Payment Method:</h3>
-              <p className="text-gray-600">{invoice.paymentMethod}</p>
+            <div className="grid grid-cols-2 gap-8 mb-6">
+              <div className="text-sm">
+                <h3 className="font-bold mb-2">Payment Details:</h3>
+                <p>
+                  <strong>Bank Name:</strong> HDFC Bank
+                </p>
+                <p>
+                  <strong>Account Name:</strong> Sirtifai Technologies Pvt Ltd
+                </p>
+                <p>
+                  <strong>A/c No.:</strong> 50100123456789
+                </p>
+                <p>
+                  <strong>IFSC Code:</strong> HDFC0001234
+                </p>
+                <p>
+                  <strong>UPI:</strong> accounts@sirtifai@hdfc
+                </p>
+              </div>
+              <div className="text-sm">
+                <h3 className="font-bold mb-2">Notes & Terms:</h3>
+                <p>This invoice is valid only upon receipt of payment.</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Payment Status:</h3>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                {invoice.paymentStatus}
-              </span>
-            </div>
-          </div>
 
-          {/* Terms */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-gray-900 mb-2">Notes & Terms:</h3>
-            <p className="text-sm text-gray-600">
-              Payment due within 7 business days of invoice date. Sirtifai reserves the right to delay service delivery
-              until payment is confirmed. Candidate must complete training phases to access placement services.
-            </p>
-          </div>
-
-          {/* Signature */}
-          <div className="flex justify-end">
-            <div className="text-center">
-              <div className="w-48 h-16 border-b border-gray-300 mb-2"></div>
-              <p className="text-sm font-medium">Authorized Signatory</p>
+            <div className="flex justify-end mb-6">
+              <div className="text-center">
+                <div className="w-48 h-16 mb-2"></div>
+                <div className="border-t border-black pt-2">
+                  <p className="text-sm font-semibold">Authorized Signatory</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-4 justify-center print:hidden">
+        <div className="flex flex-wrap gap-4 justify-center mt-8 print:hidden">
           <Button onClick={handlePrint} className="bg-orange-500 hover:bg-orange-600">
             <Printer className="w-4 h-4 mr-2" />
             Print Invoice
@@ -393,7 +546,6 @@ export function PublicInvoiceComponent({ invoiceId }: PublicInvoiceComponentProp
 }
 
 function numberToWords(num: number): string {
-  // Simple implementation for Indian numbering system
   const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
   const teens = [
     "Ten",
@@ -434,7 +586,7 @@ function numberToWords(num: number): string {
     if (remainder < 10) {
       result += ones[remainder]
     } else if (remainder < 20) {
-      result += teens[remainder % 10]
+      result += teens[(remainder % 10) - 10]
     } else {
       result += tens[Math.floor(remainder / 10)]
       if (remainder % 10 > 0) {
