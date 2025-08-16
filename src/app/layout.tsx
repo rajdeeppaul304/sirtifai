@@ -10,6 +10,13 @@ export const metadata: Metadata = {
     "Transform your career with Sirtify's comprehensive certification programs, professional training, and global career opportunities.",
   generator: "Next.js",
   keywords: "certification, training, professional development, career growth, skills development",
+  icons: {
+    icon: '/assets/logo.png',
+    shortcut: '/assets/logo.png',
+    apple: '/assets/logo.png',
+  },
+
+
 }
 
 export default function RootLayout({

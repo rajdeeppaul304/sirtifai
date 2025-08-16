@@ -184,7 +184,7 @@ export const Footer = () => {
               <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/about'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">About Us</a>
               <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/program'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Programs</a>
               <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/contact'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Contact</a>
-              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/careers'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">Careers</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleQuickLinkNavigation('/faq'); }} className="block text-gray-600 hover:text-gray-800 transition-colors">FAQ</a>
             </div>
           </div>
         </div>
