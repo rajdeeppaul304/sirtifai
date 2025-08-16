@@ -3,8 +3,8 @@
 import { CERTIFICATIONS } from '../../constants/data';
 import { ACADEMIC_PARTNERS } from '../../constants/data';
 import { MEMBERSHIP_RECOGNITION } from '../../constants/data';
-import { motion } from 'framer-motion';
-import React from 'react';
+import { motion, useInView } from 'framer-motion';
+import React, { useRef } from 'react';
 
 import { Morquee } from '../ui/Morquee';
 
@@ -26,6 +26,8 @@ const MotionImg = motion.img as React.ComponentType<
 >;
 
 export const PartnersRecognitionSection = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: "-100px" });
 
   const corpLogos = [
     "/assets/home/Logos/sonyLogo.svg",
@@ -52,19 +54,19 @@ export const PartnersRecognitionSection = () => {
     "/assets/home/Logos/linkiedLogo.webp",
   ];
   return (
-    <section className="w-full bg-white pt-0 pb-8">
+    <section ref={ref} className="w-full bg-white pt-0 pb-8">
       <div className="max-w-7xl mx-auto px-6">
         {/* CORPORATE PARTNERS Section */}
         <MotionDiv 
           className="text-center mb-6"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
         >
           <MotionH3 
             className="text-2xl font-bold text-gray-900 uppercase tracking-wider mb-6"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             CORPORATE PARTNERS
@@ -72,7 +74,7 @@ export const PartnersRecognitionSection = () => {
           <MotionDiv 
             className="flex justify-center gap-8 sm:gap-30 w-full"
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <div className="relative py-8">
@@ -88,7 +90,7 @@ export const PartnersRecognitionSection = () => {
         <MotionDiv 
           className="text-center relative z-10"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
 
@@ -96,7 +98,7 @@ export const PartnersRecognitionSection = () => {
             <MotionDiv 
               className="bg-white rounded-4xl shadow-lg p-4 border border-gray-100 w-full max-w-4xl relative -mb-24"
               initial={{ opacity: 0, y: 50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
               transition={{ duration: 0.8, delay: 0.8 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -104,7 +106,7 @@ export const PartnersRecognitionSection = () => {
               <MotionH6 
                 className="text-1xl font-bold text-gray-900 uppercase tracking-wider mb-6"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 1.0 }}
               >
                 MEMBERSHIP & RECOGNITION
@@ -115,7 +117,7 @@ export const PartnersRecognitionSection = () => {
                     key={cert.id} 
                     className="flex flex-col items-center text-center"
                     initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.6, delay: 1.2 + index * 0.1 }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -126,7 +128,7 @@ export const PartnersRecognitionSection = () => {
                         alt={cert.name}
                         className="h-20 w-auto object-contain max-w-full"
                         initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
+                        animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
                         transition={{ duration: 0.6, delay: 1.4 + index * 0.1 }}
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;

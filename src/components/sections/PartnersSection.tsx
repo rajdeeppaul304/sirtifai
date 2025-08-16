@@ -2,8 +2,8 @@
 
 import { RotatingGlobe } from '../ui/RotatingGlobe';
 import { ACADEMIC_PARTNERS } from '../../constants/data';
-import { motion } from 'framer-motion';
-import React from 'react';
+import { motion, useInView } from 'framer-motion';
+import React, { useRef } from 'react';
 
 import PartnerLogo0 from "../../assets/Company logo.svg";
 import PartnerLogo1 from "../../assets/Company logo (1).svg";
@@ -29,6 +29,9 @@ const MotionH3 = motion.h3 as React.ComponentType<
 >;
 
 export const PartnersSection = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: "-100px" });
+
   const logos = [
     PartnerLogo0,
     PartnerLogo1,
@@ -46,12 +49,12 @@ export const PartnersSection = () => {
     "/assets/about/university_logos/ECON_logo.jpg",
   ];
   return (
-    <section className="relative w-full bg-white pb-8">
+    <section ref={ref} className="relative w-full bg-white pb-8">
       <div className=" sm:max-w-7xl mx-auto px-6">
         <MotionDiv 
           className="flex flex-col justify-center items-center gap-20"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
         >
           {/* Left Side - Large Wireframe Globe */}
@@ -60,7 +63,7 @@ export const PartnersSection = () => {
           <MotionDiv 
             className="flex flex-col justify-center items-center space-y-16"
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             {/* Main Heading */}
@@ -68,13 +71,13 @@ export const PartnersSection = () => {
               className="text-center mt-6 sm:mt-24" 
               style={{ display: 'flex', justifyContent: 'center' }}
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               <MotionH2 
                 className="text-[10vw] text-shadow sm:text-6xl font-semibold sm:font-bold text-gray-900 mb-16 w-[80%] bg-white/10 backdrop-blur-xs rounded-lg p-6"
                 initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
                 Trusted By Leading Organisations..
@@ -85,13 +88,13 @@ export const PartnersSection = () => {
             <MotionDiv 
               className="text-left"
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
               <MotionH3 
                 className="text-2xl text-center font-bold text-gray-900 uppercase tracking-wider mb-12"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 1.0 }}
               >
                 ACADEMIC PARTNERS
@@ -99,7 +102,7 @@ export const PartnersSection = () => {
               <MotionDiv 
                 className="w-full overflow-hidden bg-white"
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
               >
                 <div className="relative py-8">

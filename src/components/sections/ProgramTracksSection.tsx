@@ -3,8 +3,8 @@ import { CheckCircle } from 'lucide-react';
 import { PROGRAM_TRACKS } from '../../constants/data';
 import { Button } from '../ui/Button';
 import { BsCheckCircleFill } from 'react-icons/bs';
-import { motion } from 'framer-motion';
-import React from 'react';
+import { motion, useInView } from 'framer-motion';
+import React, { useRef } from 'react';
 
 // ✅ Strongly typed motion components
 const MotionDiv = motion.div as React.ComponentType<
@@ -28,20 +28,23 @@ const MotionP = motion.p as React.ComponentType<
 >;
 
 export const ProgramTracksSection = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: "-100px" });
+
   return (
-    <section className="py-20 bg-[#FEF7F1]">
+    <section ref={ref} className="py-20 bg-[#FEF7F1]">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <MotionDiv 
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
         >
           <MotionH2 
             className="text-orange-500 font-open-sans text-lg font-semibold uppercase tracking-wider mb-3"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             Program Tracks Overview
@@ -49,7 +52,7 @@ export const ProgramTracksSection = () => {
           <MotionH3 
             className="text-[10vw] leading-tight sm:leading-none sm:text-5xl font-semibold sm:font-bold text-gray-900 font-open-sans"
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             Choose Your Path To <span className="text-orange-500">Success</span>
@@ -71,7 +74,7 @@ export const ProgramTracksSection = () => {
                     : 'order-2 md:order-none bg-white text-gray-900 shadow-lg hover:shadow-xl'
                 }`}
                 initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
+                animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
                 transition={{ duration: 0.8, delay: 0.6 + index * 0.2 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
@@ -91,7 +94,7 @@ export const ProgramTracksSection = () => {
                 <MotionH4 
                   className="text-2xl font-bold mb-3 text-center"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 0.8 + index * 0.2 }}
                 >
                   {track.title}
@@ -103,7 +106,7 @@ export const ProgramTracksSection = () => {
                     isHighlighted ? 'text-white/80' : 'text-gray-600'
                   }`}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 1.0 + index * 0.2 }}
                 >
                   {track.subtitle}
@@ -121,7 +124,7 @@ export const ProgramTracksSection = () => {
                       key={featureIndex} 
                       className="flex items-start gap-3"
                       initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                       transition={{ duration: 0.5, delay: 1.2 + index * 0.2 + featureIndex * 0.1 }}
                     >
                       <BsCheckCircleFill 
@@ -141,7 +144,7 @@ export const ProgramTracksSection = () => {
                 <MotionDiv 
                   className="text-center w-60"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 1.4 + index * 0.2 }}
                 >
                   <a href={track.href} >

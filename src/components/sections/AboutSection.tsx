@@ -1,7 +1,7 @@
 "use client"
 import { STEPS } from "../../constants/data";
-import { motion } from 'framer-motion';
-import React from 'react';
+import { motion, useInView } from 'framer-motion';
+import React, { useRef } from 'react';
 
 // ✅ Strongly typed motion components
 const MotionDiv = motion.div as React.ComponentType<
@@ -29,20 +29,23 @@ const MotionButton = motion.button as React.ComponentType<
 >;
 
 export const AboutSection = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: "-100px" });
+
   return (
-  <section className="w-full bg-[#fef7f1] py-12 sm:py-20">
+  <section ref={ref} className="w-full bg-[#fef7f1] py-12 sm:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col gap-10">
         {/* Header */}
         <MotionDiv 
           className="w-full flex flex-col justify-start items-start gap-3"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
         >
           <MotionP 
-            className="text-orange-500 text-xs sm:text-sm font-semibold font-open-sans uppercase tracking-wider"
+            className="text-orange-500 text-xs sm:text-sm font-semibold font-open-sans uppercase tracking-wider mb-3"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             Our
@@ -50,7 +53,7 @@ export const AboutSection = () => {
           <MotionH2 
             className="text-4xl sm:text-6xl lg:text-7xl text-gray-900 leading-tight font-open-sans tracking-tight font-bold"
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             Mission • Vision • Future Goals
@@ -63,7 +66,7 @@ export const AboutSection = () => {
           <MotionDiv 
             className="hidden md:flex md:w-1/2 justify-center items-center gap-8"
             initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             {/* Male Image */}
@@ -73,7 +76,7 @@ export const AboutSection = () => {
                 alt="Male" 
                 className="relative"
                 initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
+                animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
               />
               <MotionImg
@@ -81,7 +84,7 @@ export const AboutSection = () => {
                 src="/assets/male-name.png"
                 alt="Male Name"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 1.0 }}
               />
             </div>
@@ -93,7 +96,7 @@ export const AboutSection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 1.2 }}
               >
                 <img src="/assets/home/transform-icon.svg" alt="Share Icon" />
@@ -107,7 +110,7 @@ export const AboutSection = () => {
                   alt="Female"
                   className="relative"
                   initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
+                  animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
                   transition={{ duration: 0.8, delay: 1.4 }}
                 />
                 <MotionImg
@@ -115,7 +118,7 @@ export const AboutSection = () => {
                   src="/assets/female-name.png"
                   alt="Female Name"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: 1.6 }}
                 />
               </div>
@@ -126,7 +129,7 @@ export const AboutSection = () => {
           <MotionDiv 
             className="w-full lg:w-1/2 flex flex-col gap-8 sm:gap-10"
             initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
             {STEPS.map((step, index) => {
@@ -137,7 +140,7 @@ export const AboutSection = () => {
                   key={step.id} 
                   className="flex items-start gap-4 sm:gap-5"
                   initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                   transition={{ duration: 0.6, delay: 1.0 + index * 0.2 }}
                 >
                   <div className="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16">
@@ -146,7 +149,7 @@ export const AboutSection = () => {
                       alt={`Step ${step.id}`}
                       className="w-full h-full object-contain"
                       initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
+                      animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
                       transition={{ duration: 0.6, delay: 1.2 + index * 0.2 }}
                       onError={(e) => {
                         (e.currentTarget as HTMLImageElement).style.display = 'none';
@@ -157,7 +160,7 @@ export const AboutSection = () => {
                     <MotionP 
                       className="text-orange-500 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-1 sm:mb-2"
                       initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                       transition={{ duration: 0.6, delay: 1.4 + index * 0.2 }}
                     >
                       Step {step.id}
@@ -165,7 +168,7 @@ export const AboutSection = () => {
                     <MotionH4 
                       className="text-lg sm:text-2xl lg:text-3xl text-gray-900 mb-1 sm:mb-2"
                       initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                       transition={{ duration: 0.6, delay: 1.6 + index * 0.2 }}
                     >
                       {step.title}
@@ -173,7 +176,7 @@ export const AboutSection = () => {
                     <MotionP 
                       className="text-gray-600 text-sm sm:text-base leading-relaxed whitespace-pre-line"
                       initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                       transition={{ duration: 0.6, delay: 1.8 + index * 0.2 }}
                     >
                       {step.description}

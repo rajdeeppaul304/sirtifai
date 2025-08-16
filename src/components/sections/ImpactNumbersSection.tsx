@@ -1,7 +1,7 @@
 'use client';
 import { Users, TrendingUp, IndianRupee, Building2 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import React from 'react';
+import { motion, useInView } from 'framer-motion';
+import React, { useRef } from 'react';
 
 interface ImpactMetric {
   id: string;
@@ -52,20 +52,23 @@ const MotionH2 = motion.h2 as React.ComponentType<
 >;
 
 export const ImpactNumbersSection = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: "-100px" });
+
   return (
-    <section className="w-full bg-[#1F2937] py-20">
+    <section ref={ref} className="w-full bg-[#1F2937] py-20">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <MotionDiv 
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
         >
           <MotionH2 
             className="sm:text-4xl text-3xl font-semibold sm:font-bold text-white mb-4"
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             Our Impact in Numbers
@@ -79,7 +82,7 @@ export const ImpactNumbersSection = () => {
               key={metric.id} 
               className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               initial={{ opacity: 0, y: 50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
               transition={{ duration: 0.8, delay: 0.4 + index * 0.2 }}
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.98 }}

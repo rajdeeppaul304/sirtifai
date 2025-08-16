@@ -3,8 +3,8 @@
 import { ArrowRight } from 'lucide-react';
 import { SUCCESS_STORIES } from '../../constants/data';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import React from 'react';
+import { motion, useInView } from 'framer-motion';
+import React, { useRef } from 'react';
 
 // ✅ Strongly typed motion components
 const MotionDiv = motion.div as React.ComponentType<
@@ -29,6 +29,8 @@ const MotionButton = motion.button as React.ComponentType<
 
 export const SuccessStoriesSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: "-100px" });
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % Math.ceil(SUCCESS_STORIES.length / 3));
@@ -45,13 +47,13 @@ export const SuccessStoriesSection = () => {
   }
 
   return (
-    <section className="w-full bg-white py-20">
+    <section ref={ref} className="w-full bg-white py-20">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <MotionDiv 
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
         >
           <div className="inline-flex items-center bg-orange-500 text-white px-3 py-2 rounded-full text-sm font-semibold mb-4">
@@ -61,7 +63,7 @@ export const SuccessStoriesSection = () => {
           <MotionH3 
             className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4"
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             Real Career Transformations
@@ -69,7 +71,7 @@ export const SuccessStoriesSection = () => {
           <MotionP 
             className="text-lg text-gray-600 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             Join <span className='font-bold text-orange-500'>50,000+</span> professionals who transformed their careers with SPP's 
@@ -85,7 +87,7 @@ export const SuccessStoriesSection = () => {
         <MotionDiv 
           className="relative overflow-hidden mb-12"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           <div 
@@ -100,7 +102,7 @@ export const SuccessStoriesSection = () => {
                       key={story.id} 
                       className="bg-white rounded-lg shadow-lg p-6"
                       initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
                       transition={{ duration: 0.8, delay: 0.8 + storyIndex * 0.2 }}
                       whileHover={{ scale: 1.02, y: -5 }}
                       whileTap={{ scale: 0.98 }}
@@ -134,7 +136,7 @@ export const SuccessStoriesSection = () => {
                             alt={story.name}
                             className="w-12 h-12 rounded-full object-cover mr-3"
                             initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
+                            animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
                             transition={{ duration: 0.6, delay: 1.0 + storyIndex * 0.2 }}
                           />
                           <div>
@@ -160,7 +162,7 @@ export const SuccessStoriesSection = () => {
         <MotionDiv 
           className="flex items-center justify-center gap-4"
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 1.0 }}
         >
           <MotionButton 
