@@ -36,7 +36,7 @@ const BonusesSection: React.FC = () => {
         <h2 className="text-center text-4xl md:text-5xl font-bold tracking-tight mb-14 leading-tight">
           Enroll Today And Get These Bonuses Free:
         </h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-10">
+        <div className="grid gap-6 grid-cols-2 lg:grid-cols-4 mb-10">
           {bonuses.map((b) => (
             <div
               key={b.title}

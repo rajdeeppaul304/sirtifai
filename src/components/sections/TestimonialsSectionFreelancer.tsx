@@ -43,11 +43,11 @@ const TestimonialsSection: React.FC = () => {
         <h2 className="text-center text-4xl md:text-5xl font-bold tracking-tight mb-14">
           Real People. Real Income.
         </h2>
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="flex justify-center items-center overflow-auto whitespace-nowrap md:grid gap-8 md:grid-cols-2 w-full pl-[10em]">
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="bg-white rounded-md border border-gray-200 shadow-lg hover:shadow-lg transition-shadow px-8 py-8 flex flex-col justify-between"
+              className="w-full bg-white rounded-md border border-gray-200 shadow-lg hover:shadow-lg transition-shadow px-8 py-8 flex flex-col justify-between"
             >
               <div className="mb-6">
                 <h3 className="font-semibold text-base md:text-lg text-gray-900 leading-snug">{t.name}</h3>
