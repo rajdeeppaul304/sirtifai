@@ -4,6 +4,8 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Upload } from "lucide-react"
 import RazorpayCheckout from "../../payment/razorpay-checkout"
+import { PRICING, formatPrice, calculateTotal } from "../../../lib/pricing"
+import { getProductById } from "../../../lib/products"
 
 interface FormData {
   // Personal Details
@@ -88,6 +90,10 @@ const ApplicationForm = () => {
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [photoPreview, setPhotoPreview] = useState<string>("")
+  const [documentPreview, setDocumentPreview] = useState<string>("")
+
+  const isDevelopment = process.env.NODE_ENV === "development"
 
   useEffect(() => {
     // Load selected package from localStorage
@@ -96,6 +102,35 @@ const ApplicationForm = () => {
       setSelectedPackage(JSON.parse(packageData))
     }
   }, [])
+
+  const autoFillForm = () => {
+    setFormData({
+      fullName: "John Doe",
+      dateOfBirth: { day: "15", month: "06", year: "1995" },
+      countryOfCitizenship: "India",
+      referralCode: "DEV123",
+      primaryPhone: "+91 9876543210",
+      secondaryPhone: "+91 9876543211",
+      whatsappNotifications: true,
+      email: "john.doe@example.com",
+      residentialAddress: "123 Main Street, Sector 1",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400001",
+      country: "India",
+      highestQualification: "Bachelor's Degree",
+      specialization: "Computer Science",
+      currentProfession: "Software Developer",
+      currentOrganization: "Tech Corp",
+      linkedinProfile: "https://linkedin.com/in/johndoe",
+      idType: "Passport",
+      idNumber: "A1234567",
+      idDocument: null,
+      studentPhoto: null,
+      agreedToTerms: true,
+      certifiedInformation: true,
+    })
+  }
 
   const handleInputChange = (field: string, value: any) => {
     if (field.includes(".")) {
@@ -122,43 +157,102 @@ const ApplicationForm = () => {
   const handleFileUpload = (field: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null
     handleInputChange(field, file)
+
+    if (file && field === "studentPhoto") {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+
+    if (file && field === "idDocument") {
+      setDocumentPreview(file.name)
+    }
   }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    // Personal Details
+    // Personal Details validation
     if (!formData.fullName.trim()) newErrors.fullName = "Full name is required"
+    if (formData.fullName.trim().length < 2) newErrors.fullName = "Full name must be at least 2 characters"
+
     if (!formData.dateOfBirth.day) newErrors["dateOfBirth.day"] = "Day is required"
     if (!formData.dateOfBirth.month) newErrors["dateOfBirth.month"] = "Month is required"
     if (!formData.dateOfBirth.year) newErrors["dateOfBirth.year"] = "Year is required"
+
+    // Validate date ranges
+    const day = Number.parseInt(formData.dateOfBirth.day)
+    const month = Number.parseInt(formData.dateOfBirth.month)
+    const year = Number.parseInt(formData.dateOfBirth.year)
+
+    if (day < 1 || day > 31) newErrors["dateOfBirth.day"] = "Invalid day"
+    if (month < 1 || month > 12) newErrors["dateOfBirth.month"] = "Invalid month"
+    if (year < 1950 || year > 2010) newErrors["dateOfBirth.year"] = "Invalid year"
+
     if (!formData.countryOfCitizenship.trim()) newErrors.countryOfCitizenship = "Country of citizenship is required"
 
-    // Contact Information
+    // Contact Information validation
     if (!formData.primaryPhone.trim()) newErrors.primaryPhone = "Primary phone is required"
+    const phoneRegex = /^[+]?[1-9][\d]{0,15}$/
+    if (formData.primaryPhone && !phoneRegex.test(formData.primaryPhone.replace(/\s/g, ""))) {
+      newErrors.primaryPhone = "Invalid phone number format"
+    }
+
     if (!formData.email.trim()) newErrors.email = "Email is required"
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (formData.email && !emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid email format"
+    }
+
     if (!formData.residentialAddress.trim()) newErrors.residentialAddress = "Address is required"
     if (!formData.city.trim()) newErrors.city = "City is required"
     if (!formData.state.trim()) newErrors.state = "State is required"
     if (!formData.zipCode.trim()) newErrors.zipCode = "Zip code is required"
     if (!formData.country.trim()) newErrors.country = "Country is required"
 
-    // Education
+    // Education validation
     if (!formData.highestQualification.trim()) newErrors.highestQualification = "Highest qualification is required"
     if (!formData.specialization.trim()) newErrors.specialization = "Specialization is required"
 
-    // Professional
+    // Professional validation
     if (!formData.currentProfession.trim()) newErrors.currentProfession = "Current profession is required"
     if (!formData.currentOrganization.trim()) newErrors.currentOrganization = "Current organization is required"
     if (!formData.linkedinProfile.trim()) newErrors.linkedinProfile = "LinkedIn profile is required"
 
-    // Identity Document
+    // LinkedIn URL validation
+    const linkedinRegex = /^https:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-]+\/?$/
+    if (formData.linkedinProfile && !linkedinRegex.test(formData.linkedinProfile)) {
+      newErrors.linkedinProfile = "Invalid LinkedIn profile URL"
+    }
+
+    // Identity Document validation
     if (!formData.idType.trim()) newErrors.idType = "ID type is required"
     if (!formData.idNumber.trim()) newErrors.idNumber = "ID number is required"
     if (!formData.idDocument) newErrors.idDocument = "ID document is required"
     if (!formData.studentPhoto) newErrors.studentPhoto = "Student photo is required"
 
-    // Confirmation
+    // File type validation
+    if (formData.idDocument) {
+      const allowedDocTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ]
+      if (!allowedDocTypes.includes(formData.idDocument.type)) {
+        newErrors.idDocument = "Only PDF, DOC, and DOCX files are allowed"
+      }
+    }
+
+    if (formData.studentPhoto) {
+      const allowedImageTypes = ["image/jpeg", "image/jpg", "image/png"]
+      if (!allowedImageTypes.includes(formData.studentPhoto.type)) {
+        newErrors.studentPhoto = "Only JPEG, JPG, and PNG images are allowed"
+      }
+    }
+
+    // Confirmation validation
     if (!formData.agreedToTerms) newErrors.agreedToTerms = "You must agree to terms"
     if (!formData.certifiedInformation) newErrors.certifiedInformation = "You must certify information"
 
@@ -175,6 +269,10 @@ const ApplicationForm = () => {
     alert("Payment failed. Please try again.")
   }
 
+  const getDisplayPrice = (programType: string, duration = 1, addons: string[] = []) => {
+    return formatPrice(calculateTotal(programType, addons) * duration)
+  }
+
   return (
     <div className="min-h-screen bg-[#FEF7F1] py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -186,6 +284,15 @@ const ApplicationForm = () => {
             </div>
             <h1 className="text-2xl font-bold text-[#FC4C03]">SIRTIFAI - Programme Application</h1>
           </div>
+
+          {isDevelopment && (
+            <button
+              onClick={autoFillForm}
+              className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              🚀 Auto-Fill Form (Dev Only)
+            </button>
+          )}
         </div>
 
         {/* Single Page Form with Sections */}
@@ -567,34 +674,55 @@ const ApplicationForm = () => {
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="font-medium">{selectedPackage.programData?.name}</span>
+                    <span className="font-medium">
+                      {(() => {
+                        if (selectedPackage.type === "freelancer") {
+                          const product = getProductById(selectedPackage.selectedProgram)
+                          return product?.name || selectedPackage.programData?.name
+                        } else {
+                          const product = getProductById(selectedPackage.selectedProgram)
+                          return product?.name || selectedPackage.programData?.name
+                        }
+                      })()}
+                    </span>
                     <span className="text-gray-600">
-                      ₹{selectedPackage.programData?.price.toLocaleString()} × {selectedPackage.selectedDuration} months
+                      {selectedPackage.type === "freelancer"
+                        ? `${formatPrice(selectedPackage.programData?.price)} one-time`
+                        : `${formatPrice(PRICING.SKILL_PHASE)} × ${selectedPackage.selectedDuration} months`}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Program Total:</span>
-                    <span className="font-semibold">₹{selectedPackage.pricing?.programTotal.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      {selectedPackage.type === "freelancer"
+                        ? formatPrice(selectedPackage.programData?.price)
+                        : formatPrice(PRICING.SKILL_PHASE * selectedPackage.selectedDuration)}
+                    </span>
                   </div>
                   {selectedPackage.addOnData && (
                     <>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm">Add-on: {selectedPackage.addOnData.name}</span>
-                        <span className="font-semibold">₹{selectedPackage.pricing?.addonTotal.toLocaleString()}</span>
+                        <span className="text-sm">
+                          Add-on: {(() => {
+                            const addon = getProductById(selectedPackage.selectedAddOn)
+                            return addon?.name || selectedPackage.addOnData.name
+                          })()}
+                        </span>
+                        <span className="font-semibold">{formatPrice(selectedPackage.addOnData.price)}</span>
                       </div>
                     </>
                   )}
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Subtotal:</span>
-                    <span className="font-semibold">₹{selectedPackage.pricing?.subtotal.toLocaleString()}</span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing?.subtotal || 0)}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">GST (18%):</span>
-                    <span className="font-semibold">₹{selectedPackage.pricing?.gst.toLocaleString()}</span>
+                    <span className="text-sm text-gray-600">Tax (18%):</span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing?.tax || 0)}</span>
                   </div>
                   <div className="flex justify-between items-center font-bold text-[#FC4C03]">
                     <span>Total Amount:</span>
-                    <span>₹{selectedPackage.pricing?.total.toLocaleString()}</span>
+                    <span>{formatPrice(selectedPackage.pricing?.total || 0)}</span>
                   </div>
                 </div>
               </div>
@@ -699,6 +827,17 @@ const ApplicationForm = () => {
                   )}
                 </div>
                 {errors.studentPhoto && <p className="text-red-500 text-xs mt-1">{errors.studentPhoto}</p>}
+
+                {photoPreview && (
+                  <div className="mt-4">
+                    <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                    <img
+                      src={photoPreview || "/placeholder.svg"}
+                      alt="Student photo preview"
+                      className="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </section>
@@ -766,33 +905,50 @@ const ApplicationForm = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">
-                      {selectedPackage.programData?.name} ({selectedPackage.selectedDuration} months):
+                      {selectedPackage.type === "freelancer"
+                        ? `${(() => {
+                            const product = getProductById(selectedPackage.selectedProgram)
+                            return product?.name || selectedPackage.programData?.name
+                          })()}:`
+                        : `${(() => {
+                            const product = getProductById(selectedPackage.selectedProgram)
+                            return product?.name || selectedPackage.programData?.name
+                          })()} (${selectedPackage.selectedDuration} months):`}
                     </span>
-                    <span className="font-semibold">₹{selectedPackage.pricing?.programTotal.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      {selectedPackage.type === "freelancer"
+                        ? formatPrice(selectedPackage.programData?.price)
+                        : formatPrice(PRICING.SKILL_PHASE * selectedPackage.selectedDuration)}
+                    </span>
                   </div>
 
                   {selectedPackage.addOnData && (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-700">Add on ({selectedPackage.addOnData.name}):</span>
-                      <span className="font-semibold">₹{selectedPackage.pricing?.addonTotal.toLocaleString()}</span>
+                      <span className="text-gray-700">
+                        Add on ({(() => {
+                          const addon = getProductById(selectedPackage.selectedAddOn)
+                          return addon?.name || selectedPackage.addOnData.name
+                        })()}):
+                      </span>
+                      <span className="font-semibold">{formatPrice(selectedPackage.addOnData.price)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Subtotal:</span>
-                    <span className="font-semibold">₹{selectedPackage.pricing?.subtotal.toLocaleString()}</span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing?.subtotal || 0)}</span>
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-700">GST (18%):</span>
-                    <span className="font-semibold">₹{selectedPackage.pricing?.gst.toLocaleString()}</span>
+                    <span className="text-gray-700">Tax (18%):</span>
+                    <span className="font-semibold">{formatPrice(selectedPackage.pricing?.tax || 0)}</span>
                   </div>
 
                   <hr className="my-4" />
 
                   <div className="flex justify-between items-center text-lg font-bold">
                     <span>Total Amount</span>
-                    <span className="text-[#FC4C03]">₹{selectedPackage.pricing?.total.toLocaleString()}</span>
+                    <span className="text-[#FC4C03]">{formatPrice(selectedPackage.pricing?.total || 0)}</span>
                   </div>
                 </div>
 
@@ -803,7 +959,7 @@ const ApplicationForm = () => {
                   studentData={formData}
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}
-                  validateForm={validateForm} // Pass validation function
+                  validateForm={validateForm}
                 />
               </div>
             </section>

@@ -1,0 +1,186 @@
+{
+  "programs": {
+    "skill-phase": {
+      "id": "skill-phase",
+      "name": "Skill Phase",
+      "description": "Foundation skills training with hands-on projects",
+      "category": "program",
+      "type": "one-time",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_SKILL_PHASE_PRICE",
+      "defaultPrice": 72
+    },
+    "practice-basic": {
+      "id": "practice-basic",
+      "name": "Practice Phase - Basic",
+      "description": "Basic practice projects and mentorship",
+      "category": "program",
+      "type": "monthly",
+      "monthlyOptions": "1-12",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_PRACTICE_BASIC_PRICE",
+      "defaultPrice": 99
+    },
+    "practice-pro": {
+      "id": "practice-pro",
+      "name": "Practice Phase - Pro",
+      "description": "Advanced practice projects with industry mentorship",
+      "category": "program",
+      "type": "monthly",
+      "monthlyOptions": "1-12",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_PRACTICE_PRO_PRICE",
+      "defaultPrice": 149
+    },
+    "practice-elite": {
+      "id": "practice-elite",
+      "name": "Practice Phase - Elite",
+      "description": "Elite practice projects with 1-on-1 mentorship",
+      "category": "program",
+      "type": "monthly",
+      "monthlyOptions": "1-12",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_PRACTICE_ELITE_PRICE",
+      "defaultPrice": 199
+    },
+    "progress-basic": {
+      "id": "progress-basic",
+      "name": "Progress Phase - Basic",
+      "description": "Career progression with basic support",
+      "category": "program",
+      "type": "monthly",
+      "monthlyOptions": "3-6",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_PROGRESS_BASIC_PRICE",
+      "defaultPrice": 129
+    },
+    "progress-pro": {
+      "id": "progress-pro",
+      "name": "Progress Phase - Pro",
+      "description": "Advanced career progression with pro support",
+      "category": "program",
+      "type": "monthly",
+      "monthlyOptions": "3-6",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_PROGRESS_PRO_PRICE",
+      "defaultPrice": 179
+    },
+    "progress-elite": {
+      "id": "progress-elite",
+      "name": "Progress Phase - Elite",
+      "description": "Elite career progression with premium support",
+      "category": "program",
+      "type": "monthly",
+      "monthlyOptions": "3-6",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_PROGRESS_ELITE_PRICE",
+      "defaultPrice": 229
+    }
+  },
+  "programAddons": {
+    "career-guidance": {
+      "id": "career-guidance",
+      "name": "Career Guidance",
+      "description": "Personalized career counseling and roadmap",
+      "category": "program-addon",
+      "type": "one-time",
+      "sacCode": "998596",
+      "priceEnvVar": "NEXT_PUBLIC_CAREER_GUIDANCE_PRICE",
+      "defaultPrice": 49
+    },
+    "interview-prep": {
+      "id": "interview-prep",
+      "name": "Interview Preparation",
+      "description": "Mock interviews and preparation sessions",
+      "category": "program-addon",
+      "type": "one-time",
+      "sacCode": "998596",
+      "priceEnvVar": "NEXT_PUBLIC_INTERVIEW_PREP_PRICE",
+      "defaultPrice": 39
+    },
+    "resume-review": {
+      "id": "resume-review",
+      "name": "Resume Review",
+      "description": "Professional resume review and optimization",
+      "category": "program-addon",
+      "type": "one-time",
+      "sacCode": "998596",
+      "priceEnvVar": "NEXT_PUBLIC_RESUME_REVIEW_PRICE",
+      "defaultPrice": 29
+    }
+  },
+  "freelancer": {
+    "freelancer-basic": {
+      "id": "freelancer-basic",
+      "name": "Freelancer Basic Package",
+      "description": "Essential freelancing tools and basic templates",
+      "category": "freelancer",
+      "type": "one-time",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_FREELANCER_BASIC_PRICE",
+      "defaultPrice": 49
+    },
+    "freelancer-pro": {
+      "id": "freelancer-pro",
+      "name": "Freelancer Pro Package",
+      "description": "Advanced freelancing tools, premium templates, client management pro, marketing resources",
+      "category": "freelancer",
+      "type": "one-time",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_FREELANCER_PRO_PRICE",
+      "defaultPrice": 68
+    },
+    "freelancer-elite": {
+      "id": "freelancer-elite",
+      "name": "Freelancer Elite Package",
+      "description": "Complete freelancing suite with advanced tools and premium support",
+      "category": "freelancer",
+      "type": "one-time",
+      "sacCode": "999293",
+      "priceEnvVar": "NEXT_PUBLIC_FREELANCER_ELITE_PRICE",
+      "defaultPrice": 99
+    }
+  },
+  "freelancerAddons": {
+    "payroll-epf": {
+      "id": "payroll-epf",
+      "name": "Payroll + EPF Services",
+      "description": "Complete payroll management, EPF compliance, tax calculations, automated payments",
+      "category": "freelancer-addon",
+      "type": "one-time",
+      "sacCode": "998596",
+      "priceEnvVar": "NEXT_PUBLIC_PAYROLL_EPF_PRICE",
+      "defaultPrice": 47.2
+    },
+    "tax-filing": {
+      "id": "tax-filing",
+      "name": "Tax Filing Support",
+      "description": "Professional tax filing assistance and compliance support",
+      "category": "freelancer-addon",
+      "type": "one-time",
+      "sacCode": "998596",
+      "priceEnvVar": "NEXT_PUBLIC_TAX_FILING_PRICE",
+      "defaultPrice": 35
+    },
+    "legal-support": {
+      "id": "legal-support",
+      "name": "Legal Support",
+      "description": "Contract templates, legal consultation, and compliance guidance",
+      "category": "freelancer-addon",
+      "type": "one-time",
+      "sacCode": "998596",
+      "priceEnvVar": "NEXT_PUBLIC_LEGAL_SUPPORT_PRICE",
+      "defaultPrice": 42
+    },
+    "business-setup": {
+      "id": "business-setup",
+      "name": "Business Setup Assistance",
+      "description": "Company registration, GST setup, and business compliance support",
+      "category": "freelancer-addon",
+      "type": "one-time",
+      "sacCode": "998596",
+      "priceEnvVar": "NEXT_PUBLIC_BUSINESS_SETUP_PRICE",
+      "defaultPrice": 55
+    }
+  }
+}

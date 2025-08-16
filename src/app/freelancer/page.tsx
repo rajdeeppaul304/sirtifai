@@ -19,11 +19,11 @@ export default function FreelancerPage() {
       <LandingFreelancer />
       <FreeLancerWhat />
       <PricingSection />
+      <AddOnsSection />
       <TestimonialSection />
       <WhoIsThisForSection />
       <WhatYouGetSection />
       <TestimonialsSection />
-      <AddOnsSection />
       <BonusesSection />
       <FinalCTASection />
       <Footer />

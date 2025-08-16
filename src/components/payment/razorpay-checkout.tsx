@@ -11,7 +11,7 @@ interface RazorpayCheckoutProps {
   studentData: any
   onSuccess?: (paymentData: any) => void
   onError?: (error: any) => void
-  validateForm?: () => boolean // Added form validation prop
+  validateForm?: () => boolean
 }
 
 declare global {
@@ -27,9 +27,10 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
   studentData,
   onSuccess,
   onError,
-  validateForm, // Added validateForm prop
+  validateForm,
 }) => {
   const [loading, setLoading] = useState(false)
+  const [paymentProcessing, setPaymentProcessing] = useState(false)
   const router = useRouter()
 
   const loadRazorpayScript = () => {
@@ -49,6 +50,33 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
       reader.onload = () => resolve(reader.result as string)
       reader.onerror = (error) => reject(error)
     })
+  }
+
+  const storeStudentData = async (processedStudentData: any, orderId: string) => {
+    try {
+      const response = await fetch("/api/store-student-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentData: processedStudentData,
+          packageData: {
+            program: selectedProgram,
+            months: selectedMonths,
+            addon: selectedAddon,
+          },
+          orderId: orderId,
+          paymentStatus: "PROCESSING",
+        }),
+      })
+
+      const result = await response.json()
+      return result
+    } catch (error) {
+      console.error("Error storing student data:", error)
+      return { success: false, error: "Failed to store student data" }
+    }
   }
 
   const handlePayment = async () => {
@@ -88,11 +116,9 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         }
       }
 
-      // Remove File objects as they can't be serialized
       delete processedStudentData.idDocument
       delete processedStudentData.studentPhoto
 
-      // Load Razorpay script
       const scriptLoaded = await loadRazorpayScript()
       if (!scriptLoaded) {
         alert("Failed to load Razorpay. Please check your internet connection.")
@@ -109,7 +135,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
           selectedProgram,
           selectedMonths,
           selectedAddon,
-          currency: "INR",
+          currency: "USD",
           receipt: `receipt_${Date.now()}`,
         }),
       })
@@ -122,7 +148,13 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         return
       }
 
-      // Configure Razorpay options
+      const storeResult = await storeStudentData(processedStudentData, order.id)
+      if (!storeResult.success) {
+        alert("Failed to store application data. Please try again.")
+        setLoading(false)
+        return
+      }
+
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_R5adtKeIAinkvB",
         amount: order.amount,
@@ -140,7 +172,9 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         },
         handler: async (response: any) => {
           try {
-            // Verify payment
+            setPaymentProcessing(true)
+            setLoading(false)
+
             const verifyResponse = await fetch("/api/verify-payment", {
               method: "POST",
               headers: {
@@ -150,13 +184,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                studentData: processedStudentData, // Send processed data with base64 files
-                packageData: {
-                  program: selectedProgram,
-                  months: selectedMonths,
-                  addon: selectedAddon,
-                  pricing: order.pricing, // Backend calculated pricing
-                },
+                orderId: order.id, // Pass orderId to update existing record
               }),
             })
 
@@ -166,7 +194,6 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
               if (verifyResult.invoiceLink) {
                 router.push(`/invoice/${verifyResult.invoiceLink}`)
               } else {
-                // Fallback to old invoice page if no invoiceLink
                 router.push("/invoice")
               }
 
@@ -175,10 +202,12 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
               }
             } else {
               alert(`Payment verification failed: ${verifyResult.error}`)
+              setPaymentProcessing(false)
             }
           } catch (error) {
             console.error("Payment verification error:", error)
             alert("Payment verification failed. Please contact support.")
+            setPaymentProcessing(false)
             if (onError) {
               onError(error)
             }
@@ -191,7 +220,6 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         },
       }
 
-      // Open Razorpay checkout
       const razorpay = new window.Razorpay(options)
       razorpay.open()
     } catch (error) {
@@ -204,6 +232,17 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
     }
   }
 
+  if (paymentProcessing) {
+    return (
+      <div className="w-full bg-[#FC4C03] text-white py-4 px-6 rounded-lg text-lg font-semibold text-center">
+        <div className="flex items-center justify-center space-x-2">
+          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+          <span>Processing payment and generating invoice...</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <button
       onClick={handlePayment}
@@ -212,7 +251,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
         loading ? "bg-gray-400 text-gray-600 cursor-not-allowed" : "bg-[#FC4C03] text-white hover:bg-[#e63d00]"
       }`}
     >
-      {loading ? "Processing..." : "Pay Now"}
+      {loading ? "Processing..." : "Buy Now"}
     </button>
   )
 }
