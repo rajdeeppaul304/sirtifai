@@ -1,21 +1,60 @@
+'use client';
 import { CheckCircle } from 'lucide-react';
 import { PROGRAM_TRACKS } from '../../constants/data';
 import { Button } from '../ui/Button';
 import { BsCheckCircleFill } from 'react-icons/bs';
+import { motion } from 'framer-motion';
+import React from 'react';
+
+// ✅ Strongly typed motion components
+const MotionDiv = motion.div as React.ComponentType<
+  React.HTMLAttributes<HTMLDivElement> & import('framer-motion').MotionProps
+>;
+
+const MotionH2 = motion.h2 as React.ComponentType<
+  React.HTMLAttributes<HTMLHeadingElement> & import('framer-motion').MotionProps
+>;
+
+const MotionH3 = motion.h3 as React.ComponentType<
+  React.HTMLAttributes<HTMLHeadingElement> & import('framer-motion').MotionProps
+>;
+
+const MotionH4 = motion.h4 as React.ComponentType<
+  React.HTMLAttributes<HTMLHeadingElement> & import('framer-motion').MotionProps
+>;
+
+const MotionP = motion.p as React.ComponentType<
+  React.HTMLAttributes<HTMLParagraphElement> & import('framer-motion').MotionProps
+>;
 
 export const ProgramTracksSection = () => {
   return (
     <section className="py-20 bg-[#FEF7F1]">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-orange-500 font-open-sans text-lg font-semibold uppercase tracking-wider mb-3">
+        <MotionDiv 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <MotionH2 
+            className="text-orange-500 font-open-sans text-lg font-semibold uppercase tracking-wider mb-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             Program Tracks Overview
-          </h2>
-          <h3 className="text-[10vw] leading-tight sm:leading-none sm:text-5xl font-semibold sm:font-bold text-gray-900 font-open-sans">
+          </MotionH2>
+          <MotionH3 
+            className="text-[10vw] leading-tight sm:leading-none sm:text-5xl font-semibold sm:font-bold text-gray-900 font-open-sans"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             Choose Your Path To <span className="text-orange-500">Success</span>
-          </h3>
-        </div>
+          </MotionH3>
+        </MotionDiv>
 
         {/* Program Tracks Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-end place-items-end">
@@ -24,14 +63,18 @@ export const ProgramTracksSection = () => {
             const isHighlighted = track.variant === 'highlighted';
             
             return (
-              <div
+              <MotionDiv
                 key={track.id}
-className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-8 transition-all duration-300 hover:scale-105 ${
-  isHighlighted
-    ? 'order-1 md:order-none bg-orange-500 text-white shadow-2xl'
-    : 'order-2 md:order-none bg-white text-gray-900 shadow-lg hover:shadow-xl'
-}`}
-
+                className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-8 transition-all duration-300 hover:scale-105 ${
+                  isHighlighted
+                    ? 'order-1 md:order-none bg-orange-500 text-white shadow-2xl'
+                    : 'order-2 md:order-none bg-white text-gray-900 shadow-lg hover:shadow-xl'
+                }`}
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.6 + index * 0.2 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
               >
                 {/* Icon */}
                 
@@ -45,16 +88,26 @@ className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-
                 </div>
 
                 {/* Title */}
-                <h4 className="text-2xl font-bold mb-3 text-center">
+                <MotionH4 
+                  className="text-2xl font-bold mb-3 text-center"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 + index * 0.2 }}
+                >
                   {track.title}
-                </h4>
+                </MotionH4>
 
                 {/* Subtitle */}
-                <p className={`text-center mb-8 ${
-                  isHighlighted ? 'text-white/80' : 'text-gray-600'
-                }`}>
+                <MotionP 
+                  className={`text-center mb-8 ${
+                    isHighlighted ? 'text-white/80' : 'text-gray-600'
+                  }`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.0 + index * 0.2 }}
+                >
                   {track.subtitle}
-                </p>
+                </MotionP>
 
                 <div className={`w-full flex flex-col justify-center items-center p-6 rounded-xl gap-6 text-gray-900 ${
                   isHighlighted
@@ -63,8 +116,14 @@ className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-
                 }`}>
                 {/* Features */}
                 <div className="sm:space-y-4 mb-8">
-                  {track.features?.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-3">
+                  {track.features?.map((feature, featureIndex) => (
+                    <MotionDiv 
+                      key={featureIndex} 
+                      className="flex items-start gap-3"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: 1.2 + index * 0.2 + featureIndex * 0.1 }}
+                    >
                       <BsCheckCircleFill 
                         size={20} 
                         className={`flex-shrink-0 mt-0.5 text-orange-500`} 
@@ -74,12 +133,17 @@ className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-
                       }`}>
                         {feature}
                       </span>
-                    </div>
+                    </MotionDiv>
                   ))}
                 </div>
 
                 {/* Button */}
-                <div className="text-center w-60 ">
+                <MotionDiv 
+                  className="text-center w-60"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.4 + index * 0.2 }}
+                >
                   <a href={track.href} >
                   <Button
                     variant={isHighlighted ? 'primary' : 'outline'}
@@ -95,11 +159,11 @@ className={`rounded-2xl w-full ${index % 2 === 0 ? 'h-[538px]' : 'h-[570px]'} p-
                   </Button>
                   </a>
                   
-                </div>
+                </MotionDiv>
 
 
                 </div>
-              </div>
+              </MotionDiv>
             );
           })}
         </div>
