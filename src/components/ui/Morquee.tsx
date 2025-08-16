@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Morquee = ({logos}: {logos: string[]}) => {
   return (
-    <div className="w-full overflow-hidden bg-white border-b border-gray-100">
+    <div className="w-full overflow-hidden bg-white ">
       <div className="py-8">
         <div className="flex animate-marquee whitespace-nowrap">
           {/* First set of logos */}

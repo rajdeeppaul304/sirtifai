@@ -54,7 +54,7 @@ export const PartnersRecognitionSection = () => {
         <div className="text-center relative z-10">
 
           <div className="flex justify-center">
-            <div className="bg-white rounded-4xl shadow-lg p-4 border border-gray-100 w-full max-w-4xl relative -mb-24">
+            <div className="bg-white rounded-4xl shadow-lg p-4  w-full max-w-4xl relative -mb-24">
               <h6 className="text-1xl font-bold text-gray-900 uppercase tracking-wider mb-6">
                 MEMBERSHIP & RECOGNITION
               </h6>
