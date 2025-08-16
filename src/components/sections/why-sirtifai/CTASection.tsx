@@ -1,37 +1,48 @@
-import { Button } from "../../ui/Button"
-
 export const CTASection = () => {
   return (
-    <section className="bg-gradient-to-r from-orange-500 to-red-500 py-16 md:py-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-          Be the Next Sirtifai Success Story
+    <section className="bg-[#FF784B] py-14 md:py-16">
+      {/* Mobile (keeps new copy) */}
+      <div className="md:hidden max-w-5xl mx-auto px-5 text-center">
+        <h2 className="text-[30px] leading-[1.15] font-semibold tracking-tight text-white mb-6">
+          <span className="block">Don&apos;t Just Learn —</span>
+          <span className="block">Build Your Career With Sirtifai</span>
         </h2>
-        <p className="text-orange-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-          Join thousands who've transformed their careers with our proven SPP methodology
+        <p className="text-white/90 text-[13px] max-w-2xl mx-auto mb-8 leading-relaxed">
+          Start your journey to a better career today
         </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button
-            className="bg-white text-orange-500 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold text-lg"
-            size="lg"
-          >
+        <div className="flex flex-row justify-center gap-3 mb-4">
+          <a href="#join" className="inline-flex flex-1 items-center justify-center rounded-full bg-white text-[#1E3340] font-semibold text-[12px] tracking-wide px-6 h-12 shadow-sm hover:opacity-95 transition whitespace-nowrap">
+            Join SPP Now
+          </a>
+          <a href="#plans" className="inline-flex flex-1 items-center justify-center rounded-full bg-[#1E3340] text-white font-medium text-[12px] tracking-wide px-6 h-12 shadow-sm hover:bg-[#243f4e] transition whitespace-nowrap">
+            Compare Plans
+          </a>
+        </div>
+        <div className="flex justify-center">
+          <a href="#demo" className="inline-flex items-center justify-center rounded-full bg-white/25 text-white font-medium text-[12px] tracking-wide px-8 h-11 backdrop-blur-[2px] hover:bg-white/30 transition">
+            Book Free Demo
+          </a>
+        </div>
+      </div>
+      {/* Desktop / Tablet (design per screenshot) */}
+      <div className="hidden md:block max-w-5xl mx-auto px-6 text-center">
+        <h2 className="text-[30px] md:text-[32px] font-semibold tracking-tight text-white mb-3 flex items-center justify-center gap-2">
+          <span role="img" aria-label="target" className="text-xl">🎯</span>
+          <span>Be the Next Sirtifai Success Story</span>
+        </h2>
+        <p className="text-white/90 text-sm max-w-2xl mx-auto mb-8 leading-relaxed">
+          Learn from real achievers, see your income grow, and join the events that make it happen.
+        </p>
+        <div className="flex flex-row items-center justify-center gap-6">
+          <a href="#join" className="inline-flex items-center justify-center rounded-full bg-[#1E3340] text-white text-[12px] font-medium tracking-wide px-10 h-12 shadow-sm hover:opacity-90 transition">
             Join SPP
-          </Button>
-          <Button
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-orange-500 px-8 py-4 rounded-full font-semibold text-lg bg-transparent"
-            size="lg"
-          >
+          </a>
+          <a href="#demo" className="inline-flex items-center justify-center rounded-full bg-white text-[#1E3340] text-[12px] font-medium tracking-wide px-10 h-12 shadow-sm hover:bg-gray-50 transition">
             Book A Free Demo
-          </Button>
-          <Button
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-orange-500 px-8 py-4 rounded-full font-semibold text-lg bg-transparent"
-            size="lg"
-          >
-            Talk to Career Tracker
-          </Button>
+          </a>
+          <a href="#income" className="inline-flex items-center justify-center rounded-full border border-white text-white text-[12px] font-medium tracking-wide px-10 h-12 hover:bg-white/10 transition">
+            See Income Tracker
+          </a>
         </div>
       </div>
     </section>

@@ -48,7 +48,7 @@ const JOURNEY_STEPS: JourneyStep[] = [
   }
 ];
 
-export const LearningJourneySection = () => {
+export const  LearningJourneySection = () => {
   return (
     <section className="w-full bg-[#FEF7F1] py-20">
       <div className="max-w-7xl mx-auto px-6">
