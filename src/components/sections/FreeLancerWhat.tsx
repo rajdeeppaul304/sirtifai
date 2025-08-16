@@ -29,9 +29,9 @@ const FreeLancerWhat: React.FC = () => {
           What Is The Freelancer Programme?
         </h2>
         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
-          Sirtifai's Freelancer Programme is a structured platform for freelancers, freshers, and career restarters to earn verified income through real projects while gaining mentorship, legal protection, and long-term client access.
+          Sirtifai&apos;s Freelancer Programme is a structured platform for freelancers, freshers, and career restarters to earn verified income through real projects while gaining mentorship, legal protection, and long-term client access.
         </p>
-  <div className="flex flex-nowrap justify-center gap-6">
+        <div className="grid grid-cols-2 justify-center place-items-center lg:flex lg:flex-nowrap lg:justify-center gap-6">
           {cardData.map((c) => (
             <Card key={c.title} title={c.title} content={c.content} />
           ))}

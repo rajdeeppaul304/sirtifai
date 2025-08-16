@@ -12,6 +12,17 @@ export const Morquee = ({logos}: {logos: string[]}) => {
                 src={src} 
                 alt={`Partner ${i + 1}`} 
                 className="h-20 w-auto opacity-80 object-contain" 
+                style={{
+                  mixBlendMode: 'multiply',
+                  backgroundColor: 'transparent',
+                  filter: 'contrast(1.2) brightness(1.1) saturate(1.2)',
+                  WebkitFilter: 'contrast(1.2) brightness(1.1) saturate(1.2)',
+                  isolation: 'isolate'
+                }}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
               />
             </div>
           ))}
@@ -23,6 +34,17 @@ export const Morquee = ({logos}: {logos: string[]}) => {
                 src={src} 
                 alt={`Partner ${i + 1}`} 
                 className="h-20 w-auto opacity-80 object-contain" 
+                style={{
+                  mixBlendMode: 'multiply',
+                  backgroundColor: 'transparent',
+                  filter: 'contrast(1.2) brightness(1.1) saturate(1.2)',
+                  WebkitFilter: 'contrast(1.2) brightness(1.1) saturate(1.2)',
+                  isolation: 'isolate'
+                }}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
               />
             </div>
           ))}
