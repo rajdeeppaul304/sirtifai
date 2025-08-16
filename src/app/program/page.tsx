@@ -12,7 +12,6 @@ import AddOnsPricing from "../../components/sections/program/addons-pricing"
 import WhoCanUse from "../../components/sections/program/who-can-use"
 import FAQ from "../../components/sections/program/faq"
 import ProgramSelection from "../../components/sections/program/program-selection"
-import { InternationalHeroSection } from "@/components"
 
 type ProgramProps = {
   params: { variant: string }
@@ -30,7 +29,7 @@ export default function ProgramPage({ params }: ProgramProps) {
       <Features />
 
       <ProgramSelection />
-     <InternationalHeroSection/>
+
       {/* Adds on pricing */}
 
       <AddOnsPricing />
