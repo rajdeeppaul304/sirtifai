@@ -98,7 +98,6 @@ const ApplicationForm = () => {
   useEffect(() => {
     // Load selected package from localStorage
     const packageData = localStorage.getItem("selectedPackage")
-    console.log(packageData)
     if (packageData) {
       setSelectedPackage(JSON.parse(packageData))
     }
@@ -917,8 +916,8 @@ const ApplicationForm = () => {
 
                 <RazorpayCheckout
                   selectedProgram={selectedPackage.selectedProduct}
-                  selectedMonths={selectedPackage.productData.duration}
-                  selectedAddon={selectedPackage.selectedAddon}
+                  selectedMonths={selectedPackage.productData.duration || 1}
+                  selectedAddon={selectedPackage.selectedAddon || undefined}
                   studentData={formData}
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}

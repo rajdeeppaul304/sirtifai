@@ -36,8 +36,6 @@ interface FreelancerAddOn {
   price: number
   description: string
   features: string[]
-  highlight?: boolean
-  badge?: string
 }
 
 const PricingSection: React.FC = () => {
@@ -159,9 +157,7 @@ const PricingSection: React.FC = () => {
                     className={`border rounded-lg p-4 cursor-pointer transition-all ${
                       selectedAddOn === addOn.id
                         ? "border-[#FC4C03] bg-[#FBF2EE]"
-                        : addOn.highlight
-                          ? "border-[#FF6A2D] bg-[#FBF2EE]"
-                          : "border-gray-200 hover:border-gray-300"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                     onClick={() => handleAddOnChange(addOn.id)}
                   >
@@ -179,11 +175,6 @@ const PricingSection: React.FC = () => {
                       </div>
                       <div className="text-right">
                         <span className="text-[#FC4C03] font-bold">{formatPrice(addOn.price)}</span>
-                        {addOn.highlight && addOn.badge && (
-                          <div className="mt-1">
-                            <span className="bg-[#0F2533] text-white text-xs px-2 py-1 rounded">{addOn.badge}</span>
-                          </div>
-                        )}
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 mb-2">{addOn.description}</p>
