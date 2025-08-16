@@ -48,7 +48,7 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ title, content }) => (
-  <div className="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-lg transition-shadow px-6 py-7 w-72 shrink-0 flex flex-col text-left min-h-[170px]">
+  <div className="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-lg transition-shadow px-6 py-7 shrink-0 flex flex-col text-left min-h-[170px]">
     <span className="inline-flex items-center justify-center w-6 h-6 bg-orange-500 rounded-full text-white mb-4">
       <svg
         width="14"
