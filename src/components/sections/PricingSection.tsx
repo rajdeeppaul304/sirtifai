@@ -72,7 +72,7 @@ const plans: Plan[] = [
 
 const PricingSection: React.FC = () => {
   return (
-    <section className="py-28 px-6 bg-[#FCF8F5]">
+    <section className="py-28 px-6 bg-[#FCF8F5] hidden lg:flex">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-center text-[2.4rem] sm:text-[2.9rem] md:text-[3.2rem] font-bold tracking-tight text-neutral-900 mb-20 leading-[1.1]">
           One-Time Payment. Monthly Earnings. Yearly Access.

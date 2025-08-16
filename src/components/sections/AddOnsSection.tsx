@@ -35,7 +35,7 @@ const addOns: AddOnRow[] = [
 
 const AddOnsSection: React.FC = () => {
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white hidden lg:flex">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-center text-4xl md:text-5xl font-bold tracking-tight mb-14 leading-tight">
           Supercharge Your Career With

@@ -50,7 +50,7 @@ const WhoIsThisForSection: React.FC = () => {
         <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight text-neutral-900 mb-12">
           Who Is This For?
         </h2>
-        <div className="grid gap-6 md:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-20">
+        <div className="grid gap-6 md:gap-7 lg:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-20">
           {personas.map((p) => (
             <PersonaCard key={p.title} persona={p} />
           ))}
@@ -66,7 +66,7 @@ interface PersonaCardProps {
 
 const PersonaCard: React.FC<PersonaCardProps> = ({ persona }) => {
   return (
-  <div className="group bg-white rounded-md border border-orange-100 shadow-lg hover:shadow-lg transition-all px-7 py-6 flex flex-col justify-between">
+  <div className="group bg-white rounded-md border border-[#E5E7EB] shadow-lg hover:shadow-lg transition-all px-7 py-6 flex flex-col justify-between">
       <div>
         <span className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-orange-50 mb-4 group-hover:scale-110 transition-transform select-none overflow-hidden">
           <img src={persona.icon} alt="" className="w-6 h-6 object-contain" />
