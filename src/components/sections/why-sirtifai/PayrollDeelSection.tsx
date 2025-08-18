@@ -1,8 +1,17 @@
 import Image from "next/image"
+import React from "react"
+import { FaCreditCard } from "react-icons/fa"
+import { FaShield } from "react-icons/fa6"
 
 interface DeelFeature {
   img: string
   alt: string
+  title: string
+  description: string
+}
+
+interface ResponsiveDeelFeature {
+  img: React.ReactNode
   title: string
   description: string
 }
@@ -29,6 +38,19 @@ export const PayrollDeelSection = () => {
       description:
         "Used by global companies for seamless international payments.",
     },
+  ]
+
+  const responsiveFeatures: ResponsiveDeelFeature[] = [
+    {
+      img: (<FaCreditCard className='text-[2rem] text-[#3B82F6]'/>),
+      title: "Seamless Payments",
+      description: "Global payment system",
+    },
+    {
+      img: (<FaShield className='text-[2rem] text-[#10B981]'/>),
+      title: "EPF/ESI Coverage",
+      description: "Full compliance included",
+    }
   ]
 
   return (
@@ -69,14 +91,12 @@ export const PayrollDeelSection = () => {
 
         {/* Mobile stacked cards */}
         <div className="md:hidden flex flex-col gap-5">
-          {features.map((f) => (
+          {responsiveFeatures.map((f) => (
             <div
               key={f.title}
               className="bg-white rounded-2xl shadow-lg px-5 py-5 flex items-start gap-4"
             >
-              <div className="shrink-0 pt-1">
-                <Image src={f.img} alt={f.alt} width={44} height={44} className="w-11 h-11" />
-              </div>
+              {f.img}
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900 leading-snug mb-1">
                   {f.title}

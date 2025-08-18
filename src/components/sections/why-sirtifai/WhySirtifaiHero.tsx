@@ -20,7 +20,7 @@ export const WhySirtifaiHero = () => {
             </div>
             <div className="relative">
               <h1 className="font-bold text-black text-[42px] leading-[1.07] sm:text-5xl md:text-6xl tracking-tight">
-                <span className="block text-orange-500">Why Sirtifai?</span>
+                <span className="text-orange-500 flex"><span className='mr-2 flex lg:hidden'>💡</span>Why Sirtifai?</span>
                 <span className="block">Because Your Career</span>
                 <span className="block">Deserves More</span>
                 <span className="block">Than Just A Course</span>
@@ -38,11 +38,11 @@ export const WhySirtifaiHero = () => {
             <p className="hidden lg:block mt-8 md:mt-10 text-[#374151] text-base md:text-lg leading-relaxed">
               We don&apos;t just train you — we make you work-ready, connect you to real projects, pay you while you learn, and support your career for life.
             </p>
-            <div className="mt-8 md:mt-10 flex flex-row flex-wrap gap-3 sm:gap-5 items-center">
+            <div className="mt-8 md:mt-10 hidden lg:flex flex-row flex-wrap gap-3 sm:gap-5 items-center">
               <Button
                 variant="primary"
                 size="sm"
-                className="order-1 sm:order-2 rounded-full px-5 py-2 text-sm sm:px-8 sm:py-4 sm:text-lg"
+                className="flex sm:order-2 rounded-full px-5 py-2 text-sm sm:px-8 sm:py-4 sm:text-lg"
               >
                 Book Free Demo
               </Button>
@@ -50,6 +50,25 @@ export const WhySirtifaiHero = () => {
                 variant="secondary"
                 size="sm"
                 className="order-2 sm:order-1 relative rounded-full px-5 py-2 text-sm sm:px-8 sm:py-4 sm:text-lg bg-[#1F3644] hover:bg-[#214050] text-white overflow-hidden before:absolute before:inset-0 before:rounded-full before:border before:border-white/10 after:absolute after:inset-[3px] after:rounded-full after:border after:border-white/35 shadow-lg"
+              >
+                Explore SPP Programmes
+              </Button>
+            </div>
+
+            {/* Smaller Screens */}
+            <div className="flex lg:hidden mt-8 md:mt-10 flex-row-reverse justify-start gap-3 sm:gap-5 items-start">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="order-2 sm:order-1 relative rounded-full px-2 py-2 text-[.875rem] sm:px-8 sm:py-4 sm:text-lg bg-[#1F3644] hover:bg-[#214050] text-white overflow-hidden before:absolute before:inset-0 before:rounded-full before:border before:border-white/10 after:absolute after:inset-[3px] after:rounded-full after:border after:border-white/35 shadow-lg"
+              >
+                Book Free Demo
+              </Button>
+
+              <Button
+                variant="primary"
+                size="sm"
+                className="order-1 sm:order-2 rounded-full px-2 py-2 text-[.75rem] sm:px-8 sm:py-4 sm:text-lg"
               >
                 Explore SPP Programmes
               </Button>

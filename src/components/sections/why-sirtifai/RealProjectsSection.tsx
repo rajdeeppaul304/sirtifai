@@ -20,7 +20,7 @@ export const RealProjectsSection = () => {
             imgAlt="Verified industry projects icon"
             accent="blue"
             title="Verified Industry Projects"
-            desc="Work on verified industry projects from real companies, not simulations." />
+            desc="Work on real company projects, not simulations" />
           <CardLogo
             img="/assets/why-sirtifai/portfolio_building.png"
             imgAlt="Portfolio building icon"
@@ -39,17 +39,17 @@ export const RealProjectsSection = () => {
             title="Verified Industry Projects"
             desc="Work on real company projects, not simulations" />
           <MobileCardLogo
-            img="/assets/why-sirtifai/portfolio_building.png"
+            img="/assets/why-sirtifai/earn_while_learning.png"
             imgAlt="Portfolio building icon"
             accent="green"
-            title="Portfolio Building"
-            desc="Mentor-reviewed deliverables for your portfolio" />
-          <MobileCardLogo
-            img="/assets/why-sirtifai/earn_while_learning.png"
-            imgAlt="Earn while learning icon"
-            accent="orange"
             title="Earn ₹12K–₹35K/month"
             desc="Get paid during the Practice Phase" />
+          <MobileCardLogo
+            img="/assets/why-sirtifai/verified_industry_projects_logo.png"
+            imgAlt="Earn while learning icon"
+            accent="orange"
+            title="Portfolio Building"
+            desc="Mentor-reviewed deliverables for your portfolio" />
           <div className="rounded-3xl overflow-hidden mt-2">
             <Image
               src="/assets/why-sirtifai/real_projects_mobile.png"
