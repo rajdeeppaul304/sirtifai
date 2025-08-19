@@ -71,7 +71,7 @@ export const ComparisonTable = () => {
 
   return (
     <section className="bg-[#F5F7F9] py-14 md:py-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-0">
         <div className="text-center mb-10 md:mb-14">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-black mb-3">
             How Sirtifai Is Different
@@ -84,7 +84,7 @@ export const ComparisonTable = () => {
         {/* Desktop / Large Table */}
         <div className="hidden md:block">
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <table className="w-full border-collapse text-sm md:text-base">
+            <table className="w-full lg:max-w-[1300px] mx-auto border-collapse text-sm md:text-base">
               <thead>
                 <tr>
                   <th className="bg-orange-500 text-white text-left px-6 py-4 font-semibold rounded-tl-xl w-[23%]">

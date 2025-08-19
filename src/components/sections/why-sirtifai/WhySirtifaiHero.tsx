@@ -11,13 +11,13 @@ const vectorStar = "/assets/why-sirtifai/Vector.svg"; // star vector icon for en
 export const WhySirtifaiHero = () => {
   return (
     <section className="relative bg-[#FFF8F5] overflow-hidden">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-24 md:pt-20 md:pb-16 lg:pt-28 lg:pb-24 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 pt-14 md:pt-20 lg:pt-28 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 items-start lg:items-center">
           {/* Left */}
           <div className="relative z-10 max-w-xl">
-            <div className="hidden md:flex items-start gap-2 mb-4 md:mb-6">
+            {/* <div className="hidden md:flex items-start gap-2 mb-4 md:mb-6">
               <Image src={ideaIcon} alt="" width={40} height={40} className="w-8 h-8 md:w-10 md:h-10" />
-            </div>
+            </div> */}
             <div className="relative">
               <h1 className="font-bold text-black text-[42px] leading-[1.07] sm:text-5xl md:text-6xl tracking-tight">
                 <span className="text-orange-500 flex"><span className='mr-2 flex lg:hidden'>💡</span>Why Sirtifai?</span>

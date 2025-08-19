@@ -19,11 +19,11 @@ export const AIPoweredLMSSection = () => {
   ]
 
   return (
-    <section className="bg-[#fdf5f1] pt-12 md:py-16">
+    <section className="bg-[#fdf5f1] pt-12 md:pt-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 justify-items-end place-items-end">
           {/* Left - Content */}
-          <div className="space-y-8">
+          <div className="space-y-8 lg:pb-16">
             <h2 className="text-4xl text-center md:text-4xl font-bold text-gray-900">
               AI-Powered LMS – LearnX
             </h2>
